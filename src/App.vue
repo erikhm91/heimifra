@@ -1,19 +1,36 @@
 <template>
   <div id="app">
-    <cor-header></cor-header>
-   <message-container></message-container>
+    
+    <hs-header class="" @component="setActiveView"></hs-header>
+    
+     <div class="container">
+        <component :is="activeView"></component>
+      </div>
+          <!-- <message-container></message-container> -->
   </div>
 </template>
 
 <script>
-import messageContainer from './components/MessageContainer.vue';
-import header from './components/Header.vue';
+import MessageContainer from './components/MessageContainer.vue';
+import PostCreator from './components/PostCreator.vue';
+import Header from './components/Header.vue';
 export default {
 
   name: 'App',
+  data() {
+    return {
+      activeView : 'message-container'
+    }
+  },
   components: {
-    corHeader: header,
-    messageContainer
+    hsHeader: Header,
+    messageContainer: MessageContainer,
+    postCreator: PostCreator
+  },
+  methods: {
+    setActiveView(component) {
+      this.activeView = component;
+    }
   }
 }
 </script>
@@ -33,5 +50,8 @@ body {
     background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
+  
+  /* adjust for fixed navbar */
+  padding-top: 70px;
 }
 </style>

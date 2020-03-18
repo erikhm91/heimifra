@@ -1,22 +1,29 @@
 <template>
-  <div class="container mt-4">
-    <b-card-group deck class="row">
-      <div class="col-6 mt-2 button">
-      <b-card border-variant="light" header="Light" class="text-center">
-        <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
-      </b-card>
-    </div>
-    <div class="col-6 mt-2">
-      <b-card border-variant="dark" header="Dark" align="center">
-        <b-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</b-card-text>
-      </b-card>
+    <div class="row">
+      <div class="col-md-3 col-1"></div>
+
+      <div class="col-md-6 col-10">
+        <b-card-group deck>
+          <home-store-post class="col-12 mt-3 button" v-for="(post, i) in postArray" v-bind:key="i"></home-store-post>
+        </b-card-group>
       </div>
-    </b-card-group>
-  </div>
+
+      <div class="col-md-3 col-1"></div>
+    </div>
 </template>
 
 <script>
-export default {};
+import Post from "./Post.vue";
+export default {
+  data() {
+    return {
+      postArray: [1, 2, 3]
+    };
+  },
+  components: {
+    homeStorePost: Post
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
