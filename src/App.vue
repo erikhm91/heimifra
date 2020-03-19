@@ -1,26 +1,25 @@
 <template>
   <div id="app">
-    
-    <hs-header class="" @component="setActiveView"></hs-header>
-    
-     <div class="container">
-        <component :is="activeView"></component>
-      </div>
-          <!-- <message-container></message-container> -->
+
+    <hs-header></hs-header>
+
+    <div class="container">
+      <component :is="$store.getters.activeView"></component>
+    </div>
+    <!-- <message-container></message-container> -->
   </div>
 </template>
 
 <script>
-import MessageContainer from './components/MessageContainer.vue';
-import PostCreator from './components/PostCreator.vue';
-import Header from './components/Header.vue';
+import MessageContainer from "./components/MessageContainer.vue";
+import PostCreator from "./components/PostCreator.vue";
+import Header from "./components/Header.vue";
 export default {
-
-  name: 'App',
+  name: "App",
   data() {
     return {
-      activeView : 'message-container'
-    }
+      activeView: this.$store.getters.activeView
+    };
   },
   components: {
     hsHeader: Header,
@@ -32,7 +31,7 @@ export default {
       this.activeView = component;
     }
   }
-}
+};
 </script>
 
 <style>
@@ -42,15 +41,14 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
   color: #2c3e50;
-  
 }
 body {
- background-image: url('~@/assets/bobil.jpg');
+  background-image: url("~@/assets/bobil2.jpg");
   background-color: #cccccc;
-    background-attachment: fixed;
+  background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
-  
+
   /* adjust for fixed navbar */
   padding-top: 70px;
 }

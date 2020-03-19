@@ -2,9 +2,9 @@
     <div class="row">
       <div class="col-md-3 col-1"></div>
 
-      <div class="col-md-6 col-10">
+      <div class="col-md-6 col-10" v-if="test">
         <b-card-group deck>
-          <home-store-post class="col-12 mt-3 button" v-for="(post, i) in postArray" v-bind:key="i"></home-store-post>
+          <home-store-post class="col-12 mt-3 button" v-for="(post, i) in postArray" v-bind:key="i" :post="post"></home-store-post>
         </b-card-group>
       </div>
 
@@ -17,7 +17,8 @@ import Post from "./Post.vue";
 export default {
   data() {
     return {
-      postArray: [1, 2, 3]
+      postArray: this.$store.getters.postArray,
+      test: true
     };
   },
   components: {

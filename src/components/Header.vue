@@ -63,7 +63,8 @@
 export default {
   methods: {
     navigateToComponent(component) {
-      this.$emit("component", component);
+      // this.$emit("component", component);
+      this.$store.commit('SET_ACTIVE_VIEW', component);
     }
   }
 
