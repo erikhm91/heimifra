@@ -1,0 +1,18 @@
+{
+    "posts": [
+        {
+            "email": "erikhougem@gmail.com",
+            "name": "Erik Houge Mathisen",
+            "tlf": "45292295",
+            "tips": 20,
+            "text": "1pk wienerpølser, bananer, 1kg poteter"
+        },
+        {
+            "email": "amand_g_m@hotmail.com",
+            "name": "Amanda Panda",
+            "tlf": "22225555",
+            "tips": 90,
+            "text": "Bremykt smør, trøffelolje, kanel (santa maria), 200pk dopapir"
+        }
+    ]
+}

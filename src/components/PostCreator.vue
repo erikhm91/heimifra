@@ -89,7 +89,8 @@ export default {
     onSubmit() {
       // evt.preventDefault();
       // alert(JSON.stringify(this.post));
-      this.$store.commit('ADD_POST', this.post);
+      this.$store.commit('ADD_OWN_POST', this.post);
+      this.$store.commit('SET_ACTIVE_VIEW', 'personal-posts');
 
     },
     onReset(evt) {
