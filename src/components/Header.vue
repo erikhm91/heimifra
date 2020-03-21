@@ -9,9 +9,9 @@
 
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item @click="navigateToComponent('post-creator')" :class="{ active: $store.getters.activeView == 'post-creator'}" href="#">Opprett post!</b-nav-item>
-        <b-nav-item @click="navigateToComponent('personal-posts')" :class="{ active: $store.getters.activeView == 'personal-posts'}" href="#">Mine lister</b-nav-item>
-        <b-nav-item :class="{ active: $store.getters.activeView == ''}" href="#">Om oss</b-nav-item>
+        <b-nav-item @click="navigateToComponent('post-creator')" :class="{ active: $store.getters.activeView == 'post-creator'}" href="#">Opprett liste!</b-nav-item>
+        <b-nav-item @click="navigateToComponent('my-page')" :class="{ active: $store.getters.activeView == 'my-page'}" href="#">Min side</b-nav-item>
+        <b-nav-item @click="navigateToComponent('about-us')" :class="{ active: $store.getters.activeView == 'about-us'}" href="#">Om oss</b-nav-item>
       </b-navbar-nav>
 
       <!-- Right aligned nav items -->
@@ -22,14 +22,14 @@
         </b-nav-form>
 
 
-        <b-nav-item-dropdown right>
-          <!-- Using 'button-content' slot -->
-          <template v-slot:button-content>
+        <!-- <b-nav-item-dropdown right>
+           Using 'button-content' slot -->
+          <!-- <template v-slot:button-content>
             <em>Min profil</em>
           </template>
           <b-dropdown-item href="#">Innstillinger</b-dropdown-item>
           <b-dropdown-item href="#">Logg ut</b-dropdown-item>
-        </b-nav-item-dropdown>
+        </b-nav-item-dropdown> -->
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>

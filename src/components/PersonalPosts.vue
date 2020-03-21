@@ -1,15 +1,15 @@
 <template>
 <div>
-
+<!-- 
     <div class="text-center">
     <h1>Her vises dine egne lister</h1>
-    </div>
-    <div class="row">
+    </div> -->
+    <div class="row mt-3">
       <div class="col-md-3 col-1"></div>
 
-      <div class="col-md-6 col-10" v-if="test">
+      <div class="col-md-6 col-10">
         <b-card-group deck>
-          <home-store-post class="col-12 mt-3 button" v-for="(post, i) in postArray" v-bind:key="i" :post="post"></home-store-post>
+          <home-store-post class="col-12 mt-3 button" v-for="(post, i) in postArray" v-bind:key="i" :post="post" :ownPost="true"></home-store-post>
         </b-card-group>
       </div>
 
@@ -24,8 +24,7 @@ import Post from "./Post.vue";
 export default {
   data() {
     return {
-      postArray: this.$store.getters.myPosts,
-      test: true
+      postArray: this.$store.getters.myPosts
     };
   },
   components: {

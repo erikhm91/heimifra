@@ -34,9 +34,9 @@
         <b-form-group id="input-group-3" label="Navn:" label-for="input-3">
           <b-form-input id="input-3" v-model="post.name" required placeholder="Ditt navn, som vises på posten."></b-form-input>
         </b-form-group>
-         <b-form-group id="input-group-4" label="Telefon:" label-for="input-4">
+         <!-- <b-form-group id="input-group-4" label="Telefon:" label-for="input-4">
           <b-form-input id="input-4" v-model="post.tlf" required placeholder="Ditt telefonnummer, slik at hjelpere kan kontakte deg."></b-form-input>
-        </b-form-group>
+        </b-form-group> -->
 
        
           <b-form-group id="input-group-5" label="Tips:" label-for="input-5"
@@ -49,20 +49,9 @@
             placeholder="Tips?"
           ></b-form-input>
           </b-form-group>
-     
-        <!-- <b-form-group id="input-group-3" label="Food:" label-for="input-3">
-          <b-form-select id="input-3" v-model="form.food" :options="foods" required></b-form-select>
-        </b-form-group>-->
 
-        <!--  <b-form-group id="input-group-4">
-          <b-form-checkbox-group v-model="form.checked" id="checkboxes-4">
-            <b-form-checkbox value="me">Check me out</b-form-checkbox>
-            <b-form-checkbox value="that">Check that out</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>-->
-
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
+        <b-button type="submit" variant="primary">Publiser!</b-button>
+        <!-- <b-button type="reset" variant="danger">Reset</b-button> -->
       </b-form>
       <!-- <b-card class="mt-3" header="Form Data Result">
         <pre class="m-0">{{ post }}</pre>
@@ -72,23 +61,36 @@
 </template>
 
 <script>
+import db from '@/firebase/init';
 export default {
   data() {
     return {
       post: {
         email: '',
         name: '',
-        tlf: '',
+        // tlf: '',
         tips: 0,
         text: ''
       },
-      show: true
+      show: true,
+      feedback: null
     };
   },
   methods: {
     onSubmit() {
-      // evt.preventDefault();
-      // alert(JSON.stringify(this.post));
+          
+      if (this.post) {
+        db.collection('posts').add({
+          email: this.post.email,
+          name: this.post.name,
+          tips: this.post.tips,
+          text: this.post.text,
+          timestamp: Date.now()
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+
       this.$store.commit('ADD_OWN_POST', this.post);
       this.$store.commit('SET_ACTIVE_VIEW', 'personal-posts');
 

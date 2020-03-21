@@ -7,9 +7,9 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
     strict:true,
     state: {
-        postArray: examplePosts.posts,
+        postArray: [],
         activeView: 'message-container',
-        myPosts: []
+        myPosts: examplePosts.posts
         
     },
 

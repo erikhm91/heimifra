@@ -15,6 +15,8 @@ import MessageContainer from "./components/MessageContainer.vue";
 import PostCreator from "./components/PostCreator.vue";
 import Header from "./components/Header.vue";
 import PersonalPosts from "./components/PersonalPosts.vue";
+import MyPage from "./components/MyPage.vue";
+import AboutUs from "./components/AboutUs.vue";
 export default {
   name: "App",
   data() {
@@ -26,7 +28,9 @@ export default {
     hsHeader: Header,
     messageContainer: MessageContainer,
     postCreator: PostCreator,
-    personalPosts: PersonalPosts
+    personalPosts: PersonalPosts,
+    myPage: MyPage,
+    aboutUs: AboutUs
   },
   methods: {
     setActiveView(component) {
