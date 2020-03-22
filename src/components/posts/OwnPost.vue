@@ -3,28 +3,37 @@
     <!-- <b-card border-variant="light" header="post.name" class="text-center">
       <b-card-text>{{post.text}}</b-card-text>
       <p>Epost: {{post.email}}</p>
-       <p>Tlf: {{post.tlf}}</p> -->
-      <!-- <p>Tips: {{post.tips}}</p>
+    <p>Tlf: {{post.tlf}}</p>-->
+    <!-- <p>Tips: {{post.tips}}</p>
       <div class="text-right">
         <button class="btn btn-primary">La meg hjelpe!</button>
       </div>
-    </b-card> -->
+    </b-card>-->
 
     <div class="card w-100">
       <div class="card-body">
         <div class="row">
           <h5 class="card-title col-6 text-left">{{post.name}}</h5>
           <h5 class="card-title col-6 text-right">Tips: {{post.tips}}</h5>
+          <div class="col-1">
+            
+          </div>
         </div>
-        
+
         <p class="card-text">{{post.text}}</p>
-        <div v-if="post.taken===true" class="text-right">
-          <a href="#" class="btn btn-primary disabled">Under behandling</a>
-        </div>
-        <div v-else class="text-right">
-          <a href="#" class="btn btn-primary">La meg hjelpe!</a>
-        </div>
-        
+        <div v-if="post.hjelp ==true" class="text-right">
+        <b-dropdown
+              id="dropdown-dropright"
+              dropright
+              text="Hjelpere har kontaktet!"
+              variant="primary"
+              class="m-2"
+            >
+              <b-dropdown-item href="#">Erik Houge Mathisen</b-dropdown-item>
+              <b-dropdown-item href="#">Amanda Grøvdal Midtun</b-dropdown-item>
+              <b-dropdown-item href="#">Malene Grøvdal Midtun</b-dropdown-item>
+            </b-dropdown>
+      </div>
       </div>
     </div>
   </div>
@@ -43,10 +52,6 @@ export default {
       //   tips: 0,
       //   text: ''
     }
-    // taken : {
-    //   type: Boolean,
-    //   default: false
-    // }
   },
   data() {
     return {

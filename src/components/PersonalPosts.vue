@@ -9,7 +9,7 @@
 
       <div class="col-md-6 col-10">
         <b-card-group deck>
-          <home-store-post class="col-12 mt-3 button" v-for="(post, i) in postArray" v-bind:key="i" :post="post" :ownPost="true"></home-store-post>
+          <own-post class="col-12 mt-3 button" v-for="(post, i) in postArray" v-bind:key="i" :post="post" :ownPost="true"></own-post>
         </b-card-group>
       </div>
 
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Post from "./Post.vue";
+import OwnPost from "@/components/posts/OwnPost.vue";
 export default {
   data() {
     return {
@@ -28,7 +28,7 @@ export default {
     };
   },
   components: {
-    homeStorePost: Post
+    ownPost: OwnPost
   }
 };
 </script>

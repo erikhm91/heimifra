@@ -5,14 +5,16 @@
             "name": "Gunnar Sverresø",
             "tlf": "22225555",
             "tips": 20,
-            "text": "1pk wienerpølser, bananer, 1kg poteter"
+            "text": "1pk wienerpølser, bananer, 1kg poteter",
+            "hjelp": false
         },
         {
             "email": "erikhougem@gmail.com",
             "name": "Gunnar Sverresø",
             "tlf": "22225555",
             "tips": 90,
-            "text": "Bremykt smør, trøffelolje, kanel (santa maria), 200pk dopapir"
+            "text": "Bremykt smør, trøffelolje, kanel (santa maria), 200pk dopapir",
+            "hjelp": true
         }
     ]
 }

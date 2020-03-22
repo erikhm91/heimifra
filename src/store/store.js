@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import examplePosts from "../data/exampleposts.json";
+import examplePosts2 from "../data/exampleposts2.json";
 
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
     strict:true,
     state: {
-        postArray: [],
+        postArray: examplePosts2.posts,
         activeView: 'message-container',
         myPosts: examplePosts.posts
         

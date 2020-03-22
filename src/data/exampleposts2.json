@@ -1,0 +1,26 @@
+{
+    "posts": [
+        {
+            "email": "erikhougem@gmail.com",
+            "name": "Andreas Tofteland",
+            "text": "Vin, øl, snacks",
+            "timestamp": 1584830097928,
+            "tips": "45"
+        },
+        {
+            "email": "erikhougem@gmail.com",
+            "name": "Erik Houge Mathisen",
+            "text": "banan, brød, melk",
+            "timestamp": 1584739649038,
+            "tips": "25",
+            "taken": true
+        },
+        {
+            "email": "amanda_g_m@hotmail.com",
+            "name": "Amanda Grøvdal Midtun",
+            "text": "mere mat, ost, elgkjøtt",
+            "timestamp": 1584745778739,
+            "tips": "8000"
+        }
+    ]
+}
