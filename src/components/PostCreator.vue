@@ -73,13 +73,14 @@ export default {
         text: ''
       },
       show: true,
-      feedback: null
+      feedback: null,
+      dbDisabled: true
     };
   },
   methods: {
     onSubmit() {
           
-      if (this.post) {
+      if (this.post &&  this.dbDisabled === false) {
         db.collection('posts').add({
           email: this.post.email,
           name: this.post.name,
