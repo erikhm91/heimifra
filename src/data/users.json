@@ -5,14 +5,30 @@
             "email": "erikhougem@gmail.com",
             "name": "Erik Houge Mathisen",
             "timestamp": 1584739649038,
-            "pic": "http://4.bp.blogspot.com/-4GcOwHCRVfI/VcOz7_CjcdI/AAAAAAAAB0I/IOadq2eidAY/s1600/Erik%2Bog%2Bamanda.JPG"
+            "pic": "http://4.bp.blogspot.com/-4GcOwHCRVfI/VcOz7_CjcdI/AAAAAAAAB0I/IOadq2eidAY/s1600/Erik%2Bog%2Bamanda.JPG",
+            "rate": 3
         },
         {
-            "uid": "amand",
+            "uid": "catlover29",
             "email": "amand_g_m@hotmail.com",
             "name": "Amanda Grøvdal Midtun",
             "timestamp": 1584739889038,
-            "pic": "http://4.bp.blogspot.com/-NaYRwh726LI/Vbphl3FcByI/AAAAAAAABxY/Qv76XwJfVZM/s320/IMG_20150730_172617.jpg"
+            "pic": "https://mve.no/stavanger/media/catalog/product/cache/4/image/920x880/9df78eab33525d08d6e5fb8d27136e95/b/a/banan_2.jpg",
+            "rate": 5
+        },
+        {
+            "uid": "andreastoft",
+            "email": "toft@hotmail.com",
+            "name": "Andreas Tofteland",
+            "timestamp": 1584739910000,
+            "pic": "https://mve.no/stavanger/media/catalog/product/cache/4/image/920x880/9df78eab33525d08d6e5fb8d27136e95/b/a/banan_2.jpg"
+        },
+        {
+            "uid": "mallemus",
+            "email": "malle@hotmail.com",
+            "name": "Malene Grøvdal Midtun",
+            "timestamp": 1584739910030,
+            "pic": "https://mve.no/stavanger/media/catalog/product/cache/4/image/920x880/9df78eab33525d08d6e5fb8d27136e95/b/a/banan_2.jpg"
         }
     ]
 }

@@ -1,24 +1,33 @@
 {
     "posts": [
-        {   
-            "id": "0",
-            "uid": "gunsve",
+        {
+            "id": "2",
+            "uid": "andreastoft",
             "email": "erikhougem@gmail.com",
-            "name": "Gunnar Sverresø",
-            "tlf": "22225555",
-            "tips": 20,
-            "text": "1pk wienerpølser, bananer, 1kg poteter",
-            "hjelp": false
+            "name": "Andreas Tofteland",
+            "text": "Vin, øl, snacks",
+            "timestamp": 1584830097928,
+            "tips": "45"
         },
-        {   
-            "id": "1",
-            "uid": "gunsve",
+        {
+            "id": "3",
+            "uid": "erikhm10",
             "email": "erikhougem@gmail.com",
-            "name": "Gunnar Sverresø",
-            "tlf": "22225555",
-            "tips": 90,
-            "text": "Bremykt smør, trøffelolje, kanel (santa maria), 200pk dopapir",
-            "hjelp": true
+            "name": "Erik Houge Mathisen",
+            "text": "banan, brød, melk",
+            "timestamp": 1584739649038,
+            "tips": "25",
+            "taken": true
+        },
+        {
+            "id": "4",
+            "uid": "catlover29",
+            "email": "amanda_g_m@hotmail.com",
+            "name": "Amanda Grøvdal Midtun",
+            "text": "mere mat, ost, elgkjøtt",
+            "timestamp": 1584745778739,
+            "tips": "8000",
+            "tlf": "22225555"
         }
     ]
 }

@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import examplePosts from "../data/exampleposts.json";
-import examplePosts2 from "../data/exampleposts2.json";
+import examplePosts from "../data/ownposts.json";
+import examplePosts2 from "../data/exampleposts.json";
 import exampletasks from "../data/exampletasks.json";
+import users from "../data/users.json";
 
 Vue.use(Vuex);
 
@@ -12,8 +13,8 @@ export const store = new Vuex.Store({
         postArray: examplePosts2.posts,
         activeView: 'message-container',
         myPosts: examplePosts.posts,
-        myTasks: exampletasks.tasks
-        
+        myTasks: exampletasks.tasks,
+        users: users.users
     },
 
     mutations: {
@@ -28,6 +29,9 @@ export const store = new Vuex.Store({
         },
         ADD_OWN_TASK(state, postObj) {
             state.myTasks.push(postObj);
+        },
+        ADD_USER(state, userObj) {
+            state.users.push(userObj);
         }
     },
 
@@ -35,6 +39,8 @@ export const store = new Vuex.Store({
         postArray : state => state.postArray,
         activeView : state => state.activeView,
         myPosts : state => state.myPosts,
-        myTasks : state => state.myTasks
+        myTasks : state => state.myTasks,
+        users: state => state.users,
+        user: state => uid => state.users.find(obj => obj.uid == uid)
     }
 })

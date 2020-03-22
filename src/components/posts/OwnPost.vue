@@ -30,10 +30,25 @@
             variant="primary"
             class="m-2"
           >
-            <b-dropdown-item href="#">Erik Houge Mathisen</b-dropdown-item>
-            <b-dropdown-item href="#">Amanda Grøvdal Midtun</b-dropdown-item>
-            <b-dropdown-item href="#">Malene Grøvdal Midtun</b-dropdown-item>
+            <b-dropdown-item v-b-modal="'modal1'" href="#">Erik Houge Mathisen</b-dropdown-item>
+            <b-dropdown-item v-b-modal="'modal2'" href="#">Malene Grøvdal Midtun</b-dropdown-item>
           </b-dropdown>
+         
+          <b-modal :id="'modal1'" :title="'Modal'" :ok-title="'Velg '+this.$store.getters.user('erikhm10').name.split(' ')[0]+'!'" cancel-title="Avbryt" centered>
+            <other-bio :post="{ 'name': this.$store.getters.user('erikhm10').name,
+                                 'email': this.$store.getters.user('erikhm10').email,
+                                 'tlf': this.$store.getters.user('erikhm10').tlf,
+                                 'uid': 'erikhm10' }"></other-bio>
+          </b-modal>
+          <b-modal :id="'modal2'" :title="'Modal'" :ok-title="'Velg '+this.$store.getters.user('mallemus').name.split(' ')[0]+'!'"  cancel-title="Avbryt" centered>
+                        <other-bio :post="{ 'name': this.$store.getters.user('mallemus').name,
+                                 'email': this.$store.getters.user('mallemus').email,
+                                 'tlf': this.$store.getters.user('mallemus').tlf,
+                                 'uid': 'mallemus' }"></other-bio>
+          </b-modal>
+
+
+
         </div>
         <button class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
         <button class="btn btn-outline-warning btn-sm">Endre</button>
@@ -44,6 +59,7 @@
 
 <script>
 import ProfileIcon from "@/components/icons/ProfileIcon.vue";
+import OtherBio from "@/components/bio/OtherBio.vue";
 export default {
   props: {
     post: {
@@ -63,7 +79,8 @@ export default {
     };
   },
   components: {
-    profileIcon: ProfileIcon
+    ProfileIcon,
+    OtherBio
   }
 };
 </script>

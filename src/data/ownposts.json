@@ -1,0 +1,24 @@
+{
+    "posts": [
+        {   
+            "id": "0",
+            "uid": "gunsve",
+            "email": "erikhougem@gmail.com",
+            "name": "Gunnar Sverresø",
+            "tlf": "22225555",
+            "tips": 20,
+            "text": "1pk wienerpølser, bananer, 1kg poteter",
+            "hjelp": false
+        },
+        {   
+            "id": "1",
+            "uid": "gunsve",
+            "email": "erikhougem@gmail.com",
+            "name": "Gunnar Sverresø",
+            "tlf": "22225555",
+            "tips": 90,
+            "text": "Bremykt smør, trøffelolje, kanel (santa maria), 200pk dopapir",
+            "hjelp": true
+        }
+    ]
+}
