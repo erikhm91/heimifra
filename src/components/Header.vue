@@ -9,7 +9,7 @@
 
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item @click="navigateToComponent('post-creator')" :class="{ active: $store.getters.activeView == 'post-creator'}" href="#">Opprett liste!</b-nav-item>
+        <b-nav-item @click="navigateToComponent('post-creator')" :class="{ active: $store.getters.activeView == 'post-creator'}" href="#">Opprett handleliste!</b-nav-item>
         <b-nav-item @click="navigateToComponent('my-page')" :class="{ active: $store.getters.activeView == 'my-page'}" href="#">Min side</b-nav-item>
         <b-nav-item @click="navigateToComponent('about-us')" :class="{ active: $store.getters.activeView == 'about-us'}" href="#">Om oss</b-nav-item>
       </b-navbar-nav>

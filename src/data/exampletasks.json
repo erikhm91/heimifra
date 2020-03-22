@@ -1,0 +1,14 @@
+{
+    "tasks": [
+
+        {
+            "id": "3",
+            "email": "erikhougem@gmail.com",
+            "name": "Erik Houge Mathisen",
+            "text": "banan, brød, melk",
+            "timestamp": 1584739649038,
+            "tips": "25",
+            "taken": true
+        }
+    ]
+}

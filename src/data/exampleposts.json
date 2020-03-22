@@ -1,6 +1,8 @@
 {
     "posts": [
-        {
+        {   
+            "id": "0",
+            "uid": "gunsve",
             "email": "erikhougem@gmail.com",
             "name": "Gunnar Sverresø",
             "tlf": "22225555",
@@ -8,7 +10,9 @@
             "text": "1pk wienerpølser, bananer, 1kg poteter",
             "hjelp": false
         },
-        {
+        {   
+            "id": "1",
+            "uid": "gunsve",
             "email": "erikhougem@gmail.com",
             "name": "Gunnar Sverresø",
             "tlf": "22225555",

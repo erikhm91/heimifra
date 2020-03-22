@@ -35,9 +35,9 @@
             <b-dropdown-item href="#">Malene Grøvdal Midtun</b-dropdown-item>
           </b-dropdown>
         </div>
-        <button class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
-        <button class="btn btn-outline-warning btn-sm">Endre</button>
+         <button class="btn btn-outline-danger mr-2 btn-sm">Fjern oppdrag</button>
       </div>
+      
     </div>
   </div>
 </template>

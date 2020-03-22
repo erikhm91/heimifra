@@ -1,8 +1,19 @@
 <template>
   <div class="row">
-    <div class="col-md-3 col-1"></div>
+    <div class="col-md-3 col-1">
+       
 
-    <div class="col-md-6 col-10" v-if="test">
+    </div>
+
+    <div class="col-md-6 col-10">
+      
+        <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
+          <b-modal :id="'modal'" :title="'Opprett ny handeliste'" ok-title="" cancel-title="" centered>
+            <post-creator></post-creator>
+          </b-modal>
+
+
+
       <b-card-group deck>
         <home-store-post
           class="col-12 mt-3 button"
@@ -18,13 +29,12 @@
 </template>
 
 <script>
-import Post from "./Post.vue";
+import Post from "./posts/Post.vue";
 import db from "@/firebase/init";
 export default {
   data() {
     return {
       posts: this.$store.getters.postArray,
-      test: true
     };
   },
   components: {

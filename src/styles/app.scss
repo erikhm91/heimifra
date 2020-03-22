@@ -1,0 +1,22 @@
+
+
+/* // Your variable overrides
+@import 'variables.scss';
+@import url('https://fonts.googleapis.com/css?family=Coming+Soon&display=swap');
+
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary
+);
+
+// $font-size-base: 1.5rem;
+$font-family-sans-serif: 'Coming Soon', cursive;
+$overflows: auto;
+$body-bg: $background;
+
+//  $body-color: black;
+*/
+
+// custom.scss
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';

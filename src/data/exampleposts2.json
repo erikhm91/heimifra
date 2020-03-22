@@ -1,6 +1,8 @@
 {
     "posts": [
         {
+            "id": "2",
+            "uid": "andreastoft",
             "email": "erikhougem@gmail.com",
             "name": "Andreas Tofteland",
             "text": "Vin, øl, snacks",
@@ -8,6 +10,8 @@
             "tips": "45"
         },
         {
+            "id": "3",
+            "uid": "erikhm10",
             "email": "erikhougem@gmail.com",
             "name": "Erik Houge Mathisen",
             "text": "banan, brød, melk",
@@ -16,11 +20,14 @@
             "taken": true
         },
         {
+            "id": "4",
+            "uid": "catlover29",
             "email": "amanda_g_m@hotmail.com",
             "name": "Amanda Grøvdal Midtun",
             "text": "mere mat, ost, elgkjøtt",
             "timestamp": 1584745778739,
-            "tips": "8000"
+            "tips": "8000",
+            "tlf": "22225555"
         }
     ]
 }

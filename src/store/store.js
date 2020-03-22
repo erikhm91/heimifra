@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import examplePosts from "../data/exampleposts.json";
 import examplePosts2 from "../data/exampleposts2.json";
+import exampletasks from "../data/exampletasks.json";
 
 Vue.use(Vuex);
 
@@ -10,7 +11,8 @@ export const store = new Vuex.Store({
     state: {
         postArray: examplePosts2.posts,
         activeView: 'message-container',
-        myPosts: examplePosts.posts
+        myPosts: examplePosts.posts,
+        myTasks: exampletasks.tasks
         
     },
 
@@ -23,12 +25,16 @@ export const store = new Vuex.Store({
         },
         SET_ACTIVE_VIEW(state, activeView) {
             state.activeView = activeView;
+        },
+        ADD_OWN_TASK(state, postObj) {
+            state.myTasks.push(postObj);
         }
     },
 
     getters: {
         postArray : state => state.postArray,
         activeView : state => state.activeView,
-        myPosts : state => state.myPosts
+        myPosts : state => state.myPosts,
+        myTasks : state => state.myTasks
     }
 })
