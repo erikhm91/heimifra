@@ -47,11 +47,13 @@
                                  'uid': 'mallemus' }"></other-bio>
           </b-modal>
 
-
-
         </div>
         <button class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
-        <button class="btn btn-outline-warning btn-sm">Endre</button>
+        <button v-if="post.hjelp ==false" v-b-modal="'changePost'+post.id" class="btn btn-outline-warning btn-sm">Endre</button>
+
+          <b-modal :id="'changePost'+post.id" :title="'Endre handleliste'" hide-footer centered>
+            <post-change :postProp="post"></post-change>
+          </b-modal>
       </div>
     </div>
   </div>
@@ -60,9 +62,10 @@
 <script>
 import ProfileIcon from "@/components/icons/ProfileIcon.vue";
 import OtherBio from "@/components/bio/OtherBio.vue";
+import PostChange from "@/components/posts/PostChange.vue";
 export default {
   props: {
-    post: {
+    postProp: {
       type: Object,
       required: false
       // post: {
@@ -75,12 +78,18 @@ export default {
   },
   data() {
     return {
-      header: "post."
-    };
+      post: {...this.postProp}
+   }
+  },
+  methods: {
+    // deepClone(postObj) {
+    //   return JSON.parse(JSON.stringify(postObj));
+    // }
   },
   components: {
     ProfileIcon,
-    OtherBio
+    OtherBio,
+    PostChange
   }
 };
 </script>

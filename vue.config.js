@@ -7,10 +7,10 @@ module.exports = {
   //     patterns: [path.resolve(__dirname, "@/styles/app.scss")]
   //   }
   // },
-  //enable debugging in Chrome:
-  // configureWebpack: {
-  //   devtool: 'source-map'
-  // },
+  // enable debugging in Chrome:
+  configureWebpack: {
+    devtool: 'source-map'
+  }
   // rules: {
   //   "vue/no-unused-vars": "off"
   // }

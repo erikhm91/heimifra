@@ -6,22 +6,24 @@
     </div>-->
     <div class="row mt-3">
       <div class="col-md-3 col-1 mt-4">
-        <div class="text-center">
-          <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
-          <b-modal :id="'modal'" :title="'Opprett ny handeliste'" ok-title="" cancel-title="" centered>
-            <post-creator></post-creator>
-          </b-modal>
-        <!-- @click="$store.commit('SET_ACTIVE_VIEW', 'post-creator')" -->
-        </div>
+     
       </div>
 
       <div class="col-md-6 col-10">
+           <div class="text-center">
+          <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
+          <b-modal :id="'modal'" :title="'Opprett ny handeliste'" ok-title="" cancel-title="" centered>
+            <post-creator>           
+              </post-creator>
+          </b-modal>
+        <!-- @click="$store.commit('SET_ACTIVE_VIEW', 'post-creator')" -->
+        </div>
         <b-card-group deck>
           <own-post
             class="col-12 mt-3 button"
             v-for="(post, i) in postArray"
             v-bind:key="i"
-            :post="post"
+            :postProp="post"
             :ownPost="true"
           ></own-post>
         </b-card-group>
@@ -38,8 +40,22 @@ import PostCreator from '@/components/PostCreator.vue'
 export default {
   data() {
     return {
-      postArray: this.$store.getters.myPosts.reverse()
+      
     };
+  },
+  computed: {
+    postArray(){
+      return this.$store.getters.myPosts
+    }
+  },
+  created() {
+    this.$store.subscribe((mutation, state) => {    
+      if (mutation.type === 'ADD_OWN_POST') {
+          //console.log
+          console.log(state);
+          this.$forceUpdate()
+        }
+      });
   },
   components: {
     ownPost: OwnPost,

@@ -23,17 +23,7 @@
       <div class="card-body">
         <p class="card-text">{{post.text}}</p>
         <div v-if="post.hjelp ==true" class="text-right">
-          <b-dropdown
-            id="dropdown-dropright"
-            dropright
-            text="Hjelpere har kontaktet deg!"
-            variant="primary"
-            class="m-2"
-          >
-            <b-dropdown-item href="#">Erik Houge Mathisen</b-dropdown-item>
-            <b-dropdown-item href="#">Amanda Grøvdal Midtun</b-dropdown-item>
-            <b-dropdown-item href="#">Malene Grøvdal Midtun</b-dropdown-item>
-          </b-dropdown>
+            
         </div>
          <button class="btn btn-outline-danger mr-2 btn-sm">Fjern oppdrag</button>
       </div>

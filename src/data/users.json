@@ -29,6 +29,14 @@
             "name": "Malene Grøvdal Midtun",
             "timestamp": 1584739910030,
             "pic": "https://mve.no/stavanger/media/catalog/product/cache/4/image/920x880/9df78eab33525d08d6e5fb8d27136e95/b/a/banan_2.jpg"
+        },
+        {
+            "uid": "gunsve",
+            "email": "gunsve@gmail.com",
+            "name": "Gunnar Sverresø",
+            "timestamp": 1584739649039,
+            "pic": "http://4.bp.blogspot.com/-4GcOwHCRVfI/VcOz7_CjcdI/AAAAAAAAB0I/IOadq2eidAY/s1600/Erik%2Bog%2Bamanda.JPG",
+            "rate": 4
         }
     ]
 }
