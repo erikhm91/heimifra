@@ -2,8 +2,8 @@
   <div>
 
     <div>
-  <b-navbar class="fixed-top" toggleable="lg" type="dark" variant="info">
-    <b-navbar-brand @click="navigateToComponent('message-container')" href="#">HomeStore</b-navbar-brand>
+  <b-navbar class="fixed-top outline basetext" toggleable="lg" type="light" variant="info">
+    <b-navbar-brand @click="navigateToComponent('message-container')" href="#" class="p-n2"><hi-logo width="30px"></hi-logo></b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -38,16 +38,27 @@
   </div>
 </template>
 <script>
+import HiLogo from '@/components/icons/Logo.vue'
 export default {
   methods: {
     navigateToComponent(component) {
       // this.$emit("component", component);
       this.$store.commit('SET_ACTIVE_VIEW', component);
     }
+  },
+  components: {
+    HiLogo
   }
 
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "../styles/variables.scss";
+.outline {
+  border: solid 0.1rem $primary;
+}
+.basetext {
+color: $basetext;
+}
 </style>

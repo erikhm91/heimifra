@@ -1,23 +1,23 @@
 <template>
   <div>
 
-    <div class="card w-100">
-        <div class="card-header pb-0">
+    <div class="card w-100 bg-warning">
+        <div class="card-header pb-0 outline">
         <div class="row">
             <span class="col-1">
             <profile-icon></profile-icon>
           </span>
           <h5 class="card-title col-6 text-left">{{post.name}}</h5>
-          <h5 class="card-title col-5 text-right">Tips: {{post.tips}}</h5>
+          <h5 class="card-title col-5 text-right textcolor">Tips: {{post.tips}}</h5>
         </div>
       </div>
       <div class="card-body">       
         <p class="card-text">{{post.text}}</p>
         <div v-if="post.taken===true" class="text-right">
-          <a href="#" class="btn btn-secondary disabled">Jeg får hjelp</a>
+          <a href="#" class="btn btn-primary disabled">Jeg får hjelp</a>
         </div>
         <div v-else class="text-right">
-          <a href="#" class="btn btn-primary" v-b-modal="'modal'+post.id">La meg hjelpe!</a>
+          <a href="#" class="btn btn-outline-primary" v-b-modal="'modal'+post.id">La meg hjelpe!</a>
         </div>
 
           <!-- <b-button v-b-modal.modal-1>Launch demo modal</b-button> -->
@@ -73,5 +73,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "../../styles/variables.scss";
+.outline {
+  border: solid 0.1rem $primary;
+}
+
+.textcolor {
+  color: $secondary;
+}
+
 </style>

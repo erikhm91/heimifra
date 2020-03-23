@@ -40,20 +40,23 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import "./styles/variables.scss";
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
-  color: #2c3e50;
+  color: $basetext;
 }
 body {
-  background-image: url("~@/assets/bobil2.jpg");
+  /* background-image: url("~@/assets/bobil2.jpg"); */
   background-color: #cccccc;
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
+  
 
   /* adjust for fixed navbar */
   padding-top: 70px;
