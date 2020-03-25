@@ -1,40 +1,37 @@
 {
-    "chats": [
+    "chatrooms": [
         {
-            "contact1": "gunsve",
-            "contact2": "erikhm10",
+            "room": "erikhm10_gunsve",
             "messages": [
                 {
+                    "sender_id": "erikhm10",
+                    "text": "halla, jeg fikser det",
+                    "timestamp": 1529644667834
+                },
+                {
                     "sender_id": "gunsve",
-                    "sender_name": "Gunnar Sverresø",
-                    "text": "heihei Gunnar her!",
-                    "timestamp": 1584739649038
+                    "text": "takk, min adresse er Nurnes vei 27",
+                    "timestamp": 1529644669000
                 },
                 {
                     "sender_id": "erikhm10",
-                    "sender_name": "Erik",
-                    "text": "pølse :( Denne meldingen er kjempelang, så ikkke blie sint på meg..:!:!!!!",
-                    "timestamp": 1584739656000
-                },
-                {
-                    "sender_id": "gunsve",
-                    "sender_name": "Gunnar Sverresø",
-                    "text": "Du må skjerpe deg, Erik",
-                    "timestamp": 1584739649038
-                },
-                {
-                    "sender_id": "gunsve",
-                    "sender_name": "Gunnar Sverresø",
-                    "text": "Blir helt sliten av å høre på deg",
-                    "timestamp": 1584739649038
-                },
-                {
-                    "sender_id": "erikhm10",
-                    "sender_name": "Erik",
-                    "text": "ok, unnskyld",
-                    "timestamp": 1584739656000
+                    "text": "flott, er der om et par timer",
+                    "timestamp": 1529649669000
                 }
             ]
+        },
+        {
+            "room": "catlover29_gunsve",
+            "messages": []
         }
-    ]
+    ],
+
+    "userChatrooms": {
+        "erikhm10": {
+            "erikhm10_gunvar": true
+        },
+        "gunvar": {
+            "erikhm10_gunvar": true
+        }
+    }
 }

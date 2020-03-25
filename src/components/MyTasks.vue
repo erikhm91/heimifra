@@ -1,32 +1,23 @@
 <template>
 <div>
-<!-- 
-    <div class="text-center">
-    <h1>Her vises dine egne lister</h1>
-    </div> -->
+      
 
-
-    <div class="row mt-3">
-      <!-- <div class="col-md-3 col-1"></div> -->
-
-      <div class="col-md-6 col-6">
-        <div class="container">
-        <b-card-group deck >
-          <div v-for="(post, i) in postArray" v-bind:key="i" @click="showChat(post)">
-            <own-task class="col-12 mt-3 clickable"  :post="post"></own-task>
-          </div>
-        </b-card-group>
-      </div>
-      </div>
-
-      <!-- <div class="col-md-3 col-1"></div> -->
-      <div v-if="activeChat" class="col-6 border-left">
-        <div class="container">
-          <chat-window  :chatPartner="chatPartner"></chat-window>
-
+         <!-- <router-view :to="{ name: 'chat'}"></router-view> -->
+        <div v-if="activeChatroom">
+          <chat-window :chatroom="activeChatroom"></chat-window>
         </div>
-      </div>
-    </div>
+
+        
+  
+        <div v-else>
+          <div v-for="(post, i) in postArray" v-bind:key="i" @click="showChat(post)">
+            <own-task class="mt-3 clickable"  :post="post"></own-task>
+          </div>
+       </div>
+      <!-- </div>
+      </div>-->
+
+  
 
     </div>
 </template>
@@ -35,12 +26,6 @@
 import OwnTask from "@/components/posts/OwnTask.vue";
 import ChatWindow from "@/components/message/ChatWindow.vue";
 export default {
-  data() {
-    return {
-      activeChat: false,
-      chatPartner: null
-    };
-  },
   components: {
     OwnTask,
     ChatWindow
@@ -48,14 +33,19 @@ export default {
   computed: {
     postArray() {
       return this.$store.getters.myTasks
+    },
+    activeChatroom() {
+      console.log(this.$store.getters.activeChatroom)
+      return this.$store.getters.activeChatroom
     }
   },
   methods: {
     showChat(post){
-      //use post
-      console.log("post: "+post.uid)
-      this.chatPartner = post.uid;
-      this.activeChat = true;
+      //set active chatroom
+      let chatroom = '' + post.uid + '_' + this.$store.getters.activeUser.uid
+      console.log("chatroom: " + chatroom);
+      this.$store.commit("SET_ACTIVE_CHAT", chatroom);
+
     }
   }
 };

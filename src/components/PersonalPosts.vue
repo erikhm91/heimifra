@@ -12,7 +12,7 @@
       <div class="col-md-6 col-10">
            <div class="text-center">
           <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
-          <b-modal :id="'modal'" :title="'Opprett ny handeliste'" ok-title="" cancel-title="" centered>
+          <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
             <post-creator>           
               </post-creator>
           </b-modal>
@@ -38,11 +38,7 @@
 import OwnPost from "@/components/posts/OwnPost.vue";
 import PostCreator from '@/components/PostCreator.vue'
 export default {
-  data() {
-    return {
-      
-    };
-  },
+  
   computed: {
     postArray(){
       return this.$store.getters.myPosts

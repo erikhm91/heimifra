@@ -7,8 +7,8 @@
             <span class="col-1">
             <profile-icon></profile-icon>
           </span>
-          <h5 class="card-title col-6 text-left">{{post.name}}</h5>
-          <h5 class="card-title col-5 text-right textcolor">Tips: {{post.tips}}</h5>
+          <h5 class="card-title col-md-10 col-9 text-left">{{post.name}}</h5>
+          <h5 class="card-title text-right textcolor">{{post.tips}},-</h5>
         </div>
       </div>
       <div class="card-body">       
@@ -20,11 +20,10 @@
           <a href="#" class="btn btn-outline-primary" v-b-modal="'modal'+post.id">La meg hjelpe!</a>
         </div>
 
-          <!-- <b-button v-b-modal.modal-1>Launch demo modal</b-button> -->
 
-         <b-modal @ok="addToOwnTasks(post)" :id="'modal'+post.id" :title="'Hjelp '+post.name+'!'" ok-title="Send" cancel-title="Avbryt" centered>
-            <post-reply :post="post"></post-reply>
-          </b-modal>
+          <!-- Modal handled inside post-reply -->
+          <post-reply :post="post"></post-reply>
+        
         
       </div>
     </div>
@@ -56,19 +55,9 @@ export default {
     //   default: false
     // }
   },
-  data() {
-    return {
-
-    };
-  },
   components: {
     postReply: PostReply,
     profileIcon: ProfileIcon
-  },
-  methods: {
-    addToOwnTasks(post) {
-      this.$store.commit("ADD_OWN_TASK", post);
-    }
   }
 };
 </script>
@@ -82,5 +71,12 @@ export default {
 .textcolor {
   color: $secondary;
 }
+
+// .tips {
+//   position: absolute;
+//   left: 68%;
+//   top: 8%;
+//   z-index: 10;
+// }
 
 </style>

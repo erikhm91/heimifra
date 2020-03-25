@@ -1,18 +1,14 @@
 <template>
   <div class="row">
-    <div class="col-md-3 col-1">
-       
+    <div class="col-md-2 col-0"></div>
 
-    </div>
+    <div class="col-md-8 col-12">
+      <button v-b-modal="'modal'" class="btn btn-primary" >+ Opprett ny handleliste</button>
 
-    <div class="col-md-6 col-10">
-      
-        <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
-          <b-modal :id="'modal'" :title="'Opprett ny handeliste'" ok-title="" cancel-title="" centered>
-            <post-creator></post-creator>
-          </b-modal>
-
-
+      <!-- modal inside post creator -->
+      <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
+        <post-creator></post-creator>
+      </b-modal>
 
       <b-card-group deck>
         <home-store-post
@@ -24,21 +20,23 @@
       </b-card-group>
     </div>
 
-    <div class="col-md-3 col-1"></div>
+    <div class="col-md-2 col-0"></div>
   </div>
 </template>
 
 <script>
 import Post from "./posts/Post.vue";
 import db from "@/firebase/init";
+import PostCreator from "./PostCreator.vue";
 export default {
   data() {
     return {
-      posts: this.$store.getters.postArray,
+      posts: this.$store.getters.postArray
     };
   },
   components: {
-    homeStorePost: Post
+    homeStorePost: Post,
+    PostCreator
   },
   created() {
     if (this.$store.getters.postArray.length < 1) {
@@ -48,7 +46,7 @@ export default {
     }
   },
   methods: {
-    initialGetPosts(){
+    initialGetPosts() {
       let collectionReference = db.collection("posts");
       var vm = this;
       collectionReference.get().then(function(querySnapshot) {

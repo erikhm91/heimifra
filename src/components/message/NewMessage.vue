@@ -1,43 +1,53 @@
 <template>
   <div>
-<!-- 
-      <div class="row">
-          <div class="col-10"> -->
-              <b-form inline>
-    <b-form-textarea
-          id="textarea"
-          placeholder="Skriv ditt svar her"
-          rows="1"
-          max-rows="1"
-    ></b-form-textarea>
-<b-button variant="primary">Save</b-button>
-</b-form>
-
-<!-- </div> -->
-    <!-- <div class="form-group"> -->
-      <!-- <label for="exampleFormControlTextarea1"></label> -->
-      <!-- <textarea class="form-control" id="exampleFormControlTextarea1" rows="2"></textarea> -->
-    <!-- </div> -->
-    <!-- <div class="col-2"></div>
-        <button class="btn btn-primary"></button>
-    
-    </div> -->
+    <div class="input-group mb-3">
+      <input
+        v-on:keyup.enter="addMessage"
+        type="text"
+        class="form-control"
+        placeholder="..."
+        aria-label="Melding"
+        aria-describedby="button-addon2"
+        v-model="newMessage"
+      />
+      <div class="input-group-append">
+        <button class="btn btn-secondary" type="button" id="button-addon2">Send</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "NewMessage",
-  props: ["name"],
+  // props: ["name"],
   data() {
     return {
       newMessage: null
     };
   },
+  computed: {
+    activeUser() {
+      return this.$store.getters.activeUser;
+    },
+    activeChatroom() {
+      return this.$store.getters.activeChatroom;
+    }
+  },
   methods: {
     addMessage() {
       if (this.newMessage) {
-        //
+        console.log(this.newMessage);
+        //fire new message.
+        let msg = {
+          sender_id: this.activeUser.uid,
+          text: this.newMessage,
+          timestamp: Date.now()
+        };
+        let payload = { 'roomid': this.activeChatroom.room, 'msg': msg };
+        this.$store.commit("ADD_CHATMESSAGE", payload);
+
+        this.newMessage = null;
       } else {
         //
       }

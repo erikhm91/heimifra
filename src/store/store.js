@@ -12,12 +12,16 @@ export const store = new Vuex.Store({
     strict:true,
     state: {
         postArray: examplePosts2.posts,
-        activeView: 'message-container',
+        // activeView: 'message-container',
         myPosts: examplePosts.posts,
         myTasks: exampletasks.tasks,
         users: users.users,
         chats: chats.chats,
-        activeUser: users.users[4]
+        activeUser: users.users[4],
+        chatrooms: chats.chatrooms,
+        userChatrooms: chats.userChatrooms,
+        activeChatid: null,
+        activeChatroom: null
     },
 
     mutations: {
@@ -37,25 +41,59 @@ export const store = new Vuex.Store({
               state.myPosts.splice(index, 1);
             }
         },
-        SET_ACTIVE_VIEW(state, activeView) {
-            state.activeView = activeView;
+        // SET_ACTIVE_VIEW(state, activeView) {
+        //     state.activeView = activeView;
+        // },
+        NULL_ACTIVE_CHAT(state) {
+            state.activeChat = null;
+            state.activeChatroom = null;
         },
+        SET_ACTIVE_CHAT(state, chatroomid) {
+            
+            let chat = state.chatrooms.find(obj => obj.room === chatroomid);
+            if (chat == null) {
+                //create new chat
+                chat = {
+                    "room": chatroomid,
+                    "messages": []
+                }
+                state.chatrooms.push(chat);
+            } 
+            state.activeChatid = chatroomid;
+            state.activeChatroom = chat;
+        },
+
         ADD_OWN_TASK(state, postObj) {
             state.myTasks.push(postObj);
         },
         ADD_USER(state, userObj) {
             state.users.push(userObj);
+        },
+        ADD_CHATMESSAGE(state, payload) {
+            //payload: {'roomid': roomid, 'msg': msgObj}
+            let chat = state.chatrooms.find(obj => obj.room === payload.roomid);
+            if (chat == null) {
+                //create new chat
+                chat = {
+                    "room": payload.roomid,
+                    "messages": []
+                }
+                this.chatrooms.push(chat);
+            }
+            chat.messages.push(payload.msg);
         }
+
     },
 
     getters: {
         postArray : state => state.postArray,
-        activeView : state => state.activeView,
+        // activeView : state => state.activeView,
         myPosts : state => state.myPosts,
         myTasks : state => state.myTasks,
         users: state => state.users,
         user: state => uid => state.users.find(obj => obj.uid == uid),
-        chat: state => (uid1, uid2) => state.chats.find(obj => obj.contact1 == uid1 && obj.contact2 == uid2),
-        activeUser: state => state.activeUser
+        chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
+        activeUser: state => state.activeUser,
+        activeChatroom: state => state.activeChatroom,
     }
 })
