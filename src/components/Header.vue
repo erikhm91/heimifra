@@ -15,11 +15,11 @@
        <!-- @click="navigateToComponent('my-page')" :class="{ active: $store.getters.activeView == 'my-page'}"  -->
 
        
-       
-        <b-nav-item :to="{name: 'myposts'}" href="#">Mine lister</b-nav-item>
-        <b-nav-item :to="{name: 'mytasks'}" href="#">Mine oppdrag</b-nav-item>
-        <b-nav-item :to="{name: 'myprofile'}" href="#">Min profil</b-nav-item>
-        
+        <b-nav-item :to="{name: 'home'}" href="#">Hjem</b-nav-item>
+        <b-nav-item v-if="$store.getters.activeUser" :to="{name: 'myposts'}" href="#">Mine lister</b-nav-item>
+        <b-nav-item v-if="$store.getters.activeUser" :to="{name: 'mytasks'}" href="#">Mine oppdrag</b-nav-item>
+        <b-nav-item v-if="$store.getters.activeUser" :to="{name: 'myprofile'}" href="#">Min profil</b-nav-item>
+        <b-nav-item v-else :to="{name: 'login'}" href="#">Logg inn</b-nav-item>
       </b-navbar-nav>
 
 
@@ -54,10 +54,10 @@
 import HiLogo from '@/components/icons/Logo.vue'
 export default {
   methods: {
-    navigateToComponent(component) {
-      // this.$emit("component", component);
-      this.$store.commit('SET_ACTIVE_VIEW', component);
-    }
+    // navigateToComponent(component) {
+    //   // this.$emit("component", component);
+    //   this.$store.commit('SET_ACTIVE_VIEW', component);
+    // }
   },
   components: {
     HiLogo

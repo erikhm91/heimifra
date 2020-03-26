@@ -1,10 +1,9 @@
 <template>
-  <div class="row">
-    <div class="col-md-2 col-0"></div>
-
-    <div class="col-md-8 col-12">
-      <button v-b-modal="'modal'" class="btn btn-primary" >+ Opprett ny handleliste</button>
-
+  <div class="row mt-2">
+    <div class="col-md-8 offset-md-2">
+      <div class="text-center">
+        <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
+      </div>
       <!-- modal inside post creator -->
       <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
         <post-creator></post-creator>
@@ -16,18 +15,20 @@
           v-for="(post, i) in posts"
           v-bind:key="i"
           :post="post"
-        ></home-store-post>
+        >
+          <!-- Modal handled inside post-reply -->
+          <post-reply :post="post"></post-reply>
+        </home-store-post>
       </b-card-group>
     </div>
-
-    <div class="col-md-2 col-0"></div>
   </div>
 </template>
 
 <script>
-import Post from "./posts/Post.vue";
+import Post from "@/components/posts/Post.vue";
 import db from "@/firebase/init";
-import PostCreator from "./PostCreator.vue";
+import PostCreator from "@/components/posts/PostCreator.vue";
+import PostReply from "@/components/posts/PostReply.vue";
 export default {
   data() {
     return {
@@ -36,7 +37,8 @@ export default {
   },
   components: {
     homeStorePost: Post,
-    PostCreator
+    PostCreator,
+    postReply: PostReply,
   },
   created() {
     if (this.$store.getters.postArray.length < 1) {

@@ -1,7 +1,7 @@
 {
     "chatrooms": [
         {
-            "room": "erikhm10_gunsve",
+            "room": "gunsve_erikhm10",
             "messages": [
                 {
                     "sender_id": "erikhm10",
@@ -28,10 +28,10 @@
 
     "userChatrooms": {
         "erikhm10": {
-            "erikhm10_gunvar": true
+            "gunsve_erikhm10": true
         },
-        "gunvar": {
-            "erikhm10_gunvar": true
+        "gunsve": {
+            "gunsve_erikhm10": true
         }
     }
 }

@@ -13,6 +13,7 @@ Vue.use(BootstrapVue);
 
 const router = new VueRouter({
   routes
+  // ,mode: 'history'  ->will remove hash from url. will need to configure server to enable history mode (no hash)
 });
 
 new Vue({

@@ -22,49 +22,65 @@
       </div>
       <div class="card-body">
         <p class="card-text">{{post.text}}</p>
-        <div v-if="post.hjelp ==true" class="text-right">
-          <b-dropdown
-            id="dropdown-dropright"
-            dropright
-            text="Hjelpere har kontaktet deg!"
-            variant="primary"
-            class="m-2"
-          >
-            <b-dropdown-item v-b-modal="'modal1'" href="#">Erik Houge Mathisen</b-dropdown-item>
-            <b-dropdown-item v-b-modal="'modal2'" href="#">Malene Grøvdal Midtun</b-dropdown-item>
-          </b-dropdown>
-         
-          <b-modal :id="'modal1'" :title="'Modal'" :ok-title="'Velg '+this.$store.getters.user('erikhm10').name.split(' ')[0]+'!'" cancel-title="Avbryt" centered>
-            <other-bio :post="{ 'name': this.$store.getters.user('erikhm10').name,
+
+        <slot></slot>
+        <!-- <div v-if="post.hjelp ==true" class="text-right">
+              <b-dropdown
+                id="dropdown-dropright"
+                dropright
+                text="Hjelpere har kontaktet deg!"
+                variant="primary"
+                class="m-2"
+              >
+                <b-dropdown-item v-b-modal="'modal1'" href="#">Erik Houge Mathisen</b-dropdown-item>
+                <b-dropdown-item v-b-modal="'modal2'" href="#">Malene Grøvdal Midtun</b-dropdown-item>
+              </b-dropdown>
+
+              <b-modal
+                :id="'modal1'"
+                :title="'Modal'"
+                :ok-title="'Velg '+this.$store.getters.user('erikhm10').name.split(' ')[0]+'!'"
+                cancel-title="Avbryt"
+                centered
+              >
+                <other-bio
+                  :post="{ 'name': this.$store.getters.user('erikhm10').name,
                                  'email': this.$store.getters.user('erikhm10').email,
                                  'tlf': this.$store.getters.user('erikhm10').tlf,
-                                 'uid': 'erikhm10' }"></other-bio>
-          </b-modal>
-          <b-modal :id="'modal2'" :title="'Modal'" :ok-title="'Velg '+this.$store.getters.user('mallemus').name.split(' ')[0]+'!'"  cancel-title="Avbryt" centered>
-                        <other-bio :post="{ 'name': this.$store.getters.user('mallemus').name,
+                                 'uid': 'erikhm10' }"
+                ></other-bio>
+              </b-modal>
+              <b-modal
+                :id="'modal2'"
+                :title="'Modal'"
+                :ok-title="'Velg '+this.$store.getters.user('mallemus').name.split(' ')[0]+'!'"
+                cancel-title="Avbryt"
+                centered
+              >
+                <other-bio
+                  :post="{ 'name': this.$store.getters.user('mallemus').name,
                                  'email': this.$store.getters.user('mallemus').email,
                                  'tlf': this.$store.getters.user('mallemus').tlf,
-                                 'uid': 'mallemus' }"></other-bio>
-          </b-modal>
+                                 'uid': 'mallemus' }"
+                ></other-bio>
+              </b-modal>
+        </div>-->
 
-        </div>
         <button @click="deletePost()" class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
-     
-     
-     <!-- POST CHANGE - NOT RELEVANT -->
-        <!-- <button v-if="post.hjelp ==false" v-b-modal="'changePost'+post.id" class="btn btn-outline-warning btn-sm">Endre</button>
+      </div>
+      <!-- POST CHANGE - NOT RELEVANT -->
+      <!-- <button v-if="post.hjelp ==false" v-b-modal="'changePost'+post.id" class="btn btn-outline-warning btn-sm">Endre</button>
 
           <b-modal :id="'changePost'+post.id" :title="'Endre handleliste'" hide-footer centered>
             <post-change :postProp="post"></post-change>
-          </b-modal> -->
-      </div>
+      </b-modal>-->
     </div>
   </div>
 </template>
 
 <script>
 import ProfileIcon from "@/components/icons/ProfileIcon.vue";
-import OtherBio from "@/components/bio/OtherBio.vue";
+
 // import PostChange from "@/components/posts/PostChange.vue";
 export default {
   props: {
@@ -81,17 +97,17 @@ export default {
   },
   data() {
     return {
-      post: {...this.postProp}
-   }
+      post: { ...this.postProp }
+    };
   },
-    methods: {
+  methods: {
     deletePost() {
-      console.log("handle delete post")
+      console.log("handle delete post");
     }
   },
   components: {
-    ProfileIcon,
-    OtherBio
+    ProfileIcon
+
     // PostChange
   }
 };

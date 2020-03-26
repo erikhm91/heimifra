@@ -11,7 +11,7 @@
         v-model="newMessage"
       />
       <div class="input-group-append">
-        <button class="btn btn-secondary" type="button" id="button-addon2">Send</button>
+        <button @click="addMessage" class="btn btn-secondary" type="button" id="button-addon2">Send</button>
       </div>
     </div>
   </div>
@@ -36,6 +36,13 @@ export default {
   },
   methods: {
     addMessage() {
+      if (this.$store.getters.dbActive) {
+          //to implement firestore posting
+      } else {
+        this.testAddMessage();
+      }
+    },
+    testAddMessage() {
       if (this.newMessage) {
         console.log(this.newMessage);
         //fire new message.
@@ -44,7 +51,7 @@ export default {
           text: this.newMessage,
           timestamp: Date.now()
         };
-        let payload = { 'roomid': this.activeChatroom.room, 'msg': msg };
+        let payload = { roomid: this.activeChatroom.room, msg: msg };
         this.$store.commit("ADD_CHATMESSAGE", payload);
 
         this.newMessage = null;

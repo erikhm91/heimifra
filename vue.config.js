@@ -9,8 +9,15 @@ module.exports = {
   // },
   // enable debugging in Chrome:
   configureWebpack: {
-    devtool: 'source-map'
-  }
+    devtool: 'source-map',
+    resolve: {
+      alias: {
+        styles: path.resolve(__dirname, './src/styles/') // relative to the location of the webpack config file!
+      }
+    }
+  },
+  
+ 
   // rules: {
   //   "vue/no-unused-vars": "off"
   // }

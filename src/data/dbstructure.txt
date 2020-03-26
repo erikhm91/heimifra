@@ -1,0 +1,68 @@
+
+"chatrooms": [
+        {
+            "room": "gunsve_erikhm10",
+            "messages": [
+                {
+                    "sender_id": "erikhm10",
+                    "text": "halla, jeg fikser det",
+                    "timestamp": 1529644667834
+                }
+        }]
+
+
+No need for - can get the userchatroom just by joining the uids of the chatpartners
+"userChatrooms": {
+        "erikhm10": {
+            "gunsve_erikhm10": true
+        },
+        "gunsve": {
+            "gunsve_erikhm10": true
+        }
+    }
+
+
+"posts":[{   
+            "id": "0",
+            "uid": "gunsve",
+            "email": "erikhougem@gmail.com",
+            "tips": 20,
+            "textprev": "1pk wienerpølser, bananer..."
+            "text": [
+                "1 pk wienerpølser",
+                "bananer",
+                "ost",
+                "tannkrem"
+                ]
+            "1pk wienerpølser, bananer, 1kg poteter",
+            "status": "fin" "del" "free" "picked"
+        }]
+
+"myposts":[{   
+            "id": "0",
+            "uid": "gunsve",
+            "email": "erikhougem@gmail.com",
+            "tips": 20,
+            "textprev": "1pk wienerpølser, bananer..."
+            "list": [
+                "1 pk wienerpølser",
+                "bananer",
+                "ost",
+                "tannkrem"
+                ]
+            "text": "1pk wienerpølser, bananer, 1kg poteter",
+            "help": {
+                "erikhm10": true,              
+                "catlover29": true
+            }
+            "pickuid": "erikhm10",
+            "status": "fin" "del" "free" "picked"
+        }]
+
+
+]
+
+
+ availhelp statuses:
+            "wait" - waiting for reply from postowner.
+

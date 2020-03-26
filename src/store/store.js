@@ -11,13 +11,15 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
     strict:true,
     state: {
+        dbActive: false,
         postArray: examplePosts2.posts,
         // activeView: 'message-container',
         myPosts: examplePosts.posts,
         myTasks: exampletasks.tasks,
         users: users.users,
         chats: chats.chats,
-        activeUser: users.users[4],
+        activeUser: null,
+        // users.users[4],
         chatrooms: chats.chatrooms,
         userChatrooms: chats.userChatrooms,
         activeChatid: null,
@@ -72,15 +74,20 @@ export const store = new Vuex.Store({
         ADD_CHATMESSAGE(state, payload) {
             //payload: {'roomid': roomid, 'msg': msgObj}
             let chat = state.chatrooms.find(obj => obj.room === payload.roomid);
+            console.log(chat)
             if (chat == null) {
                 //create new chat
                 chat = {
                     "room": payload.roomid,
                     "messages": []
                 }
-                this.chatrooms.push(chat);
+                state.chatrooms.push(chat);
             }
+            console.log(chat)
             chat.messages.push(payload.msg);
+        },
+        SET_ACTIVE_USER(state, alias) {
+            state.activeUser = alias;
         }
 
     },
@@ -95,5 +102,6 @@ export const store = new Vuex.Store({
         chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
         activeUser: state => state.activeUser,
         activeChatroom: state => state.activeChatroom,
+        dbActive: state => state.dbActive
     }
 })

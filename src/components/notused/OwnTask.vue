@@ -14,7 +14,7 @@
         <p class="card-text">{{post.text}}</p>
         <div v-if="post.hjelp ==true" class="text-right"></div>
         <button class="btn btn-outline-danger mr-2 btn-sm">Fjern oppdrag</button>
-        <button class="btn btn-primary">Åpne chat</button>
+        <slot></slot>
       </div>
     </div>
   </div>
