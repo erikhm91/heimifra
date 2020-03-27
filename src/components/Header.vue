@@ -16,10 +16,11 @@
 
        
         <b-nav-item :to="{name: 'home'}" href="#">Hjem</b-nav-item>
-        <b-nav-item v-if="$store.getters.activeUser" :to="{name: 'myposts'}" href="#">Mine lister</b-nav-item>
-        <b-nav-item v-if="$store.getters.activeUser" :to="{name: 'mytasks'}" href="#">Mine oppdrag</b-nav-item>
-        <b-nav-item v-if="$store.getters.activeUser" :to="{name: 'myprofile'}" href="#">Min profil</b-nav-item>
-        <b-nav-item v-else :to="{name: 'login'}" href="#">Logg inn</b-nav-item>
+        <b-nav-item v-if="$store.getters.loggedIn" :to="{name: 'myposts'}" href="#">Mine lister</b-nav-item>
+        <b-nav-item v-if="$store.getters.loggedIn" :to="{name: 'mytasks'}" href="#">Mine oppdrag</b-nav-item>
+        <b-nav-item v-if="$store.getters.loggedIn" :to="{name: 'myprofile'}" href="#">Min profil</b-nav-item>
+        <b-nav-item v-if="!$store.getters.loggedIn" :to="{name: 'login'}" href="#">Logg inn</b-nav-item>
+        <!-- <b-nav-item @click="logout">Logg ut</b-nav-item> -->
       </b-navbar-nav>
 
 
@@ -52,11 +53,15 @@
 </template>
 <script>
 import HiLogo from '@/components/icons/Logo.vue'
+// import firebase from 'firebase'
 export default {
   methods: {
-    // navigateToComponent(component) {
-    //   // this.$emit("component", component);
-    //   this.$store.commit('SET_ACTIVE_VIEW', component);
+    // logout() {
+    //   firebase.auth().signOut().then(() => {
+    //     this.$router.push({
+    //       name: 'login'
+    //     })
+    //   })
     // }
   },
   components: {

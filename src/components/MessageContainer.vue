@@ -25,15 +25,16 @@
 </template>
 
 <script>
+// import firebase from 'firebase'
 import Post from "@/components/posts/Post.vue";
 import db from "@/firebase/init";
 import PostCreator from "@/components/posts/PostCreator.vue";
 import PostReply from "@/components/posts/PostReply.vue";
 export default {
-  data() {
-    return {
-      posts: this.$store.getters.postArray
-    };
+  computed:{ 
+      posts() {
+        return this.$store.getters.postArray
+      }
   },
   components: {
     homeStorePost: Post,
@@ -47,6 +48,14 @@ export default {
       //check for delta, new messages arrived?
     }
   },
+  mounted() {
+    // console.log("MC mounted triggered")
+    // if (this.$store.getters.dbActive) {
+    //     console.log("MC db active")
+    //      console.log(firebase.auth().currentUser)
+    // }
+  },
+
   methods: {
     initialGetPosts() {
       let collectionReference = db.collection("posts");

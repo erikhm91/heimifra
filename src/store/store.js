@@ -11,7 +11,8 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
     strict:true,
     state: {
-        dbActive: false,
+        loggedIn: false,
+        dbActive: true,
         postArray: examplePosts2.posts,
         // activeView: 'message-container',
         myPosts: examplePosts.posts,
@@ -23,7 +24,9 @@ export const store = new Vuex.Store({
         chatrooms: chats.chatrooms,
         userChatrooms: chats.userChatrooms,
         activeChatid: null,
-        activeChatroom: null
+        activeChatroom: null,
+        activeUid: null,
+        activeEmail: null
     },
 
     mutations: {
@@ -86,8 +89,17 @@ export const store = new Vuex.Store({
             console.log(chat)
             chat.messages.push(payload.msg);
         },
-        SET_ACTIVE_USER(state, alias) {
-            state.activeUser = alias;
+        SET_USER(state, user) {
+            state.activeUser = user;
+        },
+        SET_ACTIVE_UID(state, uid){
+            state.activeUid = uid;
+        },
+        SET_ACTIVE_EMAIL(state, email){
+            state.activeEmail = email
+        },
+        SET_LOGGED_IN(state, bool){
+            state.loggedIn = bool
         }
 
     },
@@ -102,6 +114,7 @@ export const store = new Vuex.Store({
         chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
         activeUser: state => state.activeUser,
         activeChatroom: state => state.activeChatroom,
-        dbActive: state => state.dbActive
+        dbActive: state => state.dbActive,
+        loggedIn: state => state.loggedIn
     }
 })

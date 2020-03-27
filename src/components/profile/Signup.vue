@@ -88,7 +88,7 @@ export default {
           }).then(() => {
 
               //set activeUser in store (will see if this is bad practice)
-              this.$store.commit('SET_ACTIVE_USER', this.alias)
+              this.$store.commit('SET_USER', this.alias)
               this.$router.push({ name: 'home' });
           })
           .catch(err => {
