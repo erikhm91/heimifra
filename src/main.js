@@ -22,36 +22,36 @@ firebase.auth().onAuthStateChanged((user) => {
     store.commit('SET_USER', {
       uid: user.uid,
       email: user.email
-    }
-      )
-    store.commit('SET_LOGGED_IN', true)
+    })
+
+    store.dispatch('initState')
 
   } else {
     store.commit('SET_USER', null)
     store.commit('SET_LOGGED_IN', false)
   }
 
-    console.log("app:", app)
-    //init app if not created
-    if (!app) {
-      console.log("new instance of app generated")
+  console.log("app:", app)
+  //init app if not created
+  if (!app) {
+    console.log("new instance of app generated")
 
-      Vue.use(VueRouter);
-      Vue.use(BootstrapVue);
+    Vue.use(VueRouter);
+    Vue.use(BootstrapVue);
 
-      const router = new VueRouter({
-        routes
-        // ,mode: 'history'  ->will remove hash from url. will need to configure server to enable history mode (no hash)
-      });
+    const router = new VueRouter({
+      routes
+      // ,mode: 'history'  ->will remove hash from url. will need to configure server to enable history mode (no hash)
+    });
 
 
-      app = new Vue({
-        router,
-        store,
-        render: h => h(App),
-      }).$mount('#app')
+    app = new Vue({
+      router,
+      store,
+      render: h => h(App),
+    }).$mount('#app')
 
-    }
-  
+  }
+
 })
 

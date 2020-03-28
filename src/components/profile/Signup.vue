@@ -79,9 +79,10 @@ export default {
             console.log(cred.user);
 
             //should verify the allowed name params on the user
-            let ref = db.collection("users").doc(this.alias);
+            let ref = db.collection("users").doc(cred.user.uid);
             ref.set({
               alias: this.alias,
+              email: this.email,
               uid: cred.user.uid
             });
             //registration successful, redirect user.

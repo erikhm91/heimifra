@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <!-- <div class="col-md-2 col-0"></div> -->
-      <div class="col-md-8 col-12">
+      <div class="col-12">
         <!-- <div class="card w-100"> -->
         <!-- <div class="card-body"> -->
         <div class>

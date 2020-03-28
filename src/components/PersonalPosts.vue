@@ -7,7 +7,7 @@
     <div class="row mt-2">
       <!-- <div class="col-md-2 mt-4"></div> -->
 
-      <div class="col-md-8 offset-md-2 col-12">
+      <div class="mt-2 col-md-8 offset-md-2 col-12">
         <div class="text-center">
           <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
           <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
@@ -15,15 +15,14 @@
           </b-modal>
           <!-- @click="$store.commit('SET_ACTIVE_VIEW', 'post-creator')" -->
         </div>
-
         <b-card-group deck>
-        <home-store-post
-          class="col-12 mt-3 button"
-          v-for="(post, i) in postArray"
-          v-bind:key="i"
-          :post="post"
-        >
-      <div v-if="post.hjelp ==true" class="text-right">
+          <home-store-post
+            class="mt-3 col-12"
+            v-for="(post, i) in postArray"
+            v-bind:key="i"
+            :post="post"
+          >
+            <div v-if="post.hjelp ==true" class="text-right">
               <b-dropdown
                 id="dropdown-dropright"
                 dropright
@@ -50,12 +49,8 @@
               </b-modal>
             </div>
             <button @click="deletePost()" class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
-        </home-store-post>
-      </b-card-group>
-
-
-
-
+          </home-store-post>
+        </b-card-group>
 
         <!-- <b-card-group deck>
           
@@ -65,8 +60,8 @@
             v-bind:key="i"
             :postProp="post"
             :ownPost="true"
-          > -->
-            <!-- <div v-if="post.hjelp ==true" class="text-right">
+        >-->
+        <!-- <div v-if="post.hjelp ==true" class="text-right">
               <b-dropdown
                 id="dropdown-dropright"
                 dropright
@@ -91,11 +86,10 @@
                                  'uid': 'erikhm10' }"
                 ></other-bio>
               </b-modal>
-            </div> -->
-          <!-- </own-post>
-        </b-card-group> -->
+        </div>-->
+        <!-- </own-post>
+        </b-card-group>-->
       </div>
-
     </div>
   </div>
 </template>

@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-
     <hs-header></hs-header>
 
     <div class="container">
@@ -18,26 +17,37 @@ import Header from "./components/Header.vue";
 // import PersonalPosts from "./components/PersonalPosts.vue";
 // import MyPage from "./components/MyPage.vue";
 // import AboutUs from "./components/AboutUs.vue";
+import {mapActions} from 'vuex'
 export default {
   name: "App",
-  // data() {
-  //   // return {
-  //   //   activeView: this.$store.getters.activeView
-  //   // };
-  // },
   components: {
-    hsHeader: Header,
-    // messageContainer: MessageContainer,
-    // postCreator: PostCreator,
-    // personalPosts: PersonalPosts,
-    // myPage: MyPage,
-    // aboutUs: AboutUs
+    hsHeader: Header
+  },
+  created() {
+    // this.initState();
   },
   methods: {
-    // setActiveView(component) {
-    //   this.activeView = component;
-    // }
-  }
+    ...mapActions([
+      'initState'
+    ])
+
+
+      // var docRef = db.collection("cities").doc("SF");
+      // docRef
+      //   .get()
+      //   .then(function(doc) {
+      //     if (doc.exists) {
+      //       console.log("Document data:", doc.data());
+      //     } else {
+      //       // doc.data() will be undefined in this case
+      //       console.log("No such document!");
+      //     }
+      //   })
+      //   .catch(function(error) {
+      //     console.log("Error getting document:", error);
+      //   });
+    }
+  
 };
 </script>
 
@@ -57,7 +67,6 @@ body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
-  
 
   /* adjust for fixed navbar */
   padding-top: 70px;

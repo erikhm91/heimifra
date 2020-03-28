@@ -47,6 +47,9 @@ export default {
     } else {
       //check for delta, new messages arrived?
     }
+    
+
+
   },
   mounted() {
     // console.log("MC mounted triggered")

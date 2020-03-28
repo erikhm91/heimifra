@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import chatroomMixin from '@/components/mixins/chatroomMixin.js'
+import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import OtherBio from "@/components/profile/OtherBio.vue";
 export default {
   props: ["post"],
@@ -45,16 +45,23 @@ export default {
   },
   computed: {
     activeUser() {
-      return this.$store.getters.activeUser
+      return this.$store.getters.activeUser;
     }
   },
   methods: {
     addToOwnTasks(post) {
-      console.log("activeuser: "+ this.$store.getters.activeUser)
+      console.log("activeuser: " + this.$store.getters.activeUser);
       this.addMessage();
       this.$store.commit("ADD_OWN_TASK", post);
     },
     addMessage() {
+      if (this.$store.getters.dbActive) {
+        //to implement firestore posting
+      } else {
+        this.testAddmessage();
+      }
+    },
+    testAddMessage() {
       if (this.newMessage) {
         console.log(this.newMessage);
         //fire new message.
@@ -66,7 +73,7 @@ export default {
         let chatroomid = this.getChatid(this.activeUser.uid, this.post.uid);
 
         let payload = { roomid: chatroomid, msg: msg };
-        console.log("chatroomid: " + chatroomid)
+        console.log("chatroomid: " + chatroomid);
         this.$store.commit("ADD_CHATMESSAGE", payload);
 
         this.newMessage = null;

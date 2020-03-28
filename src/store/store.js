@@ -1,22 +1,25 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import examplePosts from "../data/ownposts.json";
+// import examplePosts from "../data/ownposts.json";
 import examplePosts2 from "../data/exampleposts.json";
-import exampletasks from "../data/exampletasks.json";
+// import exampletasks from "../data/exampletasks.json";
 import users from "../data/users.json";
 import chats from "../data/chats.json";
+import db from "@/firebase/init";
 
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
-    strict:true,
+    strict: true,
     state: {
         loggedIn: false,
         dbActive: true,
         postArray: examplePosts2.posts,
         // activeView: 'message-container',
-        myPosts: examplePosts.posts,
-        myTasks: exampletasks.tasks,
+        // myPosts: examplePosts.posts,
+        // myTasks: exampletasks.tasks,
+        myPosts: null,
+        myTasks: null,
         users: users.users,
         chats: chats.chats,
         activeUser: null,
@@ -25,8 +28,21 @@ export const store = new Vuex.Store({
         userChatrooms: chats.userChatrooms,
         activeChatid: null,
         activeChatroom: null,
-        activeUid: null,
-        activeEmail: null
+        error: null
+    },
+
+    getters: {
+        postArray: state => state.postArray,
+        // activeView : state => state.activeView,
+        myPosts: state => state.myPosts,
+        myTasks: state => state.myTasks,
+        users: state => state.users,
+        user: state => uid => state.users.find(obj => obj.uid == uid),
+        chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
+        activeUser: state => state.activeUser,
+        activeChatroom: state => state.activeChatroom,
+        dbActive: state => state.dbActive,
+        loggedIn: state => state.loggedIn
     },
 
     mutations: {
@@ -40,10 +56,10 @@ export const store = new Vuex.Store({
         DELETE_POST(state, postId) {
 
             let index = state.myPosts.findIndex(obj => obj.id === postId);
-            
-            console.log("index: "+ index);
+
+            console.log("index: " + index);
             if (index > -1) {
-              state.myPosts.splice(index, 1);
+                state.myPosts.splice(index, 1);
             }
         },
         // SET_ACTIVE_VIEW(state, activeView) {
@@ -54,7 +70,7 @@ export const store = new Vuex.Store({
             state.activeChatroom = null;
         },
         SET_ACTIVE_CHAT(state, chatroomid) {
-            
+
             let chat = state.chatrooms.find(obj => obj.room === chatroomid);
             if (chat == null) {
                 //create new chat
@@ -63,7 +79,7 @@ export const store = new Vuex.Store({
                     "messages": []
                 }
                 state.chatrooms.push(chat);
-            } 
+            }
             state.activeChatid = chatroomid;
             state.activeChatroom = chat;
         },
@@ -92,29 +108,129 @@ export const store = new Vuex.Store({
         SET_USER(state, user) {
             state.activeUser = user;
         },
-        SET_ACTIVE_UID(state, uid){
-            state.activeUid = uid;
-        },
-        SET_ACTIVE_EMAIL(state, email){
-            state.activeEmail = email
-        },
-        SET_LOGGED_IN(state, bool){
+        SET_LOGGED_IN(state, bool) {
             state.loggedIn = bool
+        },
+        SET_MYTASKS(state, postArray) {
+            state.myTasks = postArray
+        },
+        SET_MYPOSTS(state, postArray) {
+            state.myPosts = postArray
+        },
+        SET_ERROR(state, error) {
+            state.error = error
         }
 
     },
 
-    getters: {
-        postArray : state => state.postArray,
-        // activeView : state => state.activeView,
-        myPosts : state => state.myPosts,
-        myTasks : state => state.myTasks,
-        users: state => state.users,
-        user: state => uid => state.users.find(obj => obj.uid == uid),
-        chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
-        activeUser: state => state.activeUser,
-        activeChatroom: state => state.activeChatroom,
-        dbActive: state => state.dbActive,
-        loggedIn: state => state.loggedIn
+    actions: {
+        initState (context) {
+            // console.log("payload",payload)
+            // context.commit('SET_USER', {
+            //     uid: payload.uid,
+            //     email: payload.email
+            // })
+            store.commit('SET_LOGGED_IN', true)
+            // if (!context.getters.activeUser) {
+            //     //get a snapshot of posts in your area? no realtime.
+            //     return
+            // }
+
+            context.dispatch('fetchAndSetMyPosts')
+            context.dispatch('fetchAndSetMyTasks')
+
+            //     if (!context.getters.activeUser) {
+            //         //get a snapshot of posts in your area? no realtime.
+            //         return
+            //     }
+
+            //     let myPosts = []
+            //     //get myPosts
+            //     db.collection("posts").where("uid", "==", context.getters.activeUser.uid)
+            //         .get()
+            //         .then(function (querySnapshot, postArray) {
+            //             postArray = myPosts;
+            //             querySnapshot.forEach(function (doc) {
+            //                 // doc.data() is never undefined for query doc snapshots
+            //                 // console.log(doc.id, " => ", doc.data());
+            //                 postArray.push(doc.data())
+
+            //             });
+            //             // console.log("myPosts:", myPosts);
+            //             context.commit('SET_MYPOSTS', myPosts);
+
+            //         })
+            //         .catch(function (error) {
+            //             console.log("Error getting documents: ", error);
+            //         })
+
+            //     let myTasks = []
+            //     let queryParam = 'help.' + context.getters.activeUser.uid;
+            //     console.log(queryParam)
+            //     db.collection("posts").where(queryParam, "array-contains", "true")
+            //         .get()
+            //         .then(function (querySnapshot, postArray) {
+            //             postArray = myTasks;
+            //             querySnapshot.forEach(function (doc) {
+            //                 // doc.data() is never undefined for query doc snapshots
+            //                 // console.log(doc.id, " => ", doc.data());
+            //                 postArray.push(doc.data())
+
+            //             });
+            //             // console.log("myTasks:", myTasks);
+            //             context.commit('SET_MYTASKS', myTasks);
+
+            //         })
+            //         .catch(function (error) {
+            //             console.log("Error getting documents: ", error);
+            //         })
+            // }
+
+        },
+        fetchAndSetMyPosts: context => {
+            let myPosts = []
+            //get myPosts
+            db.collection("posts").where("uid", "==", context.getters.activeUser.uid)
+                .get()
+                .then(function (querySnapshot, postArray) {
+                    postArray = myPosts;
+                    querySnapshot.forEach(function (doc) {
+                        // doc.data() is never undefined for query doc snapshots
+                        // console.log(doc.id, " => ", doc.data());
+                        postArray.push(doc.data())
+
+                    });
+                    // console.log("myPosts:", myPosts);
+                    context.commit('SET_MYPOSTS', myPosts);
+
+                })
+                .catch(function (error) {
+                    console.log("Error getting documents: ", error);
+                })
+
+        },
+        fetchAndSetMyTasks: context => {
+            let myTasks = []
+            let queryParam = 'help.' + context.getters.activeUser.uid;
+            console.log(queryParam)
+            db.collection("posts").where(queryParam, "array-contains", "true")
+                .get()
+                .then(function (querySnapshot, postArray) {
+                    postArray = myTasks;
+                    querySnapshot.forEach(function (doc) {
+                        // doc.data() is never undefined for query doc snapshots
+                        // console.log(doc.id, " => ", doc.data());
+                        postArray.push(doc.data())
+
+                    });
+                    // console.log("myTasks:", myTasks);
+                    context.commit('SET_MYTASKS', myTasks);
+
+                })
+                .catch(function (error) {
+                    console.log("Error getting documents: ", error);
+                })
+        }
+
     }
 })
