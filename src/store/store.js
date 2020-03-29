@@ -7,7 +7,6 @@ import users from "../data/users.json";
 import chats from "../data/chats.json";
 import db from "@/firebase/init";
 import firebase from 'firebase'
-import { chatroomMixin } from "@/components/mixins/chatroomMixin.js";
 
 Vue.use(Vuex);
 
@@ -140,9 +139,11 @@ export const store = new Vuex.Store({
             context.dispatch('fetchMyPosts')
             context.dispatch('fetchMyTasks')
         },
-        initiateChatListener (context, chatPartner) {
+        initiateChatListener (context, payload) {
             //payload: { chatpartner : "uid"}
-            let chatroom = chatroomMixin.getChatroomId(context.getters.activeUser.uid, chatPartner)
+            // console.log("chatroommixin: ", chatroomMixin);
+            let chatroom = payload.chatroomid
+            // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
             let ref = db.collection('chats').doc(chatroom).collection('messages')
 
             ref.onSnapshot(snapshot => {

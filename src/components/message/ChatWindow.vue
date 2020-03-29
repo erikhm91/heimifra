@@ -33,7 +33,9 @@
 <script>
 import NewMessage from "@/components/message/NewMessage.vue";
 import { mapActions } from 'vuex'
+import chatroomMixin  from "@/components/mixins/chatroomMixin.js";
 export default {
+  mixins: [chatroomMixin],
   props: ['chatroom', 'chatPartner'],
   // data() {
   //   return {
@@ -41,7 +43,12 @@ export default {
   //   }
   // },
   created() {
-    this.initiateChatListener(this.chatPartner)
+     let chatroomid = this.getChatroomId(this.activeUser.uid, this.post.uid);
+     let payload = {
+       chatroomid : chatroomid,
+       chatPartner : this.chatPartner
+     }
+    this.initiateChatListener(payload)
   },
 
   mounted () {
