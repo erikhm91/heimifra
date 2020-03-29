@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 // import examplePosts from "../data/ownposts.json";
-import examplePosts2 from "../data/exampleposts.json";
+// import examplePosts2 from "../data/exampleposts.json";
 // import exampletasks from "../data/exampletasks.json";
 import users from "../data/users.json";
 import chats from "../data/chats.json";
@@ -14,12 +14,12 @@ export const store = new Vuex.Store({
     state: {
         loggedIn: false,
         dbActive: true,
-        postArray: examplePosts2.posts,
+        postArray: [],
         // activeView: 'message-container',
         // myPosts: examplePosts.posts,
         // myTasks: exampletasks.tasks,
-        myPosts: null,
-        myTasks: null,
+        myPosts: [],
+        myTasks: [],
         users: users.users,
         chats: chats.chats,
         activeUser: null,
@@ -35,6 +35,12 @@ export const store = new Vuex.Store({
         postArray: state => state.postArray,
         // activeView : state => state.activeView,
         myPosts: state => state.myPosts,
+        // myActivePosts: state => {
+        //     // let activePosts = state.myPosts.filter(function (post) {
+        //     //     return post.status != 'del';
+        //     // });
+        //     // return activePosts
+        // },
         myTasks: state => state.myTasks,
         users: state => state.users,
         user: state => uid => state.users.find(obj => obj.uid == uid),
@@ -53,14 +59,13 @@ export const store = new Vuex.Store({
             state.myPosts.push(postObj);
         },
 
-        DELETE_POST(state, postId) {
 
+        SET_DELETE_FLAG(state, postId) {
+            console.log("myPosts", state.myPosts, postId)
             let index = state.myPosts.findIndex(obj => obj.id === postId);
+            state.myPosts[index].status = 'del'
+            console.log("myPosts after update: ", state.myPosts)
 
-            console.log("index: " + index);
-            if (index > -1) {
-                state.myPosts.splice(index, 1);
-            }
         },
         // SET_ACTIVE_VIEW(state, activeView) {
         //     state.activeView = activeView;
@@ -111,11 +116,16 @@ export const store = new Vuex.Store({
         SET_LOGGED_IN(state, bool) {
             state.loggedIn = bool
         },
+        SET_POSTS(state, postArray) {
+            state.postArray = postArray
+        },
         SET_MYTASKS(state, postArray) {
             state.myTasks = postArray
         },
         SET_MYPOSTS(state, postArray) {
+            console.log("mutating myposts: ", postArray)
             state.myPosts = postArray
+            console.log("state.myPosts: ",state.myPosts)
         },
         SET_ERROR(state, error) {
             state.error = error
@@ -124,83 +134,57 @@ export const store = new Vuex.Store({
     },
 
     actions: {
-        initState (context) {
-            // console.log("payload",payload)
-            // context.commit('SET_USER', {
-            //     uid: payload.uid,
-            //     email: payload.email
-            // })
+        initState(context) {
             store.commit('SET_LOGGED_IN', true)
-            // if (!context.getters.activeUser) {
-            //     //get a snapshot of posts in your area? no realtime.
-            //     return
-            // }
+            // console.log(context)
+            context.dispatch('fetchPosts')
+            context.dispatch('fetchMyPosts')
+            context.dispatch('fetchMyTasks')
+        },
+        fetchPosts: context => {
+            let posts = []
+            //get myPosts
+            db.collection("posts")
+                .get()
+                .then(function (querySnapshot, postArray) {
+                    postArray = posts;
+                    querySnapshot.forEach(function (doc) {
+                        // doc.data() is never undefined for query doc snapshots
+                        // console.log(doc.id, " => ", doc.data());
+                        let post = doc.data()
+                        post.id = doc.id
+                        postArray.push(post)
 
-            context.dispatch('fetchAndSetMyPosts')
-            context.dispatch('fetchAndSetMyTasks')
+                    });
+                    // console.log("myPosts:", myPosts);
+                    context.commit('SET_POSTS', posts);
 
-            //     if (!context.getters.activeUser) {
-            //         //get a snapshot of posts in your area? no realtime.
-            //         return
-            //     }
-
-            //     let myPosts = []
-            //     //get myPosts
-            //     db.collection("posts").where("uid", "==", context.getters.activeUser.uid)
-            //         .get()
-            //         .then(function (querySnapshot, postArray) {
-            //             postArray = myPosts;
-            //             querySnapshot.forEach(function (doc) {
-            //                 // doc.data() is never undefined for query doc snapshots
-            //                 // console.log(doc.id, " => ", doc.data());
-            //                 postArray.push(doc.data())
-
-            //             });
-            //             // console.log("myPosts:", myPosts);
-            //             context.commit('SET_MYPOSTS', myPosts);
-
-            //         })
-            //         .catch(function (error) {
-            //             console.log("Error getting documents: ", error);
-            //         })
-
-            //     let myTasks = []
-            //     let queryParam = 'help.' + context.getters.activeUser.uid;
-            //     console.log(queryParam)
-            //     db.collection("posts").where(queryParam, "array-contains", "true")
-            //         .get()
-            //         .then(function (querySnapshot, postArray) {
-            //             postArray = myTasks;
-            //             querySnapshot.forEach(function (doc) {
-            //                 // doc.data() is never undefined for query doc snapshots
-            //                 // console.log(doc.id, " => ", doc.data());
-            //                 postArray.push(doc.data())
-
-            //             });
-            //             // console.log("myTasks:", myTasks);
-            //             context.commit('SET_MYTASKS', myTasks);
-
-            //         })
-            //         .catch(function (error) {
-            //             console.log("Error getting documents: ", error);
-            //         })
-            // }
+                })
+                .catch(function (error) {
+                    console.log("Error getting documents: ", error);
+                })
 
         },
-        fetchAndSetMyPosts: context => {
+
+        fetchMyPosts: context => {
             let myPosts = []
             //get myPosts
-            db.collection("posts").where("uid", "==", context.getters.activeUser.uid)
+            db.collection("posts")
+                .where("uid", "==", context.getters.activeUser.uid)
+                // .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = myPosts;
                     querySnapshot.forEach(function (doc) {
                         // doc.data() is never undefined for query doc snapshots
-                        // console.log(doc.id, " => ", doc.data());
-                        postArray.push(doc.data())
+                        console.log(doc.id, " => ", doc.data());
+                        // postArray.push(doc.data())
+                        let post = doc.data()
+                        post.id = doc.id
+                        postArray.push(post)
 
                     });
-                    // console.log("myPosts:", myPosts);
+                    console.log("setting myPosts:", myPosts);
                     context.commit('SET_MYPOSTS', myPosts);
 
                 })
@@ -209,7 +193,7 @@ export const store = new Vuex.Store({
                 })
 
         },
-        fetchAndSetMyTasks: context => {
+        fetchMyTasks: context => {
             let myTasks = []
             let queryParam = 'help.' + context.getters.activeUser.uid;
             console.log(queryParam)
@@ -220,7 +204,10 @@ export const store = new Vuex.Store({
                     querySnapshot.forEach(function (doc) {
                         // doc.data() is never undefined for query doc snapshots
                         // console.log(doc.id, " => ", doc.data());
-                        postArray.push(doc.data())
+                        // postArray.push(doc.data())
+                        let post = doc.data()
+                        post.id = doc.id
+                        postArray.push(post)
 
                     });
                     // console.log("myTasks:", myTasks);
@@ -230,6 +217,10 @@ export const store = new Vuex.Store({
                 .catch(function (error) {
                     console.log("Error getting documents: ", error);
                 })
+        },
+        deletePost({ commit }, postid) {
+            console.log("deleteflagPost: " + postid)
+            commit('SET_DELETE_FLAG', postid)
         }
 
     }

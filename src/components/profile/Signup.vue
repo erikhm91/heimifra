@@ -63,7 +63,6 @@ export default {
   methods: {
     signup() {
       if (
-        this.$store.getters.dbActive &&
         this.email &&
         this.password &&
         this.alias

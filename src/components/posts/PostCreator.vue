@@ -6,7 +6,7 @@
         <!-- <div class="card w-100"> -->
         <!-- <div class="card-body"> -->
         <div class>
-          <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+          <b-form @submit="onSubmit">
             <b-form-group id="input-group-1" label="Bestilling:">
               <b-form-textarea
                 id="textarea"
@@ -72,6 +72,7 @@
 
 <script>
 import db from "@/firebase/init";
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -87,22 +88,35 @@ export default {
       dbDisabled: true
     };
   },
+  computed: {
+    ...mapGetters([
+      'activeUser'
+    ])
+  },
   methods: {
     onSubmit() {
-      if (this.post && this.dbDisabled === false) {
+      
+      if (this.post) {
         db.collection("posts")
           .add({
             email: this.post.email,
             name: this.post.name,
             tips: this.post.tips,
             text: this.post.text,
+            uid: this.activeUser.uid,
             timestamp: Date.now()
+          }).then(() => {
+            console.log("update successful i guess?")
+            //successful update of database, add to own posts
+             this.$store.commit('ADD_OWN_POST', this.post)
           })
           .catch(err => {
             console.log(err);
+            this.$state.commit("SET_ERROR", err)
           });
       }
-      this.$store.commit("ADD_OWN_POST", this.post);
+      this.$emit('complete')
+      // this.$store.commit("ADD_OWN_POST", this.post);
     },
     onReset(evt) {
       evt.preventDefault();

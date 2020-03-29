@@ -6,7 +6,7 @@
       </div>
       <!-- modal inside post creator -->
       <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
-        <post-creator></post-creator>
+        <post-creator @complete="closeModal('modal')"></post-creator>
       </b-modal>
 
       <b-card-group deck>
@@ -42,20 +42,17 @@ export default {
     postReply: PostReply,
   },
   created() {
-    if (this.$store.getters.postArray.length < 1) {
-      this.initialGetPosts();
-    } else {
-      //check for delta, new messages arrived?
-    }
-    
-
-
+    // if (this.$store.getters.postArray.length < 1) {
+    //   this.initialGetPosts();
+    // } else {
+    //   //check for delta, new messages arrived?
+    // }
   },
   mounted() {
     // console.log("MC mounted triggered")
     // if (this.$store.getters.dbActive) {
     //     console.log("MC db active")
-    //      console.log(firebase.auth().currentUser)
+         console.log(this.$store.getters.postArray)
     // }
   },
 
@@ -80,6 +77,9 @@ export default {
           });
         }
       });
+    },
+    closeModal(id){
+      this.$bvModal.hide(id)
     }
   }
 };

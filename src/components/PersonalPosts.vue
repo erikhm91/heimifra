@@ -11,7 +11,7 @@
         <div class="text-center">
           <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
           <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
-            <post-creator></post-creator>
+            <post-creator @complete="closeModal('modal')"></post-creator>
           </b-modal>
           <!-- @click="$store.commit('SET_ACTIVE_VIEW', 'post-creator')" -->
         </div>
@@ -48,7 +48,8 @@
                 ></other-bio>
               </b-modal>
             </div>
-            <button @click="deletePost()" class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
+            <post-delete :postid="post.id"></post-delete>
+
           </home-store-post>
         </b-card-group>
 
@@ -99,11 +100,16 @@
 import Post from "@/components/posts/Post.vue";
 import PostCreator from "@/components/posts/PostCreator.vue";
 import OtherBio from "@/components/profile/OtherBio.vue";
+import PostDelete from "@/components/posts/PostDelete.vue";
+
 export default {
   computed: {
     postArray() {
-      return this.$store.getters.myPosts;
+      return this.$store.getters.myPosts
     }
+  },
+  mounted() {
+    console.log('mounted personalposts!')
   },
   created() {
     this.$store.subscribe((mutation, state) => {
@@ -118,7 +124,11 @@ export default {
     // ownPost: OwnPost,
     postCreator: PostCreator,
     OtherBio,
-    HomeStorePost: Post
+    HomeStorePost: Post,
+    PostDelete
+  },
+  methods: {
+  
   }
 };
 </script>
