@@ -14,7 +14,7 @@
         v-for="(post, i) in postArray" v-bind:key="i"
          class="mt-3 col-12" :post="post">
           <div v-if="post.hjelp ==true" class="text-right"></div>
-          <button class="btn btn-outline-danger mr-2 btn-sm">Fjern oppdrag</button>
+          <button @click="removeTask(post)" class="btn btn-outline-danger mr-2 btn-sm">Fjern oppdrag</button>
           <button class="btn btn-primary" @click="showChat(post)">Åpne chat</button>
         </home-store-post>
         <!-- <own-task class="mt-3"  :post="post"><button class="btn btn-primary" @click="showChat(post)">Åpne chat</button></own-task> -->
@@ -30,6 +30,7 @@
 import Post from "@/components/posts/Post.vue";
 import ChatWindow from "@/components/message/ChatWindow.vue";
 import chatroomMixin from '@/components/mixins/chatroomMixin.js'
+import { mapActions } from 'vuex'
 export default {
     mixins: [chatroomMixin],
   components: {
@@ -50,6 +51,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+        'removeTask'
+    ]),
     showChat(post) {
       //set active chatroom
       // let chatroom = "" + post.uid + "_" + this.$store.getters.activeUser.uid;

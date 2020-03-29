@@ -174,14 +174,14 @@ export const store = new Vuex.Store({
                     postArray = myPosts;
                     querySnapshot.forEach(function (doc) {
                         // doc.data() is never undefined for query doc snapshots
-                        console.log(doc.id, " => ", doc.data());
+                        // console.log(doc.id, " => ", doc.data());
                         // postArray.push(doc.data())
                         let post = doc.data()
                         post.id = doc.id
                         postArray.push(post)
 
                     });
-                    console.log("setting myPosts:", myPosts);
+                    // console.log("setting myPosts:", myPosts);
                     context.commit('SET_MYPOSTS', myPosts);
 
                 })
@@ -201,14 +201,14 @@ export const store = new Vuex.Store({
                     postArray = myTasks;
                     querySnapshot.forEach(function (doc) {
                         // doc.data() is never undefined for query doc snapshots
-                        console.log(doc.id, " => ", doc.data());
+                        // console.log(doc.id, " => ", doc.data());
                         // postArray.push(doc.data())
                         let post = doc.data()
                         post.id = doc.id
                         postArray.push(post)
 
                     });
-                    console.log("myTasks:", myTasks);
+                    // console.log("myTasks:", myTasks);
                     context.commit('SET_MYTASKS', myTasks);
 
                 })
@@ -217,7 +217,7 @@ export const store = new Vuex.Store({
                 })
         },
         deletePost({ commit }, postid) {
-            console.log("deleteflagPost: " + postid)
+            // console.log("deleteflagPost: " + postid)
             commit('SET_DELETE_FLAG', postid)
             //update database with delete flag
             db.collection("posts").doc(postid).update({
@@ -233,17 +233,34 @@ export const store = new Vuex.Store({
         assignTask (context, payload) {
             let assignedUid = context.getters.activeUser.uid
             let assignedEmail = context.getters.activeUser.email
-            console.log("assigning task to activeuser id ", assignedUid)
-            console.log("assign task payload", payload)
+            // console.log("assigning task to activeuser id ", assignedUid)
+            // console.log("assign task payload", payload)
             db.collection("posts").doc(payload.id).update({
                 ['offer.' + assignedUid]: ['true', assignedEmail]
             })
             .then(function() {
-                console.log("assigned task to user ", payload.uid);
+                console.log("assigned task ", payload.uid, " to user ", assignedUid);
             })
             .catch(function(error) {
                 console.error("Error writing document: ", error);
             });
+        },
+        removeTask (context, payload) {
+            let assignedUid = context.getters.activeUser.uid
+            // console.log("assigning task to activeuser id ", assignedUid)
+            // console.log("assign task payload", payload)
+            db.collection("posts").doc(payload.id).update({
+                ['offer.' + assignedUid] : ['false']
+            })
+            .then(function() {
+                console.log("removed task ", payload.uid, " for user ", assignedUid);
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+        },
+        sendMessage(context, payload) {
+
         }
 
     }
