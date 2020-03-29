@@ -35,12 +35,9 @@ export const store = new Vuex.Store({
         postArray: state => state.postArray,
         // activeView : state => state.activeView,
         myPosts: state => state.myPosts,
-        // myActivePosts: state => {
-        //     // let activePosts = state.myPosts.filter(function (post) {
-        //     //     return post.status != 'del';
-        //     // });
-        //     // return activePosts
-        // },
+        myActivePosts: state => {
+            return state.myPosts.filter( post => post.status == "free")
+        },
         myTasks: state => state.myTasks,
         users: state => state.users,
         user: state => uid => state.users.find(obj => obj.uid == uid),
@@ -144,7 +141,7 @@ export const store = new Vuex.Store({
         fetchPosts: context => {
             let posts = []
             //get myPosts
-            db.collection("posts")
+            db.collection("posts").where("status", "in", ["free", "picked"]) //not see 'del' or finished status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = posts;
@@ -171,7 +168,7 @@ export const store = new Vuex.Store({
             //get myPosts
             db.collection("posts")
                 .where("uid", "==", context.getters.activeUser.uid)
-                // .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
+                .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = myPosts;
@@ -195,22 +192,23 @@ export const store = new Vuex.Store({
         },
         fetchMyTasks: context => {
             let myTasks = []
-            let queryParam = 'help.' + context.getters.activeUser.uid;
-            console.log(queryParam)
+            let queryParam = 'offer.' + context.getters.activeUser.uid;
+            console.log("queryparam mytasks",queryParam)
             db.collection("posts").where(queryParam, "array-contains", "true")
+            .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = myTasks;
                     querySnapshot.forEach(function (doc) {
                         // doc.data() is never undefined for query doc snapshots
-                        // console.log(doc.id, " => ", doc.data());
+                        console.log(doc.id, " => ", doc.data());
                         // postArray.push(doc.data())
                         let post = doc.data()
                         post.id = doc.id
                         postArray.push(post)
 
                     });
-                    // console.log("myTasks:", myTasks);
+                    console.log("myTasks:", myTasks);
                     context.commit('SET_MYTASKS', myTasks);
 
                 })
@@ -221,6 +219,31 @@ export const store = new Vuex.Store({
         deletePost({ commit }, postid) {
             console.log("deleteflagPost: " + postid)
             commit('SET_DELETE_FLAG', postid)
+            //update database with delete flag
+            db.collection("posts").doc(postid).update({
+                status: "del"
+            })
+            .then(function() {
+                console.log("Deleteflag for doc ", postid ," successfully set");
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
+        },
+        assignTask (context, payload) {
+            let assignedUid = context.getters.activeUser.uid
+            let assignedEmail = context.getters.activeUser.email
+            console.log("assigning task to activeuser id ", assignedUid)
+            console.log("assign task payload", payload)
+            db.collection("posts").doc(payload.id).update({
+                ['offer.' + assignedUid]: ['true', assignedEmail]
+            })
+            .then(function() {
+                console.log("assigned task to user ", payload.uid);
+            })
+            .catch(function(error) {
+                console.error("Error writing document: ", error);
+            });
         }
 
     }

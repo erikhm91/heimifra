@@ -32,6 +32,7 @@
 <script>
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import OtherBio from "@/components/profile/OtherBio.vue";
+import { mapActions } from 'vuex'
 export default {
   props: ["post"],
   mixins: [chatroomMixin],
@@ -49,37 +50,41 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['assignTask']),
+
     addToOwnTasks(post) {
-      console.log("activeuser: " + this.$store.getters.activeUser);
-      this.addMessage();
-      this.$store.commit("ADD_OWN_TASK", post);
+      this.assignTask(post)
+
+      // this.$store.commit("ADD_OWN_TASK", post);
+    
+    
+    
+    
+    
     },
     addMessage() {
-      if (this.$store.getters.dbActive) {
-        //to implement firestore posting
-      } else {
-        this.testAddmessage();
-      }
+       let chatroomid = this.getChatid(this.activeUser.uid, this.post.uid);
+
     },
     testAddMessage() {
-      if (this.newMessage) {
-        console.log(this.newMessage);
-        //fire new message.
-        let msg = {
-          sender_id: this.activeUser.uid,
-          text: this.newMessage,
-          timestamp: Date.now()
-        };
-        let chatroomid = this.getChatid(this.activeUser.uid, this.post.uid);
+      // if (this.newMessage) {
+      //   console.log(this.newMessage);
+      //   //fire new message.
+      //   let msg = {
+      //     sender_id: this.activeUser.uid,
+      //     text: this.newMessage,
+      //     timestamp: Date.now()
+      //   };
+      //   let chatroomid = this.getChatid(this.activeUser.uid, this.post.uid);
 
-        let payload = { roomid: chatroomid, msg: msg };
-        console.log("chatroomid: " + chatroomid);
-        this.$store.commit("ADD_CHATMESSAGE", payload);
+      //   let payload = { roomid: chatroomid, msg: msg };
+      //   console.log("chatroomid: " + chatroomid);
+      //   this.$store.commit("ADD_CHATMESSAGE", payload);
 
-        this.newMessage = null;
-      } else {
-        //
-      }
+      //   this.newMessage = null;
+      // } else {
+      //   //
+      // }
     },
     getChatid(user1, user2) {
       //call mixin
