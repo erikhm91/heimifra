@@ -50,46 +50,26 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['assignTask']),
+    ...mapActions(['assignTask', 'sendMessage']),
 
     addToOwnTasks(post) {
       this.assignTask(post)
-
-      // this.$store.commit("ADD_OWN_TASK", post);
-    
-    
-    
-    
-    
+      this.addMessage()
+      this.$store.commit("ADD_OWN_TASK", post);  
     },
     addMessage() {
-       let chatroomid = this.getChatid(this.activeUser.uid, this.post.uid);
+       //Get chatroomid from mixin
+       let chatroomid = this.getChatroomId(this.activeUser.uid, this.post.uid);
+      //  console.log("chatid: ",chatroomid)
+       //call action
+       let payload = {
+         chatroom : chatroomid,
+         from: this.activeUser.uid,
+         to: this.post.uid,
+         text: this.newMessage
+       }
+       this.sendMessage(payload)
 
-    },
-    testAddMessage() {
-      // if (this.newMessage) {
-      //   console.log(this.newMessage);
-      //   //fire new message.
-      //   let msg = {
-      //     sender_id: this.activeUser.uid,
-      //     text: this.newMessage,
-      //     timestamp: Date.now()
-      //   };
-      //   let chatroomid = this.getChatid(this.activeUser.uid, this.post.uid);
-
-      //   let payload = { roomid: chatroomid, msg: msg };
-      //   console.log("chatroomid: " + chatroomid);
-      //   this.$store.commit("ADD_CHATMESSAGE", payload);
-
-      //   this.newMessage = null;
-      // } else {
-      //   //
-      // }
-    },
-    getChatid(user1, user2) {
-      //call mixin
-      let chatroomId = this.getChatroomId(user1, user2);
-      return chatroomId;
     }
   }
 };

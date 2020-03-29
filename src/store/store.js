@@ -6,6 +6,8 @@ import Vuex from 'vuex';
 import users from "../data/users.json";
 import chats from "../data/chats.json";
 import db from "@/firebase/init";
+import firebase from 'firebase'
+import { chatroomMixin } from "@/components/mixins/chatroomMixin.js";
 
 Vue.use(Vuex);
 
@@ -36,7 +38,7 @@ export const store = new Vuex.Store({
         // activeView : state => state.activeView,
         myPosts: state => state.myPosts,
         myActivePosts: state => {
-            return state.myPosts.filter( post => post.status == "free")
+            return state.myPosts.filter(post => post.status == "free")
         },
         myTasks: state => state.myTasks,
         users: state => state.users,
@@ -122,7 +124,7 @@ export const store = new Vuex.Store({
         SET_MYPOSTS(state, postArray) {
             console.log("mutating myposts: ", postArray)
             state.myPosts = postArray
-            console.log("state.myPosts: ",state.myPosts)
+            console.log("state.myPosts: ", state.myPosts)
         },
         SET_ERROR(state, error) {
             state.error = error
@@ -137,6 +139,31 @@ export const store = new Vuex.Store({
             context.dispatch('fetchPosts')
             context.dispatch('fetchMyPosts')
             context.dispatch('fetchMyTasks')
+        },
+        initiateChatListener (context, chatPartner) {
+            //payload: { chatpartner : "uid"}
+            let chatroom = chatroomMixin.getChatroomId(context.getters.activeUser.uid, chatPartner)
+            let ref = db.collection('chats').doc(chatroom).collection('messages')
+
+            ref.onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    if(change.type == 'added'){
+                        let doc = change.doc
+                        let newMessage = {
+                            uid : doc.uid,
+                            text : doc.text,
+                            time : doc.time
+                        }
+                        let messagePayload = {
+                            room : chatroom,
+                            msg : newMessage
+                        }
+                        console.log("messagepayload: ", messagePayload)
+                        context.commit("ADD_CHATMESSAGE". messagePayload)
+                    }
+                })
+            })
+
         },
         fetchPosts: context => {
             let posts = []
@@ -193,9 +220,9 @@ export const store = new Vuex.Store({
         fetchMyTasks: context => {
             let myTasks = []
             let queryParam = 'offer.' + context.getters.activeUser.uid;
-            console.log("queryparam mytasks",queryParam)
+            console.log("queryparam mytasks", queryParam)
             db.collection("posts").where(queryParam, "array-contains", "true")
-            .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
+                .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = myTasks;
@@ -223,14 +250,14 @@ export const store = new Vuex.Store({
             db.collection("posts").doc(postid).update({
                 status: "del"
             })
-            .then(function() {
-                console.log("Deleteflag for doc ", postid ," successfully set");
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
+                .then(function () {
+                    console.log("Deleteflag for doc ", postid, " successfully set");
+                })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
         },
-        assignTask (context, payload) {
+        assignTask(context, payload) {
             let assignedUid = context.getters.activeUser.uid
             let assignedEmail = context.getters.activeUser.email
             // console.log("assigning task to activeuser id ", assignedUid)
@@ -238,29 +265,43 @@ export const store = new Vuex.Store({
             db.collection("posts").doc(payload.id).update({
                 ['offer.' + assignedUid]: ['true', assignedEmail]
             })
-            .then(function() {
-                console.log("assigned task ", payload.uid, " to user ", assignedUid);
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
+                .then(function () {
+                    console.log("assigned task ", payload.uid, " to user ", assignedUid);
+                })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
         },
-        removeTask (context, payload) {
+        removeTask(context, payload) {
             let assignedUid = context.getters.activeUser.uid
             // console.log("assigning task to activeuser id ", assignedUid)
             // console.log("assign task payload", payload)
             db.collection("posts").doc(payload.id).update({
-                ['offer.' + assignedUid] : ['false']
+                ['offer.' + assignedUid]: ['false']
             })
-            .then(function() {
-                console.log("removed task ", payload.uid, " for user ", assignedUid);
-            })
-            .catch(function(error) {
-                console.error("Error writing document: ", error);
-            });
+                .then(function () {
+                    console.log("removed task ", payload.uid, " for user ", assignedUid);
+                })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
         },
         sendMessage(context, payload) {
-
+            // Add a new message
+            console.log("payload: ",payload)
+            let chatroomid = payload.chatroom
+            // chatroomMixin.getChatroomid(payload.from, payload.to);
+            db.collection("chats").doc(chatroomid).collection("messages").add({
+                uid : payload.from,
+                time: Date.now(),
+                text : payload.text
+            })
+                .then(function () {
+                    console.log("Document successfully written!");
+                })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
         }
 
     }

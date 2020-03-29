@@ -7,15 +7,15 @@
 
       
 
-      <div v-for="(message, i) in chatroom.messages" v-bind:key="i">
-        <div class="row" :class="{ 'justify-content-end': isActiveUser(message.sender_id)}">
-          <div class="card mb-1 col-auto" :class="{ 'blue': !isActiveUser(message.sender_id) }">
+      <div v-for="(message, i) in chat" v-bind:key="i">
+        <div class="row" :class="{ 'justify-content-end': isActiveUser(message.uid)}">
+          <div class="card mb-1 col-auto" :class="{ 'blue': !isActiveUser(message.uid) }">
             <div class="card-body p-0 pt-1">
               <!-- <h5 class="card-title">Special title treatment</h5> -->
               <p class="card-text mb-1">{{message.text}}</p>
 
               <div class="mb-1 text-right">
-                <small class="text-muted">Sendt kl. {{displayTimestamp(message.timestamp)}}</small>
+                <small class="text-muted">Sendt kl. {{displayTimestamp(message.time)}}</small>
               </div>
             </div>
           </div>
@@ -32,13 +32,17 @@
 
 <script>
 import NewMessage from "@/components/message/NewMessage.vue";
+import { mapActions } from 'vuex'
 export default {
-  props: ['chatroom'],
+  props: ['chatroom', 'chatPartner'],
   // data() {
   //   return {
   //     chatId: this.$route.params.room
   //   }
   // },
+  created() {
+    this.initiateChatListener(this.chatPartner)
+  },
 
   mounted () {
     // document.addEventListener("backbutton", this.closeChat(), false);
@@ -56,6 +60,7 @@ export default {
     NewMessage
   },
   methods: {
+    ...mapActions(['initiateChatListener']),
     displayTimestamp(unix_timestamp) {
       // Create a new JavaScript Date object based on the timestamp
       // multiplied by 1000 so that the argument is in milliseconds, not seconds.

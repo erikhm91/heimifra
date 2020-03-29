@@ -2,8 +2,8 @@
   <div>
      <div class="row mt-2">
    
-    <div v-if="activeChatroom" class="col-md-8 offset-md-2">
-      <chat-window :chatroom="activeChatroom"></chat-window>
+    <div v-if="chatPartner" class="col-md-8 offset-md-2">
+      <chat-window :chatPartner="chatPartner"></chat-window>
     </div>
 
     <div v-else class="col-md-8 offset-md-2">
@@ -33,6 +33,11 @@ import chatroomMixin from '@/components/mixins/chatroomMixin.js'
 import { mapActions } from 'vuex'
 export default {
     mixins: [chatroomMixin],
+    data() {
+      return {
+        chatPartner: null
+      }
+    },
   components: {
     // OwnTask,
     ChatWindow,
@@ -60,6 +65,8 @@ export default {
       let chatroom = this.getChatroomId(post.uid, this.activeUser.uid)
       // console.log("chatroom: " + chatroom);
       this.$store.commit("SET_ACTIVE_CHAT", chatroom);
+      console.log("showchat triggered for ", post.uid)
+      this.chatPartner = post.uid;
     }
   }
 };
