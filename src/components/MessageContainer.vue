@@ -5,7 +5,7 @@
         <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
       </div>
       <!-- modal inside post creator -->
-      <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
+      <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
         <post-creator @complete="closeModal('modal')"></post-creator>
       </b-modal>
 

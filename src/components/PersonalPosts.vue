@@ -10,7 +10,7 @@
       <div class="mt-2 col-md-8 offset-md-2 col-12">
         <div class="text-center">
           <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
-          <b-modal :id="'modal'" :title="'Opprett ny handeliste'" :hide-footer="true" centered>
+          <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
             <post-creator @complete="closeModal('modal')"></post-creator>
           </b-modal>
           <!-- @click="$store.commit('SET_ACTIVE_VIEW', 'post-creator')" -->
