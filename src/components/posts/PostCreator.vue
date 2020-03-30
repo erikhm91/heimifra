@@ -104,7 +104,8 @@ export default {
             tips: this.post.tips,
             text: this.post.text,
             uid: this.activeUser.uid,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            status: 'free'
           }).then(() => {
             console.log("update successful i guess?")
             //successful update of database, add to own posts

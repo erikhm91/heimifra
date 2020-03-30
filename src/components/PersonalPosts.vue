@@ -49,7 +49,6 @@
               </b-modal>
             </div>
             <post-delete :postid="post.id"></post-delete>
-
           </home-store-post>
         </b-card-group>
 
@@ -105,11 +104,11 @@ import PostDelete from "@/components/posts/PostDelete.vue";
 export default {
   computed: {
     postArray() {
-      return this.$store.getters.myPosts
+      return this.$store.getters.myPosts;
     }
   },
   mounted() {
-    console.log('mounted personalposts!')
+    console.log("mounted personalposts!");
   },
   created() {
     this.$store.subscribe((mutation, state) => {
@@ -128,7 +127,9 @@ export default {
     PostDelete
   },
   methods: {
-  
+    closeModal(id) {
+      this.$bvModal.hide(id);
+    }
   }
 };
 </script>
