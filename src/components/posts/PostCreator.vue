@@ -28,8 +28,8 @@
                 id="input-2"
                 v-model="post.email"
                 type="email"
-                required
-                placeholder="Angi epostadresse."
+                readonly
+                :placeholder="activeUser.email"
               ></b-form-input>
             </b-form-group>
 

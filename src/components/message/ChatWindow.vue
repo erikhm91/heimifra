@@ -2,12 +2,10 @@
   <div>
     <div class="container">
       <div class="mb-3">
-      <button @click="closeChat()" class="btn btn-primary">Tilbake</button>
+        <button @click="closeChat()" class="btn btn-primary">Tilbake</button>
       </div>
 
-      
-
-      <div v-for="(message, i) in chat" v-bind:key="i">
+      <div v-for="(message, i) in activeChatMessages" v-bind:key="i">
         <div class="row" :class="{ 'justify-content-end': isActiveUser(message.uid)}">
           <div class="card mb-1 col-auto" :class="{ 'blue': !isActiveUser(message.uid) }">
             <div class="card-body p-0 pt-1">
@@ -20,54 +18,52 @@
             </div>
           </div>
         </div>
-        </div>
-       
+      </div>
 
       <!-- <p>chat: {{chat}}</p> -->
     </div>
 
-    <new-message></new-message>
+    <new-message :chatroomid="chatroomid" :activeUser="activeUser"></new-message>
   </div>
 </template>
 
 <script>
 import NewMessage from "@/components/message/NewMessage.vue";
-import { mapActions } from 'vuex'
-import chatroomMixin  from "@/components/mixins/chatroomMixin.js";
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
+import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 export default {
   mixins: [chatroomMixin],
-  props: ['chatroom', 'chatPartner'],
-  // data() {
-  //   return {
-  //     chatId: this.$route.params.room
-  //   }
-  // },
+  props: ["chatPartner"],
+  data() {
+    return {
+      chatroomid : null
+    }
+  },
   created() {
-     let chatroomid = this.getChatroomId(this.activeUser.uid, this.post.uid);
-     let payload = {
-       chatroomid : chatroomid,
-       chatPartner : this.chatPartner
-     }
-    this.initiateChatListener(payload)
+    console.log("activeUser: ", this.activeUser);
+    this.chatroomid = this.getChatroomId(this.activeUser.uid, this.chatPartner);
+    let payload = {
+      chatroomid: this.chatroomid,
+      chatPartner: this.chatPartner
+    };
+    this.activateChat(payload);
+    this.initiateChatListener(payload);
   },
 
-  mounted () {
-    // document.addEventListener("backbutton", this.closeChat(), false);
-  },
-  beforeDestroy () {
+  beforeDestroy() {
     // document.removeEventListener("backbutton", this.closeChat());
+    this.nullActiveChat();
   },
 
   computed: {
-    chat() {
-      return this.$store.getters.activeChat
-    }
+    ...mapGetters(["activeChat", "activeChatMessages", "activeUser"])
   },
   components: {
     NewMessage
   },
   methods: {
-    ...mapActions(['initiateChatListener']),
+    ...mapActions(["initiateChatListener", "nullActiveChat", "activateChat"]),
     displayTimestamp(unix_timestamp) {
       // Create a new JavaScript Date object based on the timestamp
       // multiplied by 1000 so that the argument is in milliseconds, not seconds.
@@ -86,19 +82,19 @@ export default {
       return formattedTime;
     },
     isActiveUser(uid) {
-      return uid == this.$store.getters.activeUser.uid;
+      return uid == this.activeUser.uid;
     },
     closeChat() {
-      console.log("closechat fired")
-      this.$store.commit("NULL_ACTIVE_CHAT")
+      console.log("closechat fired");
+       this.$emit('closeChat')
+      // this.nullActiveChat();
     }
   }
 };
 </script>
 
 <style scoped>
-
 .blue {
-  background-color : lavender;
+  background-color: lavender;
 }
 </style>
