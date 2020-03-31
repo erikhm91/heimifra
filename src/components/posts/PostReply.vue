@@ -55,7 +55,7 @@ export default {
     addToOwnTasks(post) {
       this.assignTask(post)
       this.addMessage()
-      this.$store.commit("ADD_OWN_TASK", post);  
+      this.$store.commit("ADD_TASK", post);  
     },
     addMessage() {
        //Get chatroomid from mixin

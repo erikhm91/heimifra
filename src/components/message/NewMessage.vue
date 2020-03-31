@@ -46,6 +46,7 @@ export default {
          time: Date.now()
        }
        this.sendMessage(payload)
+       this.newMessage = null;
 
     
     },

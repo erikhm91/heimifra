@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card">
+    <!-- <div class="card"> -->
       <div class="row no-gutters">
         <!-- picture -->
         <div class="col-2 mt-3 pt-1 ml-1">
@@ -38,7 +38,7 @@
           
           <small class="mt-1 text-muted">{{post.name.split(' ')[0]}} har fullført 12 handler i HomeStore.</small>
           </div>
-        </div>
+        <!-- </div> -->
       <!-- </div>
     </div> -->
   </div>

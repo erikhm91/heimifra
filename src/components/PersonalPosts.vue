@@ -1,11 +1,11 @@
 <template>
   <div>
-    <!-- 
-    <div class="text-center">
-    <h1>Her vises dine egne lister</h1>
-    </div>-->
+  
     <div class="row mt-2">
-      <!-- <div class="col-md-2 mt-4"></div> -->
+
+    <div v-if="chatPartner" class="col-md-8 offset-md-2">
+      <chat-window @closeChat="closeChat" :chatPartner="chatPartner"></chat-window>
+    </div>
 
       <div class="mt-2 col-md-8 offset-md-2 col-12">
         <div class="text-center">
@@ -13,7 +13,7 @@
           <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
             <post-creator @complete="closeModal('modal')"></post-creator>
           </b-modal>
-          <!-- @click="$store.commit('SET_ACTIVE_VIEW', 'post-creator')" -->
+         
         </div>
         <b-card-group deck>
           <home-store-post
@@ -22,7 +22,7 @@
             v-bind:key="i"
             :post="post"
           >
-            <div v-if="post.hjelp ==true" class="text-right">
+            <div v-if="post.offer" class="text-right">
               <b-dropdown
                 id="dropdown-dropright"
                 dropright
@@ -30,7 +30,9 @@
                 variant="primary"
                 class="m-2"
               >
-                <b-dropdown-item v-b-modal="'modal1'" href="#">Erik Houge Mathisen</b-dropdown-item>
+                <div :v-for="(value, key, i) in post.offer">
+                  <b-dropdown-item v-b-modal="'modal1'" href="#">key: {{ key }} {{ value }} {{ i}}</b-dropdown-item>
+                </div>
               </b-dropdown>
 
               <b-modal
@@ -111,13 +113,13 @@ export default {
     console.log("mounted personalposts!");
   },
   created() {
-    this.$store.subscribe((mutation, state) => {
-      if (mutation.type === "ADD_OWN_POST") {
-        //console.log
-        console.log(state);
-        this.$forceUpdate();
-      }
-    });
+    // this.$store.subscribe((mutation, state) => {
+    //   if (mutation.type === "ADD_OWN_POST") {
+    //     //console.log
+    //     console.log(state);
+    //     this.$forceUpdate();
+    //   }
+    // });
   },
   components: {
     // ownPost: OwnPost,

@@ -53,7 +53,8 @@ export const store = new Vuex.Store({
         //chat
         chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
         activeChatroom: state => state.activeChatroom,
-        activeChatMessages: state => state.activeChatMessages,
+        activeChatMessages: state => state.activeChatMessages.slice().reverse(),
+        activeChatMessagesUnreversed: state => state.activeChatMessages,
 
         dbActive: state => state.dbActive, //obsolete - to be deleted
     },
@@ -63,8 +64,27 @@ export const store = new Vuex.Store({
         ADD_POST(state, postObj) {
             state.postArray.push(postObj);
         },
+        UPDATE_POST(state, postObj) {
+            let index = state.postArray.findIndex(obj => obj.id === postObj.id);
+            // state.postArray[index] = postObj;
+            Vue.set(state.postArray, index, postObj)
+        },
+        SET_POSTS(state, postArray) {
+            state.postArray = postArray
+        },
+
+        //my posts
         ADD_OWN_POST(state, postObj) {
             state.myPosts.push(postObj);
+        },
+        UPDATE_OWN_POST(state, postObj) {
+            let index = state.myPosts.findIndex(obj => obj.id === postObj.id);
+            Vue.set(state.myPosts, index, postObj)
+        },
+        SET_MYPOSTS(state, postArray) {
+            console.log("mutating myposts: ", postArray)
+            state.myPosts = postArray
+            console.log("state.myPosts: ", state.myPosts)
         },
         SET_DELETE_FLAG(state, postId) {
             // console.log("myPosts", state.myPosts, postId)
@@ -72,19 +92,14 @@ export const store = new Vuex.Store({
             state.myPosts[index].status = 'del'
             // console.log("myPosts after update: ", state.myPosts)
         },
-        SET_POSTS(state, postArray) {
-            state.postArray = postArray
-        },
-        SET_MYPOSTS(state, postArray) {
-            console.log("mutating myposts: ", postArray)
-            state.myPosts = postArray
-            console.log("state.myPosts: ", state.myPosts)
-        },
+
 
         //chat
         SET_ACTIVE_CHATROOM(state, chatroom) {
             state.activeChatroom = chatroom;
+            state.activeChatMessages = []
             console.log("store - activeChatroom set to: ", chatroom)
+            
         },
         SET_ACTIVE_CHAT_MESSAGES(state, messageArray) {
             state.activeChatMessages = messageArray;
@@ -112,6 +127,7 @@ export const store = new Vuex.Store({
             //     room : chatroomid,
             //     msg : newMessage
             // }
+
             if (state.activeChatroom != payload.chatroomid) {
                 state.activeChatroom = payload.chatroomid;
             }
@@ -119,6 +135,20 @@ export const store = new Vuex.Store({
 
             state.activeChatMessages.push(payload.msg)
             console.log("message added to chat: ", payload.msg)
+        },
+
+        ADD_CHATMESSAGE_FIRST(state, payload) {
+            if (state.activeChatroom != payload.chatroomid) {
+                state.activeChatroom = payload.chatroomid;
+            }
+            state.activeChatMessages.unshift(payload.msg)
+        },
+
+        ADD_CHATMESSAGE_END(state, payload) {
+            if (state.activeChatroom != payload.chatroomid) {
+                state.activeChatroom = payload.chatroomid;
+            }
+            state.activeChatMessages.push(payload.msg)
         },
 
         // SET_ACTIVE_CHAT(state, chatroomid) {
@@ -137,7 +167,7 @@ export const store = new Vuex.Store({
         // },
 
         //task
-        ADD_OWN_TASK(state, postObj) {
+        ADD_TASK(state, postObj) {
             state.myTasks.push(postObj);
         },
         ADD_USER(state, userObj) {
@@ -155,18 +185,25 @@ export const store = new Vuex.Store({
         },
         SET_ERROR(state, error) {
             state.error = error
+        },
+        UPDATE_TASK(state, postObj) {
+            let index = state.myTasks.findIndex(obj => obj.id === postObj.id);
+            console.log("Task update triggered. old task: ", state.myTasks[index])
+            // state.myTasks[index] = postObj;
+            Vue.set(state.myTasks, index, postObj)
+            console.log("new task: ", state.myTasks[index])
         }
     },
 
     actions: {
         //chat
         activateChat(context, payload) {
-            console.log("activateChat payload: ",payload)
+            console.log("activateChat payload: ", payload)
             context.commit('SET_ACTIVE_CHATROOM', payload.chatroomid)
             // context.dispatch('fetchChatMessages', payload) //only need to have chatlistener for changes, so disable for now.
             // context.dispatch('initiateChatListener', payload) //have chatlistener on component for now, so it is destroyed when exiting chat.
         },
-        fetchChatMessages(context, payload) {
+        fetchChatMessages(context, payload) { //not used - listener instead
             let chatroom = payload.chatroomid
             let messages = []
             db.collection('chats').doc(chatroom).collection('messages')
@@ -193,10 +230,11 @@ export const store = new Vuex.Store({
             //payload: { chatpartner : "uid"}
             // console.log("chatroommixin: ", chatroomMixin);
             let chatroom = payload.chatroomid
+            context.commit('SET_ACTIVE_CHATROOM', chatroom)
             // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-            let ref = db.collection('chats').doc(chatroom).collection('messages')
+            let ref = db.collection('chats').doc(chatroom).collection('messages').orderBy("time", "desc").limit(30)
 
-            ref.onSnapshot(snapshot => {
+            this.unsubscribe = ref.onSnapshot(snapshot => {
                 snapshot.docChanges().forEach(change => {
                     if (change.type == 'added') {
                         let doc = change.doc.data()
@@ -210,11 +248,37 @@ export const store = new Vuex.Store({
                             msg: newMessage
                         }
                         console.log("messagepayload: ", messagePayload)
-                        context.commit("ADD_CHATMESSAGE",messagePayload)
+                        context.dispatch('addMessageToStore', messagePayload)
                     }
                 })
             })
         },
+
+
+
+
+
+        addMessageToStore(context, payload) {
+            console.log("activechatmessages: ", context.getters.activeChatMessages)
+            if (context.getters.activeChatMessages.length == 0) {
+                context.commit('ADD_CHATMESSAGE_END', payload)
+            } else {
+                if (payload.msg.time >= context.getters.activeChatMessagesUnreversed[0].time) {
+                    context.commit('ADD_CHATMESSAGE_FIRST', payload)
+                } else {
+                    context.commit('ADD_CHATMESSAGE_END', payload)
+                }
+            }
+            console.log("commited message to store: ", payload.msg)
+        },
+
+
+
+
+
+
+
+
         sendMessage({ commit }, payload) {
             // Add a new message
             console.log("payload: ", payload)
@@ -228,11 +292,11 @@ export const store = new Vuex.Store({
             db.collection("chats").doc(chatroomid).collection("messages").add(
                 newMessage)
                 .then(function () {
-                    let messagePayload = {
-                        room: chatroomid,
-                        msg: newMessage
-                    }
-                    commit('ADD_CHATMESSAGE', messagePayload)
+                    // let messagePayload = {
+                    //     room: chatroomid,
+                    //     msg: newMessage
+                    // }
+                    // commit('ADD_CHATMESSAGE', messagePayload)
                     console.log("Document successfully written!");
                 })
                 .catch(function (error) {
@@ -240,7 +304,9 @@ export const store = new Vuex.Store({
                 });
         },
         nullActiveChat({ commit }) {
+            this.unsubscribe();
             commit('NULL_ACTIVE_CHAT')
+            console.log("nulled chat and unsubscribed to chatlistener")
         },
 
         //post
@@ -296,9 +362,10 @@ export const store = new Vuex.Store({
             // console.log(context)
             context.dispatch('fetchPosts')
             context.dispatch('fetchMyPosts')
-            context.dispatch('fetchMyTasks')
+            // context.dispatch('fetchMyTasks')
+            context.dispatch('initiateTaskListener')
         },
-        fetchPosts: context => {
+        fetchPosts: context => { // not used - listener instead
             let posts = []
             //get myPosts
             db.collection("posts").where("status", "in", ["free", "picked"]) //not see 'del' or finished status
@@ -319,6 +386,34 @@ export const store = new Vuex.Store({
                     console.log("Error getting documents: ", error);
                 })
         },
+        initiatePostListener(context) {
+            // let queryParam = 'offer.' + context.getters.activeUser.uid;
+            // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
+            let ref = db.collection('posts').
+
+                ref.onSnapshot(snapshot => {
+
+                    snapshot.docChanges().forEach(change => {
+
+                        console.log("document listener triggered for my Tasks!")
+                        if (change.type == 'added') {
+                            console.log("found an added doc", change.doc.data())
+                            let post = change.doc.data()
+                            post.id = change.doc.id
+                            context.commit("ADD_POST", post)
+                        }
+                        else if (change.type == 'modified') {
+                            console.log("found a modified doc", change.doc.data())
+                            let post = change.doc.data()
+                            post.id = change.doc.id
+                            // console.log("messagepayload: ", messagePayload)
+                            context.commit("UPDATE_POST", post)
+                        }
+                    })
+                })
+        },
+
+
         fetchMyPosts: context => {
             let myPosts = []
             //get myPosts
@@ -343,7 +438,7 @@ export const store = new Vuex.Store({
                     console.log("Error getting documents: ", error);
                 })
         },
-        fetchMyTasks: context => {
+        fetchMyTasks: context => {   //not used! listener instead
             let myTasks = []
             let queryParam = 'offer.' + context.getters.activeUser.uid;
             console.log("queryparam mytasks", queryParam)
@@ -367,5 +462,31 @@ export const store = new Vuex.Store({
                     console.log("Error getting documents: ", error);
                 })
         },
+        initiateTaskListener(context) {
+            let queryParam = 'offer.' + context.getters.activeUser.uid;
+            // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
+            let ref = db.collection('posts').where(queryParam, "array-contains", "true")
+
+            ref.onSnapshot(snapshot => {
+
+                snapshot.docChanges().forEach(change => {
+
+                    console.log("document listener triggered for my Tasks!")
+                    if (change.type == 'added') {
+                        console.log("found an added doc", change.doc.data())
+                        let post = change.doc.data()
+                        post.id = change.doc.id
+                        context.commit("ADD_TASK", post)
+                    }
+                    else if (change.type == 'modified') {
+                        console.log("found a modified doc", change.doc.data())
+                        let post = change.doc.data()
+                        post.id = change.doc.id
+                        // console.log("messagepayload: ", messagePayload)
+                        context.commit("UPDATE_TASK", post)
+                    }
+                })
+            })
+        }
     }
 })
