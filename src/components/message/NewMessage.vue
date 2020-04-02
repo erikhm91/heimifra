@@ -47,26 +47,7 @@ export default {
        }
        this.sendMessage(payload)
        this.newMessage = null;
-
-    
     },
-    // testAddMessage() {
-    //   if (this.newMessage) {
-    //     console.log(this.newMessage);
-    //     //fire new message.
-    //     let msg = {
-    //       sender_id: this.activeUser.uid,
-    //       text: this.newMessage,
-    //       timestamp: Date.now()
-    //     };
-    //     let payload = { roomid: this.activeChatroom.room, msg: msg };
-    //     this.$store.commit("ADD_CHATMESSAGE", payload);
-
-    //     this.newMessage = null;
-    //   } else {
-    //     //
-    //   }
-    // }
   }
 };
 </script>

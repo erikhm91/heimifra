@@ -20,6 +20,7 @@ export const store = new Vuex.Store({
         // myPosts: examplePosts.posts,
         // myTasks: exampletasks.tasks,
         myPosts: [],
+        myPostReplies: [], //array of postreply objects. same as 'replies' collection in firestore
         myTasks: [],
         users: users.users,
         chats: chats.chats,
@@ -40,7 +41,9 @@ export const store = new Vuex.Store({
         myActivePosts: state => {
             return state.myPosts.filter(post => post.status == "free")
         },
-
+        repliesForPost: state => function(postid) {
+            return state.myPostReplies.filter(reply => reply.id == postid);
+        },
         //task
         myTasks: state => state.myTasks,
 
@@ -91,6 +94,9 @@ export const store = new Vuex.Store({
             let index = state.myPosts.findIndex(obj => obj.id === postId);
             state.myPosts[index].status = 'del'
             // console.log("myPosts after update: ", state.myPosts)
+        },
+        ADD_POST_REPLY(state, reply) {
+            state.myPostReplies.push(reply)
         },
 
 
@@ -188,10 +194,10 @@ export const store = new Vuex.Store({
         },
         UPDATE_TASK(state, postObj) {
             let index = state.myTasks.findIndex(obj => obj.id === postObj.id);
-            console.log("Task update triggered. old task: ", state.myTasks[index])
+            // console.log("Task update triggered. old task: ", state.myTasks[index])
             // state.myTasks[index] = postObj;
             Vue.set(state.myTasks, index, postObj)
-            console.log("new task: ", state.myTasks[index])
+            // console.log("new task: ", state.myTasks[index])
         }
     },
 
@@ -247,16 +253,12 @@ export const store = new Vuex.Store({
                             room: chatroom,
                             msg: newMessage
                         }
-                        console.log("messagepayload: ", messagePayload)
+                        // console.log("messagepayload: ", messagePayload)
                         context.dispatch('addMessageToStore', messagePayload)
                     }
                 })
             })
         },
-
-
-
-
 
         addMessageToStore(context, payload) {
             console.log("activechatmessages: ", context.getters.activeChatMessages)
@@ -269,15 +271,8 @@ export const store = new Vuex.Store({
                     context.commit('ADD_CHATMESSAGE_END', payload)
                 }
             }
-            console.log("commited message to store: ", payload.msg)
+            // console.log("commited message to store: ", payload.msg)
         },
-
-
-
-
-
-
-
 
         sendMessage({ commit }, payload) {
             // Add a new message
@@ -297,7 +292,7 @@ export const store = new Vuex.Store({
                     //     msg: newMessage
                     // }
                     // commit('ADD_CHATMESSAGE', messagePayload)
-                    console.log("Document successfully written!");
+                    // console.log("Chatroom message successfully written to firestore!");
                 })
                 .catch(function (error) {
                     console.error("Error writing document: ", error);
@@ -318,7 +313,7 @@ export const store = new Vuex.Store({
                 status: "del"
             })
                 .then(function () {
-                    console.log("Deleteflag for doc ", postid, " successfully set");
+                    // console.log("Deleteflag for doc ", postid, " successfully set");
                 })
                 .catch(function (error) {
                     console.error("Error writing document: ", error);
@@ -335,7 +330,7 @@ export const store = new Vuex.Store({
                 ['offer.' + assignedUid]: ['true', assignedEmail]
             })
                 .then(function () {
-                    console.log("assigned task ", payload.uid, " to user ", assignedUid);
+                    // console.log("assigned task ", payload.uid, " to user ", assignedUid);
                 })
                 .catch(function (error) {
                     console.error("Error writing document: ", error);
@@ -349,7 +344,7 @@ export const store = new Vuex.Store({
                 ['offer.' + assignedUid]: ['false']
             })
                 .then(function () {
-                    console.log("removed task ", payload.uid, " for user ", assignedUid);
+                    // console.log("removed task ", payload.uid, " for user ", assignedUid);
                 })
                 .catch(function (error) {
                     console.error("Error writing document: ", error);
@@ -364,11 +359,12 @@ export const store = new Vuex.Store({
             context.dispatch('fetchMyPosts')
             // context.dispatch('fetchMyTasks')
             context.dispatch('initiateTaskListener')
+            context.dispatch('initiateReplyListener')
         },
         fetchPosts: context => { // not used - listener instead
             let posts = []
             //get myPosts
-            db.collection("posts").where("status", "in", ["free", "picked"]) //not see 'del' or finished status
+            db.collection("posts").where("status", "in", ["free", "offer", "picked"]) //not see 'del' or finished status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = posts;
@@ -397,17 +393,37 @@ export const store = new Vuex.Store({
 
                         console.log("document listener triggered for my Tasks!")
                         if (change.type == 'added') {
-                            console.log("found an added doc", change.doc.data())
+                            // console.log("found an added Post", change.doc.data())
                             let post = change.doc.data()
                             post.id = change.doc.id
                             context.commit("ADD_POST", post)
                         }
                         else if (change.type == 'modified') {
-                            console.log("found a modified doc", change.doc.data())
+                            // console.log("found a modified Post", change.doc.data())
                             let post = change.doc.data()
                             post.id = change.doc.id
                             // console.log("messagepayload: ", messagePayload)
                             context.commit("UPDATE_POST", post)
+                        }
+                    })
+                })
+        },
+
+        initiateReplyListener(context) {
+            // let queryParam = 'offer.' + context.getters.activeUser.uid;
+            // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
+            let ref = db.collection('replies').where("owner", "==", context.getters.activeUser.uid)
+
+                ref.onSnapshot(snapshot => {
+
+                    snapshot.docChanges().forEach(change => {
+
+                        console.log("document listener triggered for Replies!")
+                        if (change.type == 'added') {
+                            console.log("found and added reply: ", change.doc.data())
+                            let reply = change.doc.data()
+                            
+                            context.commit("ADD_POST_REPLY", reply)
                         }
                     })
                 })
@@ -419,7 +435,7 @@ export const store = new Vuex.Store({
             //get myPosts
             db.collection("posts")
                 .where("uid", "==", context.getters.activeUser.uid)
-                .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
+                .where("status", "in", ["free", "offer", "picked", "fin"]) //not see 'del' status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = myPosts;
@@ -443,7 +459,7 @@ export const store = new Vuex.Store({
             let queryParam = 'offer.' + context.getters.activeUser.uid;
             console.log("queryparam mytasks", queryParam)
             db.collection("posts").where(queryParam, "array-contains", "true")
-                .where("status", "in", ["free", "picked", "fin"]) //not see 'del' status
+                .where("status", "in", ["free", "offer", "picked", "fin"]) //not see 'del' status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = myTasks;
@@ -473,13 +489,13 @@ export const store = new Vuex.Store({
 
                     console.log("document listener triggered for my Tasks!")
                     if (change.type == 'added') {
-                        console.log("found an added doc", change.doc.data())
+                        // console.log("found and added task:", change.doc.data())
                         let post = change.doc.data()
                         post.id = change.doc.id
                         context.commit("ADD_TASK", post)
                     }
                     else if (change.type == 'modified') {
-                        console.log("found a modified doc", change.doc.data())
+                        // console.log("found a modified task:", change.doc.data())
                         let post = change.doc.data()
                         post.id = change.doc.id
                         // console.log("messagepayload: ", messagePayload)

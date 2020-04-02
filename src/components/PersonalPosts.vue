@@ -1,96 +1,36 @@
 <template>
   <div>
-  
     <div class="row mt-2">
+      <div v-if="helperPostId != null">
+          <post-helper-pick :postid="helperPostId" @closePick="helperPostId = null"></post-helper-pick>
+      </div>
 
-    <div v-if="chatPartner" class="col-md-8 offset-md-2">
-      <chat-window @closeChat="closeChat" :chatPartner="chatPartner"></chat-window>
-    </div>
+      <div v-else>
+        <div class="mt-2 col-md-8 offset-md-2 col-12">
+          <div class="text-center">
+            <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
+            <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
+              <post-creator @complete="closeModal('modal')"></post-creator>
+            </b-modal>
+          </div>
+          <b-card-group deck>
+            <home-store-post
+              class="mt-3 col-12"
+              v-for="(post, i) in myPosts"
+              v-bind:key="i"
+              :post="post"
+            >
+              <div class="mb-2" v-if="post.status == 'offer'">
+                <button
+                  @click="triggerPostHelperPick(post.id)"
+                  class="btn btn-primary"
+                >Hjelpere har svart deg!</button>
+              </div>
 
-      <div class="mt-2 col-md-8 offset-md-2 col-12">
-        <div class="text-center">
-          <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
-          <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
-            <post-creator @complete="closeModal('modal')"></post-creator>
-          </b-modal>
-         
+              <post-delete :postid="post.id"></post-delete>
+            </home-store-post>
+          </b-card-group>
         </div>
-        <b-card-group deck>
-          <home-store-post
-            class="mt-3 col-12"
-            v-for="(post, i) in postArray"
-            v-bind:key="i"
-            :post="post"
-          >
-            <div v-if="post.offer" class="text-right">
-              <b-dropdown
-                id="dropdown-dropright"
-                dropright
-                text="Hjelpere har kontaktet deg!"
-                variant="primary"
-                class="m-2"
-              >
-                <div :v-for="(value, key, i) in post.offer">
-                  <b-dropdown-item v-b-modal="'modal1'" href="#">key: {{ key }} {{ value }} {{ i}}</b-dropdown-item>
-                </div>
-              </b-dropdown>
-
-              <b-modal
-                :id="'modal1'"
-                :title="'Velg hjelper'"
-                :ok-title="'Velg'"
-                cancel-title="Avbryt"
-                centered
-              >
-                <other-bio
-                  :post="{ 'name': $store.getters.user('erikhm10').name,
-                                 'email': $store.getters.user('erikhm10').email,
-                                 'tlf': $store.getters.user('erikhm10').tlf,
-                                 'uid': 'erikhm10' }"
-                ></other-bio>
-              </b-modal>
-            </div>
-            <post-delete :postid="post.id"></post-delete>
-          </home-store-post>
-        </b-card-group>
-
-        <!-- <b-card-group deck>
-          
-          <own-post
-            class="col-12 mt-3 button"
-            v-for="(post, i) in postArray"
-            v-bind:key="i"
-            :postProp="post"
-            :ownPost="true"
-        >-->
-        <!-- <div v-if="post.hjelp ==true" class="text-right">
-              <b-dropdown
-                id="dropdown-dropright"
-                dropright
-                text="Hjelpere har kontaktet deg!"
-                variant="primary"
-                class="m-2"
-              >
-                <b-dropdown-item v-b-modal="'modal1'" href="#">Erik Houge Mathisen</b-dropdown-item>
-              </b-dropdown>
-
-              <b-modal
-                :id="'modal1'"
-                :title="'Velg hjelper'"
-                :ok-title="'Velg'"
-                cancel-title="Avbryt"
-                centered
-              >
-                <other-bio
-                  :post="{ 'name': $store.getters.user('erikhm10').name,
-                                 'email': $store.getters.user('erikhm10').email,
-                                 'tlf': $store.getters.user('erikhm10').tlf,
-                                 'uid': 'erikhm10' }"
-                ></other-bio>
-              </b-modal>
-        </div>-->
-        <!-- </own-post>
-        </b-card-group>-->
       </div>
     </div>
   </div>
@@ -100,18 +40,21 @@
 // import OwnPost from "@/components/posts/OwnPost.vue";
 import Post from "@/components/posts/Post.vue";
 import PostCreator from "@/components/posts/PostCreator.vue";
-import OtherBio from "@/components/profile/OtherBio.vue";
+import PostHelperPick from "@/components/posts/PostHelperPick.vue";
+// import OtherBio from "@/components/profile/OtherBio.vue";
 import PostDelete from "@/components/posts/PostDelete.vue";
-
+import { mapGetters } from "vuex";
 export default {
-  computed: {
-    postArray() {
-      return this.$store.getters.myPosts;
+  data() {
+    return {
+      postHelperArray: [],
+      helperPostId : null
     }
   },
-  mounted() {
-    console.log("mounted personalposts!");
+  computed: {
+    ...mapGetters(["myPosts", "repliesForPost"])
   },
+  mounted() {},
   created() {
     // this.$store.subscribe((mutation, state) => {
     //   if (mutation.type === "ADD_OWN_POST") {
@@ -122,15 +65,16 @@ export default {
     // });
   },
   components: {
-    // ownPost: OwnPost,
-    postCreator: PostCreator,
-    OtherBio,
+    PostHelperPick,
+    PostCreator,
+    // OtherBio,
     HomeStorePost: Post,
     PostDelete
   },
   methods: {
-    closeModal(id) {
-      this.$bvModal.hide(id);
+    triggerPostHelperPick(postid) {
+      // this.postHelperArray
+      this.helperPostId = postid; 
     }
   }
 };
