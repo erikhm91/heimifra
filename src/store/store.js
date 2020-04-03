@@ -22,7 +22,7 @@ export const store = new Vuex.Store({
         myPosts: [],
         myPostReplies: [], //array of postreply objects. same as 'replies' collection in firestore
         myTasks: [],
-        users: users.users,
+        users: [],
         chats: chats.chats,
         activeUser: null,
         // users.users[4],
@@ -42,7 +42,14 @@ export const store = new Vuex.Store({
             return state.myPosts.filter(post => post.status == "free")
         },
         repliesForPost: state => function(postid) {
-            return state.myPostReplies.filter(reply => reply.id == postid);
+            // console.log("entered repliesforpost", postid)
+            // console.log("postreplies: ", state.myPostReplies)
+            return state.myPostReplies.filter(reply => reply.postid == postid);
+        },
+        numberOfRepliesToPost: state => function(postid) {
+            // console.log("entered repliesforpost", postid)
+            // console.log("postreplies: ", state.myPostReplies)
+            return state.myPostReplies.filter(reply => reply.postid == postid).length
         },
         //task
         myTasks: state => state.myTasks,
@@ -50,8 +57,8 @@ export const store = new Vuex.Store({
         //user
         activeUser: state => state.activeUser,
         loggedIn: state => state.loggedIn, //obsolete? Activeuser serves purpose
-        users: state => state.users, //should use to keep buffered user data in store?
-        user: state => uid => state.users.find(obj => obj.uid == uid), //keep buffered user data in store?
+        getUsers: state => state.users, //should use to keep buffered user data in store?
+        getUser: state => uid => state.users.find(obj => obj.uid == uid), //keep buffered user data in store
 
         //chat
         chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
@@ -74,6 +81,10 @@ export const store = new Vuex.Store({
         },
         SET_POSTS(state, postArray) {
             state.postArray = postArray
+        },
+        ADD_USERS(state, userArray) {
+            userArray.forEach(user => state.users.push(user))
+            // state.users.push(userObj)
         },
 
         //my posts
@@ -428,7 +439,32 @@ export const store = new Vuex.Store({
                     })
                 })
         },
+        fetchUsers: (context, uidArray) => {
+            //TODO: implement filter so not querying for users which are already in store! Unlikely to change during session
+            //get myPosts
+            db.collection("users")
+                .where("uid", "in", uidArray)
+                .get()
+                .then(function (querySnapshot) {
+                    let userArray = []
+                    querySnapshot.forEach(function (doc) {
+                        // doc.data() is never undefined for query doc snapshots
+                        console.log("found user:", doc.data())
+                        userArray.push(doc.data())
+                        
+                    });
+                    // console.log("setting myPosts:", myPosts);
+                    context.dispatch('addUsersToStore', userArray)
+                    
+                })
+                .catch(function (error) {
+                    console.log("Error getting documents: ", error);
+                })
+        },
 
+        addUsersToStore: (context, userArray) => {
+            context.commit('ADD_USERS', userArray)
+        },
 
         fetchMyPosts: context => {
             let myPosts = []

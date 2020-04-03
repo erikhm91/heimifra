@@ -2,6 +2,7 @@
   <div>
     <div v-if="$store.activeUser == null">
       <!-- prompt to register new user or login -->
+      Logg inn for å vise denne siden.
     </div>
 
     <div v-else>
@@ -92,6 +93,9 @@ export default {
       },
       dbDisabled: true
     };
+  },
+  created() {
+    //TODO: fetch additional user data!
   },
   mounted() {
     //set email etc from userbundleRenderer.renderToStream

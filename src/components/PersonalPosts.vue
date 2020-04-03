@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row mt-2">
-      <div v-if="helperPostId != null">
+      <div class="container" v-if="helperPostId != null">
           <post-helper-pick :postid="helperPostId" @closePick="helperPostId = null"></post-helper-pick>
       </div>
 
@@ -24,7 +24,10 @@
                 <button
                   @click="triggerPostHelperPick(post.id)"
                   class="btn btn-primary"
-                >Hjelpere har svart deg!</button>
+                ><span>{{numberOfRepliesToPost(post.id)}} hjelpere har svart deg!</span>
+                
+                
+                </button>
               </div>
 
               <post-delete :postid="post.id"></post-delete>
@@ -52,7 +55,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["myPosts", "repliesForPost"])
+    ...mapGetters(["myPosts", "repliesForPost", 'numberOfRepliesToPost'])
   },
   mounted() {},
   created() {

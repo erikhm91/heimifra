@@ -24,7 +24,7 @@
       <p></p>
       <p>{{post.name}} tilbyr {{post.tips}} kr som en ekstra takk for hjelpen. Dette beløpet skal legges til beløpet fra kvitteringene, og betales samlet ut til deg som hjelper. Tips kan ikke forhandles på. Ved å trykke send godtar du disse betingelsene og er klar til å hjelpe {{post.name.split(' ')[0]}}!</p>
 
-      <other-bio :post="post"></other-bio>
+      <other-bio :user="post"></other-bio>
     </b-modal>
   </div>
 </template>

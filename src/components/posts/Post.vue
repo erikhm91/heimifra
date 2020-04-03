@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="card w-100 bg-warning">
-        <div class="card-header pb-0 outline">
+        <div class="card-header pt-2 pb-0 outline">
         <div class="row">
             <span class="col-1">
             <profile-icon></profile-icon>
           </span>
-          <h5 class="card-title col-md-10 col-9 text-left">{{post.name}}</h5>
-          <h5 class="card-title text-right textcolor">{{post.tips}},-</h5>
+          <h5 class="mt-1 card-title col-md-10 col-9 text-left">{{post.name}}</h5>
+          <h5 class="mt-1 card-title text-right textcolor">{{post.tips}},-</h5>
         </div>
       </div>
       <div class="card-body">

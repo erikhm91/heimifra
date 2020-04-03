@@ -1,85 +1,86 @@
 <template>
   <div>
     <!-- <div class="card"> -->
-      <div class="row no-gutters">
-        <!-- picture -->
-        <div class="col-2 mt-3 pt-1 ml-1">
-          <img
-            @click="testLink()"
+    <div class="row no-gutters">
+      <!-- picture -->
+      <div class="col-2 mt-3 pt-1 ml-1">
+        <!-- <img
             style="max-width: 60px"
-            :src="$store.getters.user(this.post.uid).pic"
+            src="x"
             class="card-img rounded-circle border"
             alt="profilbilde"
-          />
-        </div>
-        <!-- name and rating -->
-        <div class="col-9 ml-2 mt-2 pt-1">
-          <h5 class="card-title">{{post.name}}</h5>
-          <div class="row">
-            <div class="col-12">
+        />-->
+        <profile-icon height="50" width="50"></profile-icon>
+      </div>
+      <!-- name and rating -->
+      <div class="col-9 ml-2 mt-2 pt-1">
+        <h5 class="card-title">{{user.name}}</h5>
+        <div class="row">
+          <div class="col-12">
+            <span v-if="user.rate">
               <star-rating
                 :item-size="23"
                 :border-width="0"
                 :show-rating="false"
-                v-model="rating"
+                v-model="user.rate"
                 :read-only="true"
               ></star-rating>
-            </div>
+            </span>
+            <span v-else>
+              <small class="mt-1 text-muted">{{user.name.split(' ')[0]}} har ikke fått noen vurderinger enda.</small>
+            </span>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="card-body">
-        <!-- <div class="row">
-          <div class="col-12 mb-0"> -->
-            <div v-if="post.adress">{{post.adress}}</div>
-            <div v-if="post.email" class>{{post.email}}</div>
-            <div v-if="post.tlf" class>Tlf: {{post.tlf}}</div>
-          
-          <small class="mt-1 text-muted">{{post.name.split(' ')[0]}} har fullført 12 handler i HomeStore.</small>
-          </div>
-        <!-- </div> -->
-      <!-- </div>
-    </div> -->
+    <div class="card-body">
+      <!-- <div class="row">
+      <div class="col-12 mb-0">-->
+      <div v-if="user.adress">{{user.adress}}</div>
+      <div v-if="user.email" class>{{user.email}}</div>
+      <div v-if="user.tlf" class>Tlf: {{user.tlf}}</div>
+
+      <small
+        class="mt-1 text-muted"
+      >{{user.name.split(' ')[0]}} har fullført 12 handler i HomeStore.</small>
+    </div>
+    <!-- </div> -->
+    <!-- </div>
+    </div>-->
   </div>
 </template>
 
 <script>
+import ProfileIcon from "@/components/icons/ProfileIcon.vue";
 import { StarRating } from "vue-rate-it";
 export default {
-  props: ["post"],
+  props: ["user"],
   data() {
     return {
       //   rating: 3
     };
   },
   created() {
-    console.log("post:" + this.post);
+    console.log("user:", this.user);
   },
   computed: {
-    //   pic() {
-    //       return this.$store.getters.user(this.post.uid).pic
-    //   }
     rating() {
-      let rate = this.$store.getters.user(this.post.uid).rate;
-      if (rate != null) {
-        return rate;
-      } else {
-        return 0;
-      }
+      // let rate = this.$store.getters.getUser(this.user.uid).rate;
+      // if (rate != null) {
+      //   return rate;
+      // } else {
+      //   return 0;
+      // }
+      console.log("rating triggered");
+      return 3;
     }
   },
   components: {
-    StarRating
+    StarRating,
+    ProfileIcon
   },
-  methods: {
-    testLink() {
-      console.log(this.post.uid);
-      console.log(this.$store.getters.users);
-      console.log(this.$store.getters.user(this.post.uid).pic);
-      console.log(this.pic);
-    }
-  }
+  methods: {}
 };
 </script>
 
