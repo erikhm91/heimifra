@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="post.taken===true" class="text-right">
+    <div v-if="post.status=='picked'" class="text-right">
       <a href="#" class="btn btn-primary disabled">Jeg får hjelp</a>
     </div>
     <div v-else class="text-right">
@@ -23,7 +23,6 @@
       ></b-form-textarea>
       <p></p>
       <p>{{post.name}} tilbyr {{post.tips}} kr som en ekstra takk for hjelpen. Dette beløpet skal legges til beløpet fra kvitteringene, og betales samlet ut til deg som hjelper. Tips kan ikke forhandles på. Ved å trykke send godtar du disse betingelsene og er klar til å hjelpe {{post.name.split(' ')[0]}}!</p>
-
       <other-bio :user="post"></other-bio>
     </b-modal>
   </div>
@@ -32,44 +31,52 @@
 <script>
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import OtherBio from "@/components/profile/OtherBio.vue";
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   props: ["post"],
   mixins: [chatroomMixin],
   data() {
     return {
-      newMessage: null
+      newMessage: null,
+      user: null,
+      loadComplete: false
     };
   },
+  created() {},
   components: {
     otherBio: OtherBio
   },
   computed: {
-    activeUser() {
-      return this.$store.getters.activeUser;
-    }
+    ...mapGetters(["getUser", "activeUser"])
   },
   methods: {
-    ...mapActions(['assignTask', 'sendMessage']),
+    ...mapActions(["assignTask", "sendMessage", "fetchUsers"]),
 
     addToOwnTasks(post) {
-      this.assignTask(post)
-      this.addMessage()
-      this.$store.commit("ADD_TASK", post);  
+      console.log(this.activeUser)
+      let reply = {
+                helper: this.activeUser.uid,
+                name : this.activeUser.name,
+                owner : this.post.uid,
+                postid : this.post.id,
+                text : this.newMessage
+            }
+      this.assignTask(reply);
+      this.addMessage();
     },
     addMessage() {
-       //Get chatroomid from mixin
-       let chatroomid = this.getChatroomId(this.activeUser.uid, this.post.uid);
+      //Get chatroomid from mixin
+      let chatroomid = this.getChatroomId(this.activeUser.uid, this.post.uid);
       //  console.log("chatid: ",chatroomid)
-       //call action
-       let payload = {
-         chatroom : chatroomid,
-         from: this.activeUser.uid,
-         to: this.post.uid,
-         text: this.newMessage
-       }
-       this.sendMessage(payload)
-
+      //call action
+      let payload = {
+        chatroom: chatroomid,
+        from: this.activeUser.uid,
+        text: this.newMessage,
+        time: Date.now()
+      };
+      this.sendMessage(payload);
     }
   }
 };

@@ -4,7 +4,7 @@
     <div class="row no-gutters">
       <!-- picture -->
       <div class="col-2 mt-3 pt-1 ml-1">
-        <!-- <img
+        <!--TODO: implementere profilbilde fra bruker! <img
             style="max-width: 60px"
             src="x"
             class="card-img rounded-circle border"

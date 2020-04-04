@@ -36,17 +36,18 @@ export const store = new Vuex.Store({
 
     getters: {
         //post
+        getPost: state => postid => state.postArray.find(obj => obj.id == postid),
         postArray: state => state.postArray,
         myPosts: state => state.myPosts,
         myActivePosts: state => {
             return state.myPosts.filter(post => post.status == "free")
         },
-        repliesForPost: state => function(postid) {
+        repliesForPost: state => function (postid) {
             // console.log("entered repliesforpost", postid)
             // console.log("postreplies: ", state.myPostReplies)
             return state.myPostReplies.filter(reply => reply.postid == postid);
         },
-        numberOfRepliesToPost: state => function(postid) {
+        numberOfRepliesToPost: state => function (postid) {
             // console.log("entered repliesforpost", postid)
             // console.log("postreplies: ", state.myPostReplies)
             return state.myPostReplies.filter(reply => reply.postid == postid).length
@@ -82,6 +83,10 @@ export const store = new Vuex.Store({
         SET_POSTS(state, postArray) {
             state.postArray = postArray
         },
+        SET_POST_STATUS(state, payload) {
+            let post = state.postArray.find(obj => obj.id === payload.postid);
+            post.status = payload.status
+        },
         ADD_USERS(state, userArray) {
             userArray.forEach(user => state.users.push(user))
             // state.users.push(userObj)
@@ -116,7 +121,7 @@ export const store = new Vuex.Store({
             state.activeChatroom = chatroom;
             state.activeChatMessages = []
             console.log("store - activeChatroom set to: ", chatroom)
-            
+
         },
         SET_ACTIVE_CHAT_MESSAGES(state, messageArray) {
             state.activeChatMessages = messageArray;
@@ -316,6 +321,20 @@ export const store = new Vuex.Store({
         },
 
         //post
+        updatePostStatus(context, payload) {
+            //update database with new status
+            db.collection("posts").doc(payload.postid).update({
+                status: payload.status
+            })
+                .then(function () {
+                    context.commit('SET_POST_STATUS', payload.status)
+                    console.log("Status for doc ", payload.postid, " successfully updated");
+                })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
+        },
+
         deletePost({ commit }, postid) {
             // console.log("deleteflagPost: " + postid)
             commit('SET_DELETE_FLAG', postid)
@@ -333,15 +352,50 @@ export const store = new Vuex.Store({
 
         //task
         assignTask(context, payload) {
-            let assignedUid = context.getters.activeUser.uid
-            let assignedEmail = context.getters.activeUser.email
-            // console.log("assigning task to activeuser id ", assignedUid)
-            // console.log("assign task payload", payload)
-            db.collection("posts").doc(payload.id).update({
-                ['offer.' + assignedUid]: ['true', assignedEmail]
+            context.dispatch('assignOfferToPost', payload.postid)
+            context.dispatch('addPostReply', payload)
+        },
+
+        addPostReply(context, payload) {
+            let reply = {
+                helper: payload.helper,
+                name: payload.name,
+                owner: payload.owner,
+                postid: payload.postid,
+                text: payload.text
+            }
+
+            db.collection("replies").add({
+                reply
             })
                 .then(function () {
-                    // console.log("assigned task ", payload.uid, " to user ", assignedUid);
+                    console.log("added Reply doc for user: ", reply.helper);
+                    //update store
+                    context.commit('ADD_POST_REPLY', reply)
+                    //check status of post, update to "offer" if not already in status!
+                    if (context.getters.getPost(reply.postid) == 'free') {
+                        let statusPayload = {
+                            postid: reply.postid,
+                            status: 'offer'
+                        }
+                        context.dispatch('updatePostStatus', statusPayload)
+                        console.log('status updated to offer for post: ', reply.postid)
+                    }
+                    console.log('no need to update status for postid: ', reply.postid)
+                })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
+        },
+        assignOfferToPost(context, postid) {
+            let assignedUid = context.getters.activeUser.uid
+            // console.log("assigning task to activeuser id ", assignedUid)
+            // console.log("assign task payload", payload)
+            db.collection("posts").doc(postid).update({
+                ['offer.' + assignedUid]: true
+            })
+                .then(function () {
+                    console.log("assigned task ", postid, " to user ", assignedUid);
                 })
                 .catch(function (error) {
                     console.error("Error writing document: ", error);
@@ -371,6 +425,7 @@ export const store = new Vuex.Store({
             // context.dispatch('fetchMyTasks')
             context.dispatch('initiateTaskListener')
             context.dispatch('initiateReplyListener')
+            // context.dispatch('fetchOwnRepliesToPosts') --> necessary???
         },
         fetchPosts: context => { // not used - listener instead
             let posts = []
@@ -425,19 +480,19 @@ export const store = new Vuex.Store({
             // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
             let ref = db.collection('replies').where("owner", "==", context.getters.activeUser.uid)
 
-                ref.onSnapshot(snapshot => {
+            ref.onSnapshot(snapshot => {
 
-                    snapshot.docChanges().forEach(change => {
+                snapshot.docChanges().forEach(change => {
 
-                        console.log("document listener triggered for Replies!")
-                        if (change.type == 'added') {
-                            console.log("found and added reply: ", change.doc.data())
-                            let reply = change.doc.data()
-                            
-                            context.commit("ADD_POST_REPLY", reply)
-                        }
-                    })
+                    console.log("document listener triggered for Replies!")
+                    if (change.type == 'added') {
+                        console.log("found and added reply: ", change.doc.data())
+                        let reply = change.doc.data()
+
+                        context.commit("ADD_POST_REPLY", reply)
+                    }
                 })
+            })
         },
         fetchUsers: (context, uidArray) => {
             //TODO: implement filter so not querying for users which are already in store! Unlikely to change during session
@@ -451,11 +506,11 @@ export const store = new Vuex.Store({
                         // doc.data() is never undefined for query doc snapshots
                         console.log("found user:", doc.data())
                         userArray.push(doc.data())
-                        
+
                     });
                     // console.log("setting myPosts:", myPosts);
                     context.dispatch('addUsersToStore', userArray)
-                    
+                    console.log('finished executing fetchUsers')
                 })
                 .catch(function (error) {
                     console.log("Error getting documents: ", error);
@@ -490,7 +545,7 @@ export const store = new Vuex.Store({
                     console.log("Error getting documents: ", error);
                 })
         },
-        fetchMyTasks: context => {   //not used! listener instead
+        fetchMyTasks: context => {   //obsolete not used! listener instead
             let myTasks = []
             let queryParam = 'offer.' + context.getters.activeUser.uid;
             console.log("queryparam mytasks", queryParam)
@@ -514,15 +569,32 @@ export const store = new Vuex.Store({
                     console.log("Error getting documents: ", error);
                 })
         },
+        fetchOwnRepliesToPosts: context => {
+            db.collection("replies").where("helper", "==", context.getters.activeUser.uid)
+                .where("status", "in", ["offer", "picked"])
+                .get()
+                .then(function (querySnapshot) {
+                    querySnapshot.forEach(function (doc) {
+                        // doc.data() is never undefined for query doc snapshots
+                        // console.log(doc.id, " => ", doc.data());
+                        // postArray.push(doc.data())
+                        let replyObj = doc.data()
+                        context.commit('ADD_POST_REPLY', replyObj)
+                        console.log("added own post reply: ", replyObj)
+                    });
+
+                })
+                .catch(function (error) {
+                    console.log("Error getting documents: ", error);
+                })
+        },
         initiateTaskListener(context) {
             let queryParam = 'offer.' + context.getters.activeUser.uid;
             // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-            let ref = db.collection('posts').where(queryParam, "array-contains", "true")
+            let ref = db.collection('posts').where(queryParam, "==", true)
 
             ref.onSnapshot(snapshot => {
-
                 snapshot.docChanges().forEach(change => {
-
                     console.log("document listener triggered for my Tasks!")
                     if (change.type == 'added') {
                         // console.log("found and added task:", change.doc.data())
