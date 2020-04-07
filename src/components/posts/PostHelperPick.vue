@@ -9,21 +9,21 @@
             <other-bio :user="getUser(reply.helper)"></other-bio>
           </div>
           <div class="col-4">
-              {{reply.name}} har skrevet:
+            {{reply.name}} har skrevet:
             <!-- <b-card-text>Example chat message.</b-card-text> -->
             <div class="card mb-1 col-auto blue">
-            <div class="card-body p-0 pt-1">
-              <!-- <h5 class="card-title">Special title treatment</h5> -->
-              <p class="card-text mb-1">{{reply.text}}</p>
+              <div class="card-body p-0 pt-1">
+                <!-- <h5 class="card-title">Special title treatment</h5> -->
+                <p class="card-text mb-1">{{reply.text}}</p>
 
-              <div class="mb-1 text-right">
-                <small class="text-muted">Sendt kl. 8</small>
+                <div class="mb-1 text-right">
+                  <small class="text-muted">Sendt kl. 8</small>
+                </div>
               </div>
             </div>
           </div>
-          </div>
           <div class="col-2">
-              <button @click="chooseHelper(reply.helper)" class="btn btn-primary">Velg</button>
+            <button @click="chooseHelper(reply)" class="btn btn-primary">Velg</button>
           </div>
         </div>
       </b-card>
@@ -60,12 +60,19 @@ export default {
     this.repliesForPost(this.postid).forEach(reply => uids.push(reply.helper));
     this.fetchUsers(uids);
     console.log("finished fetching data");
-    this.userdataloaded = true
+    this.userdataloaded = true;
   },
   methods: {
-    ...mapActions(["fetchUsers"]),
-    chooseHelper(uid){
-        console.log("helper chosen, todo: update db and store", uid)
+    ...mapActions(['fetchUsers', 'setPostPicked']),
+    chooseHelper(reply) {
+      console.log("helper chosen, todo: update db and store", reply);
+
+      //set picked = uid i post, oppdatere status = picked
+      let payload = {
+        postid: reply.postid,
+        uid: reply.helper
+      };
+      this.setPostPicked(payload)
     }
   },
   computed: {

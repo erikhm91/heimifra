@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="$store.activeUser == null">
+    <div v-if="activeUser == null">
       <!-- prompt to register new user or login -->
       Logg inn for å vise denne siden.
     </div>
@@ -15,26 +15,16 @@
         <!-- <div class="card w-100"> -->
         <!-- <div class="card-body"> -->
 
-
-<!-- @submit="save" -->
-        <b-form> 
-          <b-form-group
-            id="input-group-2"
-            label="Epostadresse:"
-            label-for="input-2"
-          >
-            <b-form-input
-            readonly
-              id="input-2"
-             :placeholder="$store.getters.activeUser.email"
-              type="email"
-            ></b-form-input>
+        <!-- @submit="save" -->
+        <b-form>
+          <b-form-group id="input-group-2" label="Epostadresse:" label-for="input-2">
+            <b-form-input readonly id="input-2" :placeholder="activeUser.email" type="email"></b-form-input>
           </b-form-group>
 
           <b-form-group id="input-group-3" label="Navn:" label-for="input-3">
             <b-form-input
               id="input-3"
-             
+              v-model="name"
               required
               placeholder="Ditt navn, slik det skal vises for andre."
             ></b-form-input>
@@ -46,6 +36,7 @@
           <b-form-group id="input-group-1" label="Om meg:">
             <b-form-textarea
               id="textarea"
+              v-model="bio"
               placeholder="Her kan du skrive noen ord om deg selv!"
               rows="3"
               max-rows="6"
@@ -62,7 +53,7 @@
           </b-form-group>-->
           <div class="text-right">
             <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
-            <b-button class="ml-2" type="submit" variant="primary">Lagre</b-button>
+            <b-button class="ml-2" variant="primary">Lagre</b-button>
           </div>
         </b-form>
 
@@ -82,57 +73,62 @@
 </template>
 
 <script>
-import firebase from 'firebase'
+import firebase from "firebase";
 // import db from "@/firebase/init";
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      profile: {
-        name: null,
-        email: null
-      },
-      dbDisabled: true
+      name: null,
+      bio: null
     };
   },
-  created() {
+  async created() {
     //TODO: fetch additional user data!
+    console.log("created started, activeuser:", this.activeUser);
+    if (this.activeUser.name) {
+      console.log("no need to call api")
+      this.setProfileAttributes()
+    } else {
+      console.log("calling api to fetch user")
+      this.$store.commit("SET_API_READY", false);
+      this.fetchOwnUser();
+    }
   },
-  mounted() {
-    //set email etc from userbundleRenderer.renderToStream
-    console.log(this.activeUser);
-    // this.profile.name = this.activeUser.uid;
-    // this.profile.email = this.activeUser.email;
-  },
-
   computed: {
-    activeUser() {
-      return this.$store.getters.activeUser;
+    ...mapGetters(["activeUser", "apiReady"])
+  },
+  watch: {
+    apiReady(oldVal, newVal) {
+      console.log("apiReady: oldval, newval:", oldVal, newVal)
+      if (newVal == true) {
+        //api has finished loading data, and value has been set
+        console.log("apiReady triggered, calling setprofileattributes:")
+        this.setProfileAttributes();
+      }
     }
   },
   methods: {
-    // onSubmit() {
-    //   if (this.post && this.dbDisabled === false) {
-    //     db.collection("posts")
-    //       .add({
-    //         email: this.post.email,
-    //         name: this.post.name,
-    //         tips: this.post.tips,
-    //         text: this.post.text,
-    //         timestamp: Date.now()
-    //       })
-    //       .catch(err => {
-    //         console.log(err);
-    //       });
-    //   }
-    //   this.$store.commit("ADD_OWN_POST", this.post);
-    // },
+    ...mapActions(["fetchOwnUser"]),
+
+    setProfileAttributes() {
+      //copy user object from getters and set parameters in profile
+      let userCopy = Object.assign({}, this.activeUser);
+      console.log("userCopy: ", userCopy)
+      // if (this.name) {
+        this.name = userCopy.name;
+      // }
+      // if (this.bio) {
+        this.bio = userCopy.bio;
+      // }
+    },
 
     logout() {
       firebase
         .auth()
         .signOut()
         .then(() => {
-          this.$store.commit('SET_LOGGED_IN', false)
+          this.$store.commit("SET_LOGGED_IN", false);
           this.$router.push({
             name: "login"
           });

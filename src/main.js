@@ -19,15 +19,17 @@ firebase.auth().onAuthStateChanged((user) => {
 
   if (user) {
     console.log(user)
-    store.commit('SET_USER', {
+    store.commit('SET_ACTIVE_USER', {
       uid: user.uid,
-      email: user.email
+      email: user.email,
+      name: null,
+      bio: null,
     })
 
     store.dispatch('initState')
 
   } else {
-    store.commit('SET_USER', null)
+    store.commit('SET_ACTIVE_USER', null)
     store.commit('SET_LOGGED_IN', false)
   }
 

@@ -1,19 +1,21 @@
 <template>
   <div>
-    <button v-b-modal="postid"  class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
+    <button v-b-modal="postid+'complete'"  class="btn btn-outline-primary mr-2 btn-sm">Fullført!</button>
 
               <b-modal
-                :id="postid"
-                :title="'Bekreft sletting'"
-                :ok-title="'Slett'"
+                :id="postid+'complete'"
+                :title="'Bekreft fullført'"
+                :ok-title="'Fullført'"
                 cancel-title="Avbryt"
                 centered
                 @ok="updatePostStatus({
                   postid: postid,
-                  status: 'del'})"
+                  status: 'fin'})"
               >
-                Er du sikker på at du vil slette denne listen?
+                Har denne handelen blitt fullført? Er tjenesten levert og penger overført?
               </b-modal>
+
+
   </div>
 </template>
 

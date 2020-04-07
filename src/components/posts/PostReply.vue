@@ -55,9 +55,10 @@ export default {
 
     addToOwnTasks(post) {
       console.log(this.activeUser)
+      //TODO: fikse så activeUser henter min user data, inkl name.
       let reply = {
                 helper: this.activeUser.uid,
-                name : this.activeUser.name,
+                name : 'test',
                 owner : this.post.uid,
                 postid : this.post.id,
                 text : this.newMessage

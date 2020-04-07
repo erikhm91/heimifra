@@ -13,8 +13,9 @@ Vue.use(Vuex);
 export const store = new Vuex.Store({
     strict: true,
     state: {
+        apiReady: true,
         loggedIn: false,
-        dbActive: true,
+        // dbActive: true,
         postArray: [],
         // activeView: 'message-container',
         // myPosts: examplePosts.posts,
@@ -43,13 +44,13 @@ export const store = new Vuex.Store({
             return state.myPosts.filter(post => post.status == "free")
         },
         repliesForPost: state => function (postid) {
-            // console.log("entered repliesforpost", postid)
-            // console.log("postreplies: ", state.myPostReplies)
+            console.log("entered repliesforpost", postid)
+            console.log("all postreplies: ", state.myPostReplies)
             return state.myPostReplies.filter(reply => reply.postid == postid);
         },
         numberOfRepliesToPost: state => function (postid) {
-            // console.log("entered repliesforpost", postid)
-            // console.log("postreplies: ", state.myPostReplies)
+            console.log("entered numberofrepliestopost", postid)
+            console.log("postreplies: ", state.myPostReplies)
             return state.myPostReplies.filter(reply => reply.postid == postid).length
         },
         //task
@@ -60,6 +61,7 @@ export const store = new Vuex.Store({
         loggedIn: state => state.loggedIn, //obsolete? Activeuser serves purpose
         getUsers: state => state.users, //should use to keep buffered user data in store?
         getUser: state => uid => state.users.find(obj => obj.uid == uid), //keep buffered user data in store
+        apiReady: state => state.apiReady,
 
         //chat
         chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
@@ -86,6 +88,11 @@ export const store = new Vuex.Store({
         SET_POST_STATUS(state, payload) {
             let post = state.postArray.find(obj => obj.id === payload.postid);
             post.status = payload.status
+        },
+        SET_POST_PICKED(state, payload) {
+            let post = state.postArray.find(obj => obj.id === payload.postid);
+            post.status = payload.status
+            Vue.set(post, 'picked', payload.uid)
         },
         ADD_USERS(state, userArray) {
             userArray.forEach(user => state.users.push(user))
@@ -198,9 +205,21 @@ export const store = new Vuex.Store({
         SET_MYTASKS(state, postArray) {
             state.myTasks = postArray
         },
+
         //user
-        SET_USER(state, user) {
+        SET_ACTIVE_USER(state, user) {
             state.activeUser = user;
+        },
+        UPDATE_ACTIVE_USER(state, payload) {
+            if (payload.name) {
+                state.activeUser.name = payload.name
+            }
+            if (payload.bio) {
+                state.activeUser.bio = payload.bio
+            }
+            if (payload.rate) {
+                state.activeUser.rate = payload.rate
+            }
         },
         SET_LOGGED_IN(state, bool) {
             state.loggedIn = bool
@@ -214,6 +233,9 @@ export const store = new Vuex.Store({
             // state.myTasks[index] = postObj;
             Vue.set(state.myTasks, index, postObj)
             // console.log("new task: ", state.myTasks[index])
+        },
+        SET_API_READY(state, bool) {
+            state.apiReady = bool
         }
     },
 
@@ -320,6 +342,40 @@ export const store = new Vuex.Store({
             console.log("nulled chat and unsubscribed to chatlistener")
         },
 
+        fetchOwnUser(context) {
+            db.collection('users').where('uid', '==', context.getters.activeUser.uid)
+                .get()
+                .then(function (querySnapshot) {
+                    querySnapshot.forEach(function (doc) {
+                        // doc.data() is never undefined for query doc snapshots
+                        console.log("fetched activeUser:", doc.data());
+                        let user = doc.data()
+                        let payload = {}
+                        if (user.name) {
+                            payload.name = user.name
+                        }
+                        if (user.bio) {
+                            payload.bio = user.bio
+                        }
+                        if (user.rate) {
+                            payload.rate = user.rate
+                        }
+
+                        context.commit("UPDATE_ACTIVE_USER", payload)
+                        context.commit("SET_API_READY", true)
+                    });
+                })
+                .catch(function (error) {
+                    console.log("Error getting documents: ", error);
+                })
+
+
+
+
+        },
+
+
+
         //post
         updatePostStatus(context, payload) {
             //update database with new status
@@ -327,7 +383,7 @@ export const store = new Vuex.Store({
                 status: payload.status
             })
                 .then(function () {
-                    context.commit('SET_POST_STATUS', payload.status)
+                    context.commit('SET_POST_STATUS', payload)
                     console.log("Status for doc ", payload.postid, " successfully updated");
                 })
                 .catch(function (error) {
@@ -335,7 +391,7 @@ export const store = new Vuex.Store({
                 });
         },
 
-        deletePost({ commit }, postid) {
+        deletePost({ commit }, postid) { //obsolete
             // console.log("deleteflagPost: " + postid)
             commit('SET_DELETE_FLAG', postid)
             //update database with delete flag
@@ -357,6 +413,7 @@ export const store = new Vuex.Store({
         },
 
         addPostReply(context, payload) {
+            //create reply object to use in store etc (even though need just attributes for db)
             let reply = {
                 helper: payload.helper,
                 name: payload.name,
@@ -366,14 +423,19 @@ export const store = new Vuex.Store({
             }
 
             db.collection("replies").add({
-                reply
+                helper: payload.helper,
+                name: payload.name,
+                owner: payload.owner,
+                postid: payload.postid,
+                text: payload.text
             })
                 .then(function () {
                     console.log("added Reply doc for user: ", reply.helper);
                     //update store
                     context.commit('ADD_POST_REPLY', reply)
                     //check status of post, update to "offer" if not already in status!
-                    if (context.getters.getPost(reply.postid) == 'free') {
+
+                    if (context.getters.getPost(reply.postid).status == 'free') {
                         let statusPayload = {
                             postid: reply.postid,
                             status: 'offer'
@@ -401,12 +463,31 @@ export const store = new Vuex.Store({
                     console.error("Error writing document: ", error);
                 });
         },
+        setPostPicked(context, payload) {
+            let data = {
+                postid: payload.postid,
+                uid: payload.uid,
+                status: 'picked'
+            }
+            db.collection("posts").doc(data.postid).update({
+                status: data.status,
+                picked: data.uid
+            })
+                .then(function () {
+                    context.commit('SET_POST_PICKED', data)
+                    console.log("Status for doc ", data.postid, " successfully updated");
+                })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
+
+        },
         removeTask(context, payload) {
             let assignedUid = context.getters.activeUser.uid
             // console.log("assigning task to activeuser id ", assignedUid)
             // console.log("assign task payload", payload)
             db.collection("posts").doc(payload.id).update({
-                ['offer.' + assignedUid]: ['false']
+                ['offer.' + assignedUid]: false
             })
                 .then(function () {
                     // console.log("removed task ", payload.uid, " for user ", assignedUid);
@@ -479,6 +560,7 @@ export const store = new Vuex.Store({
             // let queryParam = 'offer.' + context.getters.activeUser.uid;
             // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
             let ref = db.collection('replies').where("owner", "==", context.getters.activeUser.uid)
+            console.log("triggered lister for owner replies")
 
             ref.onSnapshot(snapshot => {
 
@@ -526,7 +608,7 @@ export const store = new Vuex.Store({
             //get myPosts
             db.collection("posts")
                 .where("uid", "==", context.getters.activeUser.uid)
-                .where("status", "in", ["free", "offer", "picked", "fin"]) //not see 'del' status
+                .where("status", "in", ["free", "offer", "picked"]) //not see 'del', 'fin' status
                 .get()
                 .then(function (querySnapshot, postArray) {
                     postArray = myPosts;
