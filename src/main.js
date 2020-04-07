@@ -46,7 +46,6 @@ firebase.auth().onAuthStateChanged((user) => {
       // ,mode: 'history'  ->will remove hash from url. will need to configure server to enable history mode (no hash)
     });
 
-
     app = new Vue({
       router,
       store,
@@ -56,4 +55,3 @@ firebase.auth().onAuthStateChanged((user) => {
   }
 
 })
-
