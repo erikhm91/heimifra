@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// import Vuex from 'vuex';
 import db from "@/firebase/init";
 const state = {
     postArray: [],
@@ -14,13 +15,17 @@ const getters = {
     //post
     getPost: state => postid => state.postArray.find(obj => obj.id == postid),
     postArray: state => state.postArray,
+    postsNotOwn: state => {
+        console.log("state: ", this.state)
+        return state.postArray.filter(post => post.owner != this.state.users.activeUser.uid) //not working!
+    },
     myPosts: state => state.myPosts,
     myActivePosts: state => {
         return state.myPosts.filter(post => post.status == "free")
     },
     //task
     myTasks: state => state.myTasks,
-      
+
     repliesForPost: state => function (postid) {
         console.log("entered repliesforpost", postid)
         console.log("all postreplies: ", state.myPostReplies)
@@ -48,7 +53,17 @@ const mutations = {
     },
     SET_POST_STATUS(state, payload) {
         let post = state.postArray.find(obj => obj.id === payload.postid);
-        post.status = payload.status
+        if (post) {
+            post.status = payload.status
+        }
+        post = state.myPosts.find(obj => obj.id === payload.postid);
+        if (post) {
+            post.status = payload.status
+        }
+        post = state.myTasks.find(obj => obj.id === payload.postid);
+        if (post) {
+            post.status = payload.status
+        }
     },
     SET_POST_PICKED(state, payload) {
         let post = state.postArray.find(obj => obj.id === payload.postid);
@@ -58,7 +73,6 @@ const mutations = {
     ADD_POST_REPLY(state, reply) {
         state.myPostReplies.push(reply)
     },
-
 
 
     //my posts
@@ -88,8 +102,6 @@ const mutations = {
     SET_MYTASKS(state, postArray) {
         state.myTasks = postArray
     },
-
-
     UPDATE_TASK(state, postObj) {
         let index = state.myTasks.findIndex(obj => obj.id === postObj.id);
         // console.log("Task update triggered. old task: ", state.myTasks[index])
@@ -99,8 +111,8 @@ const mutations = {
     }
 }
 const actions = {
-     //post
-     updatePostStatus(context, payload) {
+    //post
+    updatePostStatus(context, payload) {
         //update database with new status
         db.collection("posts").doc(payload.postid).update({
             status: payload.status
@@ -219,7 +231,7 @@ const actions = {
                 console.error("Error writing document: ", error);
             });
     },
-    fetchPosts: context => { // not used - listener instead
+    fetchPosts: context => { //not used, listener used instead
         let posts = []
         //get myPosts
         db.collection("posts").where("status", "in", ["free", "offer", "picked"]) //not see 'del' or finished status
@@ -243,28 +255,28 @@ const actions = {
     initiatePostListener(context) {
         // let queryParam = 'offer.' + context.getters.activeUser.uid;
         // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        let ref = db.collection('posts').
+        let ref = db.collection('posts').where("owner", ">")
 
-            ref.onSnapshot(snapshot => {
+        ref.onSnapshot(snapshot => {
 
-                snapshot.docChanges().forEach(change => {
+            snapshot.docChanges().forEach(change => {
 
-                    console.log("document listener triggered for my Tasks!")
-                    if (change.type == 'added') {
-                        // console.log("found an added Post", change.doc.data())
-                        let post = change.doc.data()
-                        post.id = change.doc.id
-                        context.commit("ADD_POST", post)
-                    }
-                    else if (change.type == 'modified') {
-                        // console.log("found a modified Post", change.doc.data())
-                        let post = change.doc.data()
-                        post.id = change.doc.id
-                        // console.log("messagepayload: ", messagePayload)
-                        context.commit("UPDATE_POST", post)
-                    }
-                })
+                console.log("document listener triggered for posts")
+                if (change.type == 'added') {
+                    // console.log("found an added Post", change.doc.data())
+                    let post = change.doc.data()
+                    post.id = change.doc.id
+                    context.commit("ADD_POST", post)
+                }
+                else if (change.type == 'modified') {
+                    // console.log("found a modified Post", change.doc.data())
+                    let post = change.doc.data()
+                    post.id = change.doc.id
+                    // console.log("messagepayload: ", messagePayload)
+                    context.commit("UPDATE_POST", post)
+                }
             })
+        })
     },
     initiateReplyListener(context) {
         // let queryParam = 'offer.' + context.getters.activeUser.uid;
@@ -291,7 +303,7 @@ const actions = {
         //get myPosts
         db.collection("posts")
             .where("uid", "==", context.getters.activeUser.uid)
-            .where("status", "in", ["free", "offer", "picked"]) //not see 'del', 'fin' status
+            .where("status", "in", ["free", "offer", "picked", "ownerfin", "helpfin"]) //not see 'del', 'fin' status
             .get()
             .then(function (querySnapshot, postArray) {
                 postArray = myPosts;

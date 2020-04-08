@@ -11,7 +11,6 @@
 </template>
 
 <script>
-// import MessageContainer from "./components/MessageContainer.vue";
 // import PostCreator from "./components/PostCreator.vue";
 import Header from "./components/Header.vue";
 // import PersonalPosts from "./components/PersonalPosts.vue";

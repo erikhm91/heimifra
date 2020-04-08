@@ -19,9 +19,9 @@
       <b-form-group id="input-group-2" label="Brukernavn:" label-for="input-2">
         <b-form-input
           id="input-2"
-          v-model="alias"
+          v-model="name"
           required
-          placeholder="Angi ditt unike brukernavn."
+          placeholder="Angi ditt navn eller brukernavn slik det skal vises for andre"
         ></b-form-input>
       </b-form-group>
 
@@ -55,7 +55,7 @@ export default {
     return {
       email: null,
       password: null,
-      alias: null,
+      name: null,
       feedback: ""
     };
   },
@@ -65,7 +65,7 @@ export default {
       if (
         this.email &&
         this.password &&
-        this.alias
+        this.name
       ) {
         //should implement check on if username is available in cloud functions!
         console.log("contacting firebase for signup");
@@ -80,9 +80,11 @@ export default {
             //should verify the allowed name params on the user
             let ref = db.collection("users").doc(cred.user.uid);
             ref.set({
-              alias: this.alias,
+              name: this.name,
               email: this.email,
-              uid: cred.user.uid
+              uid: cred.user.uid,
+              cntrate: 0,
+              rate: null
             });
             //registration successful, redirect user.
           }).then(() => {

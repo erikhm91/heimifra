@@ -84,15 +84,17 @@ export default {
     };
   },
   async created() {
-    //TODO: fetch additional user data!
+    //TODO: fetch additional user data!   
     console.log("created started, activeuser:", this.activeUser);
     if (this.activeUser.name) {
       console.log("no need to call api")
       this.setProfileAttributes()
     } else {
       console.log("calling api to fetch user")
-      this.$store.commit("SET_API_READY", false);
-      this.fetchOwnUser();
+      // this.$store.commit("SET_API_READY", false);
+      let promise = this.fetchOwnUser();
+      await promise
+      this.setProfileAttributes()
     }
   },
   computed: {

@@ -12,7 +12,7 @@
       <b-card-group deck>
         <home-store-post
           class="col-12 mt-3 button"
-          v-for="(post, i) in posts"
+          v-for="(post, i) in filteredPosts"
           v-bind:key="i"
           :post="post"
         >
@@ -30,10 +30,12 @@ import Post from "@/components/posts/Post.vue";
 import db from "@/firebase/init";
 import PostCreator from "@/components/posts/PostCreator.vue";
 import PostReply from "@/components/posts/PostReply.vue";
+import { mapGetters, mapActions } from "vuex";
 export default {
   computed:{ 
-      posts() {
-        return this.$store.getters.postArray
+      ...mapGetters(['postsNotOwn','postArray', 'activeUser']),
+      filteredPosts() {
+        return this.postArray.filter(post => post.uid != this.activeUser.uid)
       }
   },
   components: {
@@ -41,43 +43,10 @@ export default {
     PostCreator,
     postReply: PostReply,
   },
-  created() {
-    // if (this.$store.getters.postArray.length < 1) {
-    //   this.initialGetPosts();
-    // } else {
-    //   //check for delta, new messages arrived?
-    // }
-  },
   mounted() {
-    // console.log("MC mounted triggered")
-    // if (this.$store.getters.dbActive) {
-    //     console.log("MC db active")
-         console.log(this.$store.getters.postArray)
-    // }
+    console.log('postArray: ',this.postArray)
   },
-
   methods: {
-    initialGetPosts() {
-      let collectionReference = db.collection("posts");
-      var vm = this;
-      collectionReference.get().then(function(querySnapshot) {
-        if (querySnapshot.empty) {
-          // console.log("no data found...");
-        } else {
-          // console.log("data found!");
-          querySnapshot.forEach(function(documentSnapshot) {
-            let data = documentSnapshot.data();
-            console.log(data + vm.posts);
-            vm.$store.commit("ADD_POST", {
-              email: data.email,
-              name: data.name,
-              tips: data.tips,
-              text: data.text
-            });
-          });
-        }
-      });
-    },
     closeModal(id){
       this.$bvModal.hide(id)
     }

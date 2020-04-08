@@ -1,4 +1,4 @@
-import MessageContainer from '@/components/MessageContainer.vue';
+import PostView from '@/components/PostView.vue';
 import PersonalPosts from '@/components/PersonalPosts.vue'
 import MyTasks from '@/components/MyTasks.vue'
 import MyProfile from '@/components/profile/MyProfile.vue'
@@ -13,7 +13,7 @@ import Signup from '@/components/profile/Signup.vue'
 export const routes = [/* 
     {path: '', component: App }, */
 
-    { path: '', component: MessageContainer, name: 'home' },
+    { path: '', component: PostView, name: 'home' },
     { path: '/myposts', component: PersonalPosts, name: 'myposts' },
     {
         path: '/mytasks', component: MyTasks, name: 'mytasks'

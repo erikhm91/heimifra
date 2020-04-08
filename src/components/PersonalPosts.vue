@@ -1,13 +1,11 @@
 <template>
   <div>
     <div class="row mt-2">
-
       <div v-if="chatPartner" class="col-md-8 offset-md-2">
         <chat-window @closeChat="closeChat" :chatPartner="chatPartner"></chat-window>
       </div>
 
       <div v-else>
-      
         <div v-if="helperPostId != null" class="container">
           <post-helper-pick :postid="helperPostId" @closePick="helperPostId = null"></post-helper-pick>
         </div>
@@ -20,6 +18,11 @@
                 <post-creator @complete="closeModal('modal')"></post-creator>
               </b-modal>
             </div>
+
+            <div
+              v-if="myPosts.length == 0"
+            >Du har ingen aktive lister. Om det er noe du trenger å få gjort kan du opprette en ny liste ved å trykke på knappen over!</div>
+            <div v-else>
             <b-card-group deck>
               <home-store-post
                 class="mt-3 col-12"
@@ -32,16 +35,42 @@
                     <span>{{numberOfRepliesToPost(post.id)}} hjelpere har svart deg!</span>
                   </button>
                 </div>
-                <div class="mb-2" v-if="post.status == 'picked'">
-                  <button class="btn btn-outline-secondary disabled">
-                    <span>Du får hjelp!</span>
-                  </button>
+                <div
+                  class="mb-2"
+                  v-if="post.status == 'picked' || post.status == 'ownerfin' || post.status == 'helpfin'"
+                >
                   <button class="btn btn-primary" @click="showChat(post)">Åpne chat</button>
+
+                  <div v-if="post.status == 'picked'">
+                    <button class="btn btn-outline-secondary disabled">
+                      <span>Du får hjelp!</span>
+                    </button>
+                  </div>
+
+                  <div v-else-if="post.status == 'ownerfin'">
+                    <button class="btn btn-outline-secondary disabled">
+                      <span>Venter på at hjelper skal avslutte</span>
+                    </button>
+                  </div>
+
+                  <div v-else-if="post.status == 'helpfin'">
+                    <button class="btn btn-secondary">
+                      <span>Hjelper har avsluttet - gi din vurdering av hjelpen!</span>
+                    </button>
+                  </div>
                 </div>
+
                 <post-delete :postid="post.id"></post-delete>
-                <post-complete :postid="post.id"></post-complete>
+
+                <div v-if="post.status != ''">
+                <post-complete
+                  :owner="true"
+                  :postpayload="{ 'postid': post.id, 'status': post.status, 'helper': post.picked, 'owner': post.uid}"
+                ></post-complete>
+                </div>
               </home-store-post>
             </b-card-group>
+            </div>
           </div>
         </div>
       </div>
@@ -70,7 +99,12 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["activeUser","myPosts", "repliesForPost", "numberOfRepliesToPost"])
+    ...mapGetters([
+      "activeUser",
+      "myPosts",
+      "repliesForPost",
+      "numberOfRepliesToPost"
+    ])
   },
   mounted() {},
   created() {

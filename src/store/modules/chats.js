@@ -2,15 +2,15 @@ import db from "@/firebase/init";
 const state = {
     activeChatroom: null,
     activeChatMessages: [],
-    // chatrooms: chats.chatrooms,
+    chats: []
 }
 
 const getters = {
-        //chat
-        chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
-        activeChatroom: state => state.activeChatroom,
-        activeChatMessages: state => state.activeChatMessages.slice().reverse(),
-        activeChatMessagesUnreversed: state => state.activeChatMessages,
+    //chat
+    chatroom: state => room => state.chatrooms.find(obj => obj.room == room),
+    activeChatroom: state => state.activeChatroom,
+    activeChatMessages: state => state.activeChatMessages.slice().reverse(),
+    activeChatMessagesUnreversed: state => state.activeChatMessages,
 }
 
 const mutations = {
@@ -30,38 +30,54 @@ const mutations = {
     },
     ADD_CHATMESSAGE(state, payload) {
         // //payload: {'roomid': roomid, 'msg': msgObj}
-        // let chat = state.chatrooms.find(obj => obj.room === payload.roomid);
-        // console.log(chat)
-        // if (chat == null) {
-        //     //create new chat
-        //     chat = {
-        //         "room": payload.roomid,
-        //         "messages": []
-        //     }
-        //     state.chatrooms.push(chat);
-        // }
-        // console.log(chat)
-        // chat.messages.push(payload.msg);
+        let chatroom
+        if (state.chats.length > 0) {
+            chatroom = state.chats.find(obj => obj.room === payload.room);
+        } else {
+            //create new chat
+            chatroom = {
+                "room": payload.room,
+                "messages": []
+            }
+            state.chats.push(chatroom);
+        }
+        console.log(chatroom)
+        chatroom.messages.push(payload.msg);
+        console.log("updated chats state ", state.chats)
 
         // let messagePayload = {
         //     room : chatroomid,
         //     msg : newMessage
         // }
 
-        if (state.activeChatroom != payload.chatroomid) {
-            state.activeChatroom = payload.chatroomid;
-        }
-        console.log("adding chatmessage: ", payload)
+        // if (state.activeChatroom != payload.chatroomid) {
+        //     state.activeChatroom = payload.chatroomid;
+        // }
+        // console.log("adding chatmessage: ", payload)
 
-        state.activeChatMessages.push(payload.msg)
-        console.log("message added to chat: ", payload.msg)
+        // state.activeChatMessages.push(payload.msg)
+        // console.log("message added to chat: ", payload.msg)
     },
 
-    ADD_CHATMESSAGE_FIRST(state, payload) {
+    ADD_CHATMESSAGE_FIRST(state, payload) { //TO be obsolete, when moving away from "activechatroom"
         if (state.activeChatroom != payload.chatroomid) {
             state.activeChatroom = payload.chatroomid;
         }
         state.activeChatMessages.unshift(payload.msg)
+    },
+
+    ADD_CHATMESSAGE_FIRST_CHATS(state, payload) {
+        if (state.activeChatroom != payload.chatroomid) {
+            state.activeChatroom = payload.chatroomid;
+        }
+        state.activeChatMessages.unshift(payload.msg)
+    },
+
+    ADD_CHATMESSAGE_END_CHATS(state, payload) { //TO be obsolete, when moving away from "activechatroom"
+        if (state.activeChatroom != payload.chatroomid) {
+            state.activeChatroom = payload.chatroomid;
+        }
+        state.activeChatMessages.push(payload.msg)
     },
 
     ADD_CHATMESSAGE_END(state, payload) {
@@ -87,8 +103,8 @@ const mutations = {
     // },
 }
 const actions = {
-     //chat
-     activateChat(context, payload) {
+    //chat
+    activateChat(context, payload) {
         console.log("activateChat payload: ", payload)
         context.commit('SET_ACTIVE_CHATROOM', payload.chatroomid)
         // context.dispatch('fetchChatMessages', payload) //only need to have chatlistener for changes, so disable for now.
@@ -106,11 +122,9 @@ const actions = {
                     // console.log(doc.id, " => ", doc.data());
                     let msg = doc.data()
                     messageArray.push(msg)
-
                 });
                 // console.log("myPosts:", myPosts);
                 context.commit('SET_ACTIVE_CHAT_MESSAGES', messages);
-
             })
             .catch(function (error) {
                 console.log("Error getting documents: ", error);
@@ -156,6 +170,9 @@ const actions = {
                 context.commit('ADD_CHATMESSAGE_END', payload)
             }
         }
+
+        //add to chats store (to be implemented fully)
+        context.commit('ADD_CHATMESSAGE', payload)
         // console.log("commited message to store: ", payload.msg)
     },
 
