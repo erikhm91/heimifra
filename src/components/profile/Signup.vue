@@ -1,5 +1,6 @@
 <template>
   <div>
+    <b-card>
     <b-form @submit="signup">
       <b-form-group
         id="input-group-2"
@@ -43,6 +44,7 @@
         <b-button class="mt-2" type="submit" variant="primary">Opprett bruker</b-button>
       </div>
     </b-form>
+    </b-card>
   </div>
 </template>
 

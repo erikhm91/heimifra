@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row mt-2">
+    <!-- <div class="row mt-2"> -->
       <div v-if="chatPartner" class="col-md-8 offset-md-2">
         <chat-window @closeChat="closeChat" :chatPartner="chatPartner"></chat-window>
       </div>
@@ -11,7 +11,7 @@
         </div>
 
         <div v-else>
-          <div class="mt-2 col-md-8 offset-md-2 col-12">
+          <div class="mt-2 col-md-8 offset-md-2">
             <div class="text-center">
               <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
               <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
@@ -38,9 +38,10 @@
                 <div
                   class="mb-2"
                   v-if="post.status == 'picked' || post.status == 'ownerfin' || post.status == 'helpfin'"
-                >
+                > 
+                <div class="row justify-content-end">
                   <button class="btn btn-primary" @click="showChat(post)">Åpne chat</button>
-
+                </div>
                   <div v-if="post.status == 'picked'">
                     <button class="btn btn-outline-secondary disabled">
                       <span>Du får hjelp!</span>
@@ -48,9 +49,7 @@
                   </div>
 
                   <div v-else-if="post.status == 'ownerfin'">
-                    <button class="btn btn-outline-secondary disabled">
-                      <span>Venter på at hjelper skal avslutte</span>
-                    </button>
+                      Venter på at hjelper skal avslutte
                   </div>
 
                   <div v-else-if="post.status == 'helpfin'">
@@ -59,7 +58,7 @@
                     </button>
                   </div>
                 </div>
-
+                <div class="row justify-content-end">
                 <post-delete :postid="post.id"></post-delete>
 
                 <div v-if="post.status != ''">
@@ -67,14 +66,15 @@
                   :owner="true"
                   :postpayload="{ 'postid': post.id, 'status': post.status, 'helper': post.picked, 'owner': post.uid}"
                 ></post-complete>
-                </div>
+                  </div>
+                  </div>
               </home-store-post>
             </b-card-group>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
