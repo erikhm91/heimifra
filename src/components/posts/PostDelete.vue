@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-b-modal="postid"  class="btn btn-outline-danger mr-2 btn-sm">Slett</button>
+    <button v-b-modal="postid" class="btn mr-2 btn-sm"><icon-delete width="1.2rem" height="1.2rem"></icon-delete></button>
 
               <b-modal
                 :id="postid"
@@ -18,9 +18,13 @@
 </template>
 
 <script>
+import IconDelete from '@/components/icons/IconDelete.vue'
 import { mapActions } from "vuex";
 export default {
   props: ['postid'],
+  components: {
+    IconDelete
+  },
   methods: {
     ...mapActions(["updatePostStatus"])
   }
