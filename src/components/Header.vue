@@ -25,8 +25,8 @@
 
 
       <!-- Right aligned nav items -->
-      <b-navbar-nav :to="{name: 'aboutus'}" class="ml-auto">
-        <b-nav-item  href="#">Om oss</b-nav-item>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item :to="{name: 'aboutus'}" href="#">Om oss</b-nav-item>
         <b-nav-form>
           <b-form-input size="sm" class="mr-sm-2" placeholder="Søk"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" type="submit">Søk</b-button>
