@@ -11,8 +11,14 @@
         </div>
       </div>
       <div class="card-body">
+        <div class="row">
+        <div class="col-9">
         <p class="card-text">{{post.text}}</p>
+        </div>
+        <div class="col-3">
         <slot></slot>
+        </div>
+        </div>
       </div>
     </div>
   </div>

@@ -40,7 +40,7 @@
                   v-if="post.status == 'picked' || post.status == 'ownerfin' || post.status == 'helpfin'"
                 > 
                 <div class="row justify-content-end">
-                  <button class="btn btn-primary" @click="showChat(post)">Åpne chat</button>
+                  <button class="btn" @click="showChat(post)"><icon-chat height="2rem" width="2rem"></icon-chat></button>
                 </div>
                   <div v-if="post.status == 'picked'">
                     <button class="btn btn-outline-secondary disabled">
@@ -88,6 +88,7 @@ import PostDelete from "@/components/posts/PostDelete.vue";
 import PostComplete from "@/components/posts/PostComplete.vue";
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import ChatWindow from "@/components/message/ChatWindow.vue";
+import IconChat from "@/components/icons/IconChat.vue";
 import { mapGetters, mapActions } from "vuex";
 export default {
   mixins: [chatroomMixin],
@@ -123,7 +124,8 @@ export default {
     HomeStorePost: Post,
     PostDelete,
     PostComplete,
-    ChatWindow
+    ChatWindow,
+    IconChat
   },
   methods: {
     triggerPostHelperPick(postid) {
