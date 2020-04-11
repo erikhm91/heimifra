@@ -1,10 +1,14 @@
 <template>
   <div class="row mt-2">
-    <div class="col-md-8 offset-md-2">
+    <div class="col-md-8 offset-md-2 col-12">
+      
+      <div>Min plassering: {{this.userlat}}, {{this.userlong}}</div>
+      
       <div class="text-center">
         <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
       </div>
-      <!-- modal inside post creator -->
+
+
       <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
         <post-creator @complete="closeModal('modal')"></post-creator>
       </b-modal>
@@ -32,6 +36,12 @@ import PostCreator from "@/components/posts/PostCreator.vue";
 import PostReply from "@/components/posts/PostReply.vue";
 import { mapGetters, mapActions } from "vuex";
 export default {
+  data() {
+    return {
+      userlat: null,
+      userlong: null
+    }
+  },
   computed:{ 
       ...mapGetters(['postsNotOwn','postArray', 'activeUser']),
       filteredPosts() {
@@ -43,8 +53,21 @@ export default {
     PostCreator,
     postReply: PostReply,
   },
-  mounted() {
+  async mounted() {
     console.log('postArray: ',this.postArray)
+    
+    //get user geolocation
+    console.log('here we identify the geolocation of user')
+    //check if browser supports geolocation
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        this.userlat = pos.coords.latitude
+        this.userlong = pos.coords.longitude
+        console.log("geolocation of user in callback: ", this.userlat, this.userlong)
+        //TODO trigger search on database
+      })
+    }
+
   },
   methods: {
     closeModal(id){
