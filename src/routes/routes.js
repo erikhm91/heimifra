@@ -21,9 +21,9 @@ const router = new VueRouter({
                 requiresAuth: true
             }
         },
-        { path: '/myposts', component: PersonalPosts, name: 'myposts' },
+        { path: '/lister', component: PersonalPosts, name: 'myposts' },
         {
-            path: '/mytasks', component: MyTasks, name: 'mytasks'
+            path: '/oppdrag', component: MyTasks, name: 'mytasks'
 
             // ,children: [
             //     {
@@ -52,13 +52,13 @@ router.beforeEach((to, from, next) => {
             next() // go to wherever I'm going          
         }
     } else {
-        // if (to.matched.some(record => record.name == 'login' || record.name == 'signup') && from.matched.some(record => record.name != 'myprofile')) {
-        //     //redircet from login and signup if already logged in, but not trigger from myprofile (signout)
-        //     next({ name: 'home' })
-        // } else {
+        if (to.matched.some(record => record.name == 'login' || record.name == 'signup') && from.matched.some(record => record.name != 'myprofile')) {
+            //redirect from login and signup if already logged in, but not trigger from myprofile (signout)
+            next({ name: 'home' })
+        } else {
 
         next() // does not require auth, make sure to always call next()!
-        // }
+        }
     }
 })
 

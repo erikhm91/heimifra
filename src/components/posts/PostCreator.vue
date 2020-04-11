@@ -6,7 +6,7 @@
         <!-- <div class="card w-100"> -->
         <!-- <div class="card-body"> -->
         <div class>
-          <b-form @submit="onSubmit">
+          <b-form @submit.prevent="onSubmit">
             <b-form-group id="input-group-1" label="Bestilling:">
               <b-form-textarea
                 id="textarea"

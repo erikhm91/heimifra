@@ -8,7 +8,7 @@
         </p>
       </b-card-text>
 
-      <b-form @submit="login">
+      <b-form @submit.prevent="login()">
         <!-- label="Epostadresse:" -->
         <b-form-group id="input-group-2" label-for="input-2">
           <!-- description="Vi deler ikke eposten din med andre." -->
@@ -82,6 +82,7 @@ export default {
             this.$router.push({ name: "home" });
           })
           .catch(err => {
+            console.log('error occurred during login!', err.message)
             this.feedback = err.message;
             this.$store.commit('SET_API_READY', true)
           });

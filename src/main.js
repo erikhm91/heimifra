@@ -24,6 +24,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
   let firebaseuser = firebase.auth().currentUser
   console.log("current user: ", firebaseuser)
+  console.log(user)
 
 
   // if (store.getters.apiReady == false) {

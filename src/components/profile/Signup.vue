@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-card>
-    <b-form @submit="signup">
+    <b-form @submit.prevent="signup">
       <b-form-group
         id="input-group-2"
         label="Epostadresse:"
