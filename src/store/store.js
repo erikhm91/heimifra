@@ -17,11 +17,14 @@ export const store = new Vuex.Store({
     strict: true,
     state: {
         apiReady: true,
-        error: null
+        error: null,
+        loggedIn: false
     },
     getters: {
         apiReady: state => state.apiReady,
         dbActive: state => state.dbActive, //obsolete - to be deleted
+        isLoggedIn: state => state.loggedIn, //obsolete? Activeuser serves purpose
+
     },
     mutations: {
         SET_API_READY(state, bool) {
@@ -29,6 +32,9 @@ export const store = new Vuex.Store({
         },
         SET_ERROR(state, error) {
             state.error = error
+        },
+        SET_LOGGED_IN(state, bool) {
+            state.loggedIn = bool
         }
     },
     actions: {
@@ -43,7 +49,7 @@ export const store = new Vuex.Store({
             context.dispatch('initiateReplyListener')
             // context.dispatch('fetchOwnRepliesToPosts') --> necessary???
         },
-        
+
     },
     modules: {
         posts,

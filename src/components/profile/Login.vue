@@ -1,46 +1,56 @@
 <template>
   <div>
+    <b-card style="max-width: 35rem;">
+      <b-card-text>
+        <p>Heimifra er skapt for å gjøre din hverdag enklere - enten du ønsker varer eller tjenester levert rett på døren, eller vil tjene noen kroner på å hjelpe andre!</p>
+        <p>
+          <b>Alle kan trenge en hjelpende hånd!</b>
+        </p>
+      </b-card-text>
 
-    <b-card>
-    <b-form @submit="login">
-      <b-form-group id="input-group-2" label="Epostadresse:" label-for="input-2">
-        <!-- description="Vi deler ikke eposten din med andre." -->
-        <b-form-input
-          id="input-2"
-          v-model="email"
-          type="email"
-          required
-          placeholder="Angi epostadresse."
-        ></b-form-input>
-      </b-form-group>
+      <b-form @submit="login">
+        <!-- label="Epostadresse:" -->
+        <b-form-group id="input-group-2" label-for="input-2">
+          <!-- description="Vi deler ikke eposten din med andre." -->
+          <b-form-input
+            id="input-2"
+            v-model="email"
+            type="email"
+            required
+            placeholder="Angi epostadresse."
+          ></b-form-input>
+        </b-form-group>
 
-      <b-form @submit.stop.prevent>
-        <label for="text-password">Passord</label>
-        <b-input
-          v-model="password"
-          type="password"
-          id="text-password"
-          aria-describedby="password-help-block"
-          required
-          placeholder="Angi passord."
-        ></b-input>
-        <!-- <b-form-text id="password-help-block">Ditt passord må være 8-20 tegn langt.</b-form-text> -->
+        <b-form @submit.stop.prevent>
+          <!-- <label for="text-password">Passord</label> -->
+          <b-input
+          v-on:keyup.enter="login"
+            v-model="password"
+            type="password"
+            id="text-password"
+            aria-describedby="password-help-block"
+            required
+            placeholder="Angi passord."
+          ></b-input>
+          <!-- <b-form-text id="password-help-block">Ditt passord må være 8-20 tegn langt.</b-form-text> -->
+        </b-form>
+        <div class>
+          <p class="text-danger">{{ feedback }}</p>
+        </div>
+        <div class="row ml-1 mb-2 mt-4">
+          <div>
+            <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
+            <b-button class="" type="submit" variant="primary">Logg inn!</b-button>
+          </div>
+          <div class="col">
+              <small class="text-muted leadtext">Mangler du brukerkonto?</small>
+              <button id="newaccountbtn" @click="signup" class="btn btn-secondary">Opprette konto</button>
+            
+          </div>
+        </div>
       </b-form>
-
-      <div class="">
-        <p class="text-danger">{{ feedback }}</p>
-        <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
-        <b-button class="mb-2" type="submit" variant="primary">Logg inn!</b-button>
-      </div>
-    </b-form>
-
-    <div>
-      <small class="text-muted">Mangler du brukerkonto?</small>
-    </div>
-    <button @click="signup" class="btn btn-secondary">Opprette ny konto</button>
-  </b-card>
+    </b-card>
   </div>
-
 </template>
 
 <script>
@@ -56,20 +66,24 @@ export default {
   methods: {
     login() {
       if (this.email && this.password) {
+        console.log("logging in!")
+        this.$store.commit('SET_API_READY', false)
         firebase
           .auth()
           .signInWithEmailAndPassword(this.email, this.password)
           .then(cred => {
             console.log(cred.user);
-            this.$store.commit('SET_USER', cred.user)
-            this.$store.commit('SET_ACTIVE_UID', cred.user.uid)
-            this.$store.commit('SET_ACTIVE_EMAIL', cred.user.email)
-            this.$store.commit('SET_LOGGED_IN', true)
+            this.$store.commit("SET_LOGGED_IN", true);
+            this.$store.commit("SET_USER", cred.user);
+            this.$store.commit('SET_API_READY', true)
+            // this.$store.commit("SET_ACTIVE_UID", cred.user.uid);
+            // this.$store.commit("SET_ACTIVE_EMAIL", cred.user.email);
 
-            this.$router.push({ name: 'home' })
+            this.$router.push({ name: "home" });
           })
           .catch(err => {
             this.feedback = err.message;
+            this.$store.commit('SET_API_READY', true)
           });
       } else {
         this.feedback = "Angi epost og passord for å logge inn!";
@@ -83,3 +97,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .leadtext {
+    position: absolute;
+    top: -1.2rem;
+  }
+</style>

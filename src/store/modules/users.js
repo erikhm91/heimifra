@@ -2,14 +2,13 @@ import db from "@/firebase/init";
 import firebase from 'firebase';
 const state = {
     users: [],
-    activeUser: null,
-    loggedIn: false,
+    activeUser: null
 }
 
 const getters = {
     //user
     activeUser: state => state.activeUser,
-    loggedIn: state => state.loggedIn, //obsolete? Activeuser serves purpose
+    
     getUsers: state => state.users, //should use to keep buffered user data in store?
     getUser: state => uid => state.users.find(obj => obj.uid == uid), //keep buffered user data in store
 }
@@ -36,9 +35,6 @@ const mutations = {
             state.activeUser.rate = payload.rate
         }
     },
-    SET_LOGGED_IN(state, bool) {
-        state.loggedIn = bool
-    }
 }
 const actions = {
     async fetchOwnUser(context) {
