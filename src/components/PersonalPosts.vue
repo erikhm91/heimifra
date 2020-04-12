@@ -15,7 +15,7 @@
             <div class="text-center">
               <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
               <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
-                <post-creator @complete="closeModal('modal')"></post-creator>
+                <post-creator @complete="$bvModal.hide('modal')"></post-creator>
               </b-modal>
             </div>
 

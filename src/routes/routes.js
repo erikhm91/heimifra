@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router';
 import PostView from '@/components/PostView.vue';
 import PersonalPosts from '@/components/PersonalPosts.vue'
+import PostCreator from '@/components/posts/PostCreator.vue'
 import MyTasks from '@/components/MyTasks.vue'
 import MyProfile from '@/components/profile/MyProfile.vue'
 import AboutUs from '@/components/AboutUs.vue'
@@ -35,7 +36,8 @@ const router = new VueRouter({
         { path: '/minside', component: MyProfile, name: 'myprofile' },
         { path: '/login', component: Login, name: 'login' },
         { path: '/about', component: AboutUs, name: 'aboutus' },
-        { path: '/signup', component: Signup, name: 'signup' }
+        { path: '/signup', component: Signup, name: 'signup' },
+        { path: '/opprett', component: PostCreator, name: 'createpost' },
     ]
 })
 

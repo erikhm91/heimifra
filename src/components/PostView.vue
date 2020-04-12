@@ -14,7 +14,8 @@
       <!-- <div>avstand fra meg selv ny formel: {{getDistanceFromUser(59, 9, 59, 9.01)}}</div> -->
 
       <div class="text-center">
-        <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
+        <button @click="$router.push({name: 'createpost'})" class="btn btn-primary">+ Opprett ny handleliste</button>
+         <!-- v-b-modal="'modal'"  -->
       </div>
 
       <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
@@ -59,8 +60,11 @@ export default {
   computed: {
     ...mapGetters(["postsNotOwn", "postArray", "activeUser"]),
     filteredPosts() {
-      return this.postArray.filter(post => post.uid != this.activeUser.uid);
-    }
+      // let arrayCopy = this.postArray
+      // return arrayCopy.sort((a,b) => (a.timestamp > b.timestamp) ? 1 : -1)
+      // .filter(post => post.uid != this.activeUser.uid);
+      return this.postArray
+      }
   },
   components: {
     homeStorePost: Post,
@@ -83,15 +87,6 @@ export default {
           this.userlat,
           this.userlon
         );
-
-        let distance = this.getDistanceFromLatLonInKm(
-          this.userlat,
-          this.userlon,
-          this.userlat,
-          this.userlon
-        );
-        console.log("distance: ", distance);
-        //TODO trigger search on database
       });
     }
   },
