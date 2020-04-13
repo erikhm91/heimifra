@@ -1,28 +1,28 @@
 <template>
   <div>
     <!-- <div class="row mt-2"> -->
-      <div v-if="chatPartner" class="col-md-8 offset-md-2">
-        <chat-window @closeChat="closeChat" :chatPartner="chatPartner"></chat-window>
+    <div v-if="chatPartner" class="col-md-8 offset-md-2">
+      <chat-window @closeChat="closeChat" :chatPartner="chatPartner"></chat-window>
+    </div>
+
+    <div v-else>
+      <div v-if="helperPostId != null" class="container">
+        <post-helper-pick :postid="helperPostId" @closePick="helperPostId = null"></post-helper-pick>
       </div>
 
       <div v-else>
-        <div v-if="helperPostId != null" class="container">
-          <post-helper-pick :postid="helperPostId" @closePick="helperPostId = null"></post-helper-pick>
-        </div>
+        <div class="mt-2 col-md-8 offset-md-2">
+          <div class="text-center">
+            <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
+            <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
+              <post-creator @complete="$bvModal.hide('modal')"></post-creator>
+            </b-modal>
+          </div>
 
-        <div v-else>
-          <div class="mt-2 col-md-8 offset-md-2">
-            <div class="text-center">
-              <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
-              <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
-                <post-creator @complete="$bvModal.hide('modal')"></post-creator>
-              </b-modal>
-            </div>
-
-            <div
-              v-if="myPosts.length == 0"
-            >Du har ingen aktive lister. Om det er noe du trenger å få gjort kan du opprette en ny liste ved å trykke på knappen over!</div>
-            <div v-else>
+          <div
+            v-if="myPosts.length == 0"
+          >Du har ingen aktive lister. Om det er noe du trenger å få gjort kan du opprette en ny liste ved å trykke på knappen over!</div>
+          <div v-else>
             <b-card-group deck>
               <home-store-post
                 class="mt-3 col-12"
@@ -37,46 +37,48 @@
                   <button @click="triggerPostHelperPick(post.id)" class="btn btn-primary">
                     <span>{{numberOfRepliesToPost(post.id)}} hjelpere har svart deg!</span>
                   </button>
-                </div> -->
+                </div>-->
                 <div
                   class="mb-2"
                   v-if="post.status == 'picked' || post.status == 'ownerfin' || post.status == 'helpfin'"
-                > 
-                <div class="row justify-content-end">
-                  <button class="btn" @click="showChat(post)"><icon-chat height="2rem" width="2rem"></icon-chat></button>
-                </div>
+                >
+                  <div class="row justify-content-end">
+                    <button class="btn" @click="showChat(post)">
+                      <icon-chat height="2rem" width="2rem"></icon-chat>
+                    </button>
+                  </div>
                   <!-- <div v-if="post.status == 'picked'">
                     <button class="btn btn-outline-secondary disabled">
                       <span>Du får hjelp!</span>
                     </button>
-                  </div> -->
+                  </div>-->
 
                   <!-- <div v-else-if="post.status == 'ownerfin'">
                       Venter på at hjelper skal avslutte
-                  </div> -->
+                  </div>-->
 
                   <!-- <div v-else-if="post.status == 'helpfin'">
                     <button class="btn btn-secondary">
                       <span>Hjelper har avsluttet - gi din vurdering av hjelpen!</span>
                     </button>
-                  </div> -->
+                  </div>-->
                 </div>
                 <div class="row justify-content-end">
-                <post-delete :postid="post.id"></post-delete>
+                  <post-delete :postid="post.id"></post-delete>
 
-                <div v-if="post.status != ''">
-                <post-complete
-                  :owner="true"
-                  :postpayload="{ 'postid': post.id, 'status': post.status, 'helper': post.picked, 'owner': post.uid}"
-                ></post-complete>
+                  <div v-if="post.status != ''">
+                    <post-complete
+                      :owner="true"
+                      :postpayload="{ 'postid': post.id, 'status': post.status, 'helper': post.picked, 'owner': post.uid}"
+                    ></post-complete>
                   </div>
-                  </div>
+                </div>
               </home-store-post>
             </b-card-group>
-            </div>
           </div>
         </div>
       </div>
+    </div>
     <!-- </div> -->
   </div>
 </template>
@@ -112,7 +114,7 @@ export default {
     ])
   },
   mounted() {
-    console.log("personalposts")
+    console.log("personalposts");
   },
   created() {
     // this.$store.subscribe((mutation, state) => {
@@ -136,7 +138,7 @@ export default {
   methods: {
     triggerPostHelperPick(postid) {
       // this.postHelperArray
-      console.log("triggered posthelperpick for psotid ", postid)
+      console.log("triggered posthelperpick for psotid ", postid);
       this.helperPostId = postid;
     },
     showChat(post) {

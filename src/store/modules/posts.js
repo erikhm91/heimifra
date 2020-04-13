@@ -267,8 +267,17 @@ const actions = {
         const latitude = payload.latitude
         const longitude = payload.longitude
 
-        const degreesLatPerKm = 1/111.412240 //lat pretty much constant
-        const degreesLonPerKm = 1/55.799979  //use average at 60 degrees, which is ca. Norway. TODO: implement more accurate formula.
+        const degreesLatPerKm = 0.009005402        // 1/111.412240 //lat pretty much constant
+        let degreesLonPerKm = 0.0112976861       // 1/55.799979  //use average at 60 degrees, which is ca. Norway. TODO: implement more accurate formula.
+        
+        const latitudeInRad = latitude * Math.PI/180
+        const kmPerDegreeLon = Math.cos(latitudeInRad) * 111.321
+        degreesLonPerKm = 1 / kmPerDegreeLon 
+        console.log('degreesLonPerKm: ', degreesLonPerKm)
+        console.log('1 degree in km: ', degreesLonPerKm)
+        //
+
+
 
         const lowerLat = latitude - degreesLatPerKm * range
         const lowerLon = longitude - degreesLonPerKm * range
@@ -296,6 +305,7 @@ const actions = {
                 });
                 // console.log("myPosts:", myPosts);
                 context.commit('SET_POSTS', posts);
+                console.log("fetched posts: ", posts)
             })
             .catch(function (error) {
                 console.log("Error getting documents: ", error);

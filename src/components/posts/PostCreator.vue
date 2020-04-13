@@ -118,7 +118,8 @@ export default {
       addressDropdown: [],
       globalTimeout: null,
       latitude: null,
-      longitude: null
+      longitude: null,
+      address: null
     };
   },
   components: {
@@ -146,7 +147,8 @@ export default {
             timestamp: new firebase.firestore.Timestamp.now(),
             status: "free",
             loc: geopoint,
-            geohash: lochash
+            geohash: lochash,
+            address: this.address
           })
           .then(() => {
             console.log("update successful!");
@@ -217,7 +219,6 @@ export default {
         }
       });
     },
-    validateSelection() {},
     buildDropdownList(array) {
       // this.addressDropdown = array;
       console.log("addressedata: ", this.addressDropdown);
@@ -236,6 +237,8 @@ export default {
     getLocationOfAddress(value) {
       if (value.id) {
         console.log("selected entry: ", value.id);
+        this.address = value.name
+        console.log("this.address: ", this.address)
         this.latitude = value.id.representasjonspunkt.lat;
         this.longitude = value.id.representasjonspunkt.lon;
         // let queryparam =

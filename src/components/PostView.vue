@@ -122,7 +122,6 @@ export default {
           range: this.range
         }
         this.fetchPostsGeo(payload)
-
     }
   }
 };
