@@ -13,6 +13,8 @@
             v-bind:key="i"
             class="mt-3 col-12"
             :post="post"
+            :status="post.status"
+            view="task"
           >
             <!-- <div v-if="post.hjelp ==true" class="text-right"></div> -->
             <div class="row justify-content-end">

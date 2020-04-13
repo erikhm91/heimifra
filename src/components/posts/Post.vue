@@ -20,8 +20,14 @@
           </div>
         </div>
         <div class="row">
-          <div v-if="status != 'offer'" class="col">{{getStatusText()}}</div>
-          <div v-if="status == 'offer'"><button class="btn btn-primary" @click="$emit('pickhelper')" type="button">{{numberOfRepliesToPost(post.id)}} {{getStatusText()}}</button></div>
+          <div v-if="(status != 'offer' && view=='ownpost') || view == 'task'" class="col">{{getStatusText}}</div>
+          <div v-else-if="status == 'offer' && view=='ownpost'">
+            <button
+              class="btn btn-primary"
+              @click="$emit('pickhelper')"
+              type="button"
+            >{{numberOfRepliesToPost(post.id)}} {{getStatusText}}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -30,12 +36,12 @@
 
 <script>
 import ProfileIcon from "@/components/icons/ProfileIcon.vue";
-import { mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 export default {
   props: {
-    numOfHelpers: {
+    view: {
       type: String,
-      default: ""
+      default: "ownpost" //task
     },
     status: {
       type: String,
@@ -62,12 +68,7 @@ export default {
     // }
   },
   computed: {
-    ...mapGetters(["numberOfRepliesToPost"])
-  },
-  components: {
-    profileIcon: ProfileIcon
-  },
-  methods: {
+    ...mapGetters(["numberOfRepliesToPost"]),
     getStatusText() {
       let statustext;
       switch (this.status) {
@@ -75,20 +76,32 @@ export default {
           statustext = "Venter på at noen skal kontakte";
           break;
         case "offer":
-          if (this.numberOfRepliesToPost(this.post.id) == '1') {
-          statustext = "hjelper har kontaktet deg";
+          if (this.view == "task") {
+            statustext = "Venter på svar fra eier";
           } else {
-            statustext = "hjelpere har kontaktet deg";
+            if (this.numberOfRepliesToPost(this.post.id) == "1") {
+              statustext = "hjelper har kontaktet deg";
+            } else {
+              statustext = "hjelpere har kontaktet deg";
+            }
           }
           break;
         case "picked":
           statustext = "Hjelper valgt";
           break;
         case "ownerfin":
-          statustext = "Venter på at hjelper skal avslutte";
+          if (this.view == "task") {
+            statustext = "Eier har avsluttet - trykk her for å vurdere";
+          } else {
+            statustext = "Venter på at hjelper skal avslutte";
+          }
           break;
         case "helpfin":
-          statustext = "Hjelper har avsluttet - trykk her for å vurdere";
+          if (this.view == "task") {
+            statustext = "Venter på at eier skal avslutte";
+          } else {
+            statustext = "Hjelper har avsluttet - trykk her for å vurdere";
+          }
           break;
         case "fin":
           statustext = "Fullført";
@@ -103,6 +116,11 @@ export default {
       //     statustext = 'Venter på at noen skal kontakte'
       // }
     }
+  },
+  components: {
+    profileIcon: ProfileIcon
+  },
+  methods: {
   }
 };
 </script>
