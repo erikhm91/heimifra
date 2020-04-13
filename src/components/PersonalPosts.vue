@@ -107,7 +107,9 @@ export default {
       "numberOfRepliesToPost"
     ])
   },
-  mounted() {},
+  mounted() {
+    console.log("personalposts")
+  },
   created() {
     // this.$store.subscribe((mutation, state) => {
     //   if (mutation.type === "ADD_OWN_POST") {

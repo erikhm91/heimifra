@@ -1,9 +1,10 @@
 <template>
   <div>
-    <button v-b-modal="postid" class="btn mr-2 btn-sm"><icon-delete width="1.2rem" height="1.2rem"></icon-delete></button>
+    <button v-b-modal="postid+'del'" class="btn mr-2 btn-sm"><icon-delete width="1.2rem" height="1.2rem"></icon-delete></button>
+
 
               <b-modal
-                :id="postid"
+                :id="postid+'del'"
                 :title="'Bekreft sletting'"
                 :ok-title="'Slett'"
                 cancel-title="Avbryt"
@@ -26,7 +27,11 @@ export default {
     IconDelete
   },
   methods: {
-    ...mapActions(["updatePostStatus"])
+    ...mapActions(["updatePostStatus"]),
+    deletetest() {
+      console.log("delete triggered")
+
+    }
   }
 };
 </script>

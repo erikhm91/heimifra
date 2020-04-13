@@ -100,6 +100,7 @@ import { mapGetters } from "vuex";
 import axios from "axios";
 import firebase from "firebase";
 import VueDropdown from "vue-simple-search-dropdown";
+import geohash from "ngeohash"
 export default {
   data() {
     return {
@@ -128,6 +129,12 @@ export default {
   },
   methods: {
     onSubmit() {
+      // if (this.post) {
+        let geopoint = new firebase.firestore.GeoPoint(this.latitude, this.longitude)
+        let lochash = geohash.encode(this.latitude, this.longitude)
+        console.log('hashcode: ', lochash)
+      // }
+
       if (this.post) {
         db.collection("posts")
           .add({
@@ -138,7 +145,8 @@ export default {
             uid: this.activeUser.uid,
             timestamp: new firebase.firestore.Timestamp.now(),
             status: "free",
-            loc: new firebase.firestore.GeoPoint(this.latitude, this.longitude)
+            loc: geopoint,
+            lochash: lochash
           })
           .then(() => {
             console.log("update successful!");
@@ -175,6 +183,8 @@ export default {
     //     console.log("response from kartverket: ", response);
     //   });
     // },
+
+    
     triggerGetDropdownList(value) {
       //only trigger api request after waiting for x ms
       if (value) {

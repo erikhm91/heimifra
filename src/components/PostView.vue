@@ -2,11 +2,13 @@
   <div class="row mt-2">
     <div class="col-md-8 offset-md-2 col-12">
       <!-- <div>Min plassering: {{this.userlat}}, {{this.userlon}}</div> -->
+      
 
       <div>Avstand i km: {{range}}</div>
       <!-- <input type="range" name="location" id="distanceslider"> -->
       <vue-slider v-model="range" :min="1"></vue-slider>
       <div>min posisjon: {{userlat}},{{userlon}}</div>
+      <button type="button" class="btn btn-secondary">Hent lister</button>
       <!-- <div>test avstand i km: {{getDistance(userlat, userlon, 59.9396, 10.6715)}}</div> -->
       <!-- <div>avstand fra meg selv data: {{distance}}</div>
       <div>avstand fra meg selv data: {{distance}}</div> -->
