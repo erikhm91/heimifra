@@ -26,7 +26,7 @@
             <b-card-group deck>
               <home-store-post
                 class="mt-3 col-12"
-                v-for="(post, i) in myPosts"
+                v-for="(post, i) in myPostsNotDelFin"
                 v-bind:key="i"
                 :post="post"
               >
@@ -104,7 +104,8 @@ export default {
       "activeUser",
       "myPosts",
       "repliesForPost",
-      "numberOfRepliesToPost"
+      "numberOfRepliesToPost",
+      "myPostsNotDelFin"
     ])
   },
   mounted() {

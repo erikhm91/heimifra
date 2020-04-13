@@ -20,6 +20,9 @@ const getters = {
         return state.postArray.filter(post => post.owner != this.state.users.activeUser.uid) //not working!
     },
     myPosts: state => state.myPosts,
+    myPostsNotDelFin: state => {
+            return state.myPosts.filter(post => post.status != "free" || post.status != "fin")
+    },
     myActivePosts: state => {
         return state.myPosts.filter(post => post.status == "free")
     },
@@ -54,16 +57,20 @@ const mutations = {
     SET_POST_STATUS(state, payload) {
         let post = state.postArray.find(obj => obj.id === payload.postid);
         if (post) {
-            post.status = payload.status
+            Vue.set(post, status, payload.status)
+            // post.status = payload.status
         }
         post = state.myPosts.find(obj => obj.id === payload.postid);
         if (post) {
-            post.status = payload.status
+            Vue.set(post, status, payload.status)
+            // post.status = payload.status
         }
         post = state.myTasks.find(obj => obj.id === payload.postid);
         if (post) {
-            post.status = payload.status
+            Vue.set(post, status, payload.status)
+            // post.status = payload.status
         }
+        console.log("updated post status")
     },
     SET_POST_PICKED(state, payload) {
         let post = state.postArray.find(obj => obj.id === payload.postid);
@@ -234,7 +241,8 @@ const actions = {
     fetchPosts: context => { //not used, listener used instead
         let posts = []
         //get myPosts
-        db.collection("posts").where("status", "in", ["free", "offer", "picked"]) //not see 'del' or finished status
+        db.collection("posts").where("status", "in", ["free", "offer", "picked"])
+        //not see 'del' or finished status
             .get()
             .then(function (querySnapshot, postArray) {
                 postArray = posts;
