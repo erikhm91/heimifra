@@ -42,7 +42,7 @@ export const store = new Vuex.Store({
         initState(context) {
             store.commit('SET_LOGGED_IN', true)
             // console.log(context)
-            context.dispatch('fetchPosts')
+            // context.dispatch('fetchPosts')
             context.dispatch('fetchMyPosts')
             // context.dispatch('fetchMyTasks')
             context.dispatch('initiateTaskListener')

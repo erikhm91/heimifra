@@ -146,7 +146,7 @@ export default {
             timestamp: new firebase.firestore.Timestamp.now(),
             status: "free",
             loc: geopoint,
-            lochash: lochash
+            geohash: lochash
           })
           .then(() => {
             console.log("update successful!");

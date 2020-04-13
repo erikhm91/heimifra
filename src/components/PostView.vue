@@ -8,7 +8,7 @@
       <!-- <input type="range" name="location" id="distanceslider"> -->
       <vue-slider v-model="range" :min="1"></vue-slider>
       <div>min posisjon: {{userlat}},{{userlon}}</div>
-      <button type="button" class="btn btn-secondary" @click="triggerFetchPosts()">Hent lister</button>
+      <button type="button" class="btn btn-secondary" @click="triggerFetchPostsGeo()">Hent lister</button>
       <!-- <div>test avstand i km: {{getDistance(userlat, userlon, 59.9396, 10.6715)}}</div> -->
       <!-- <div>avstand fra meg selv data: {{distance}}</div>
       <div>avstand fra meg selv data: {{distance}}</div> -->
@@ -89,10 +89,14 @@ export default {
           this.userlat,
           this.userlon
         );
+        //trigger fetching posts
+        this.triggerFetchPostsGeo()
+
       });
     }
   },
   methods: {
+    ...mapActions(['fetchPostsGeo']),
     closeModal(id) {
       this.$bvModal.hide(id);
     },
@@ -110,8 +114,15 @@ export default {
     printGeolocation(loc) {
       console.log("geoloc", loc)
     },
-    triggerFetchPosts() {
-      
+    triggerFetchPostsGeo() {
+        console.log('triggered fetchpostsgeo')
+        let payload = {
+          latitude: this.userlat,
+          longitude: this.userlon,
+          range: this.range
+        }
+        this.fetchPostsGeo(payload)
+
     }
   }
 };

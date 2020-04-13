@@ -1,6 +1,7 @@
 import Vue from 'vue';
 // import Vuex from 'vuex';
 import db from "@/firebase/init";
+import geohash from 'ngeohash';
 const state = {
     postArray: [],
     // activeView: 'message-container',
@@ -243,6 +244,46 @@ const actions = {
         //get myPosts
         db.collection("posts").where("status", "in", ["free", "offer", "picked"])
         //not see 'del' or finished status
+            .get()
+            .then(function (querySnapshot, postArray) {
+                postArray = posts;
+                querySnapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    // console.log(doc.id, " => ", doc.data());
+                    let post = doc.data()
+                    post.id = doc.id
+                    postArray.push(post)
+                });
+                // console.log("myPosts:", myPosts);
+                context.commit('SET_POSTS', posts);
+            })
+            .catch(function (error) {
+                console.log("Error getting documents: ", error);
+            })
+    },
+    fetchPostsGeo: (context, payload) => { //not used, listener used instead
+        
+        const range = payload.range
+        const latitude = payload.latitude
+        const longitude = payload.longitude
+
+        const degreesLatPerKm = 1/111.412240 //lat pretty much constant
+        const degreesLonPerKm = 1/55.799979  //use average at 60 degrees, which is ca. Norway. TODO: implement more accurate formula.
+
+        const lowerLat = latitude - degreesLatPerKm * range
+        const lowerLon = longitude - degreesLonPerKm * range
+
+        const upperLat = latitude + degreesLatPerKm * range
+        const upperLon = longitude + degreesLonPerKm * range
+
+        const geohashLower = geohash.encode(lowerLat, lowerLon)
+        const geohashUpper = geohash.encode(upperLat, upperLon)
+
+        //get myPosts
+        let posts = []
+        db.collection("posts").where("status", "in", ["free", "offer", "picked"])
+            .where('geohash','>=',geohashLower)
+            .where('geohash', '<=',geohashUpper)
             .get()
             .then(function (querySnapshot, postArray) {
                 postArray = posts;
