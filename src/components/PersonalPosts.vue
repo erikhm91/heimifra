@@ -29,12 +29,15 @@
                 v-for="(post, i) in myPostsNotDelFin"
                 v-bind:key="i"
                 :post="post"
+                :status="post.status"
+                :numOfHelpers="numberOfRepliesToPost(post.id)"
+                @pickhelper="triggerPostHelperPick(post.id)"
               >
-                <div class="mb-2" v-if="post.status == 'offer'">
+                <!-- <div class="mb-2" v-if="post.status == 'offer'">
                   <button @click="triggerPostHelperPick(post.id)" class="btn btn-primary">
                     <span>{{numberOfRepliesToPost(post.id)}} hjelpere har svart deg!</span>
                   </button>
-                </div>
+                </div> -->
                 <div
                   class="mb-2"
                   v-if="post.status == 'picked' || post.status == 'ownerfin' || post.status == 'helpfin'"
@@ -42,21 +45,21 @@
                 <div class="row justify-content-end">
                   <button class="btn" @click="showChat(post)"><icon-chat height="2rem" width="2rem"></icon-chat></button>
                 </div>
-                  <div v-if="post.status == 'picked'">
+                  <!-- <div v-if="post.status == 'picked'">
                     <button class="btn btn-outline-secondary disabled">
                       <span>Du får hjelp!</span>
                     </button>
-                  </div>
+                  </div> -->
 
-                  <div v-else-if="post.status == 'ownerfin'">
+                  <!-- <div v-else-if="post.status == 'ownerfin'">
                       Venter på at hjelper skal avslutte
-                  </div>
+                  </div> -->
 
-                  <div v-else-if="post.status == 'helpfin'">
+                  <!-- <div v-else-if="post.status == 'helpfin'">
                     <button class="btn btn-secondary">
                       <span>Hjelper har avsluttet - gi din vurdering av hjelpen!</span>
                     </button>
-                  </div>
+                  </div> -->
                 </div>
                 <div class="row justify-content-end">
                 <post-delete :postid="post.id"></post-delete>
@@ -133,6 +136,7 @@ export default {
   methods: {
     triggerPostHelperPick(postid) {
       // this.postHelperArray
+      console.log("triggered posthelperpick for psotid ", postid)
       this.helperPostId = postid;
     },
     showChat(post) {

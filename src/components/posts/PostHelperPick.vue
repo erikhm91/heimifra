@@ -73,6 +73,7 @@ export default {
         uid: reply.helper
       };
       this.setPostPicked(payload)
+      this.$emit('closePick')
     }
   },
   computed: {

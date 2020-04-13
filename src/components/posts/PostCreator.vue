@@ -5,7 +5,7 @@
       <div class="col-12">
         <!-- <div class="card w-100"> -->
         <!-- <div class="card-body"> -->
-        <b-card>
+        <!-- <b-card> -->
           <div class>
             <b-form @submit.prevent="onSubmit">
               <b-form-group id="input-group-1" label="Bestilling:">
@@ -46,7 +46,7 @@
                   v-on:filter="triggerGetDropdownList($event)"
                   :disabled="false"
                   :maxItem="10"
-                  placeholder="Søk etter leveringsadresse her"
+                  placeholder="Legg inn leveringsadresse her"
                 >></vue-dropdown>
               </div>
               <!-- name="adresse" -->
@@ -85,7 +85,7 @@
         <pre class="m-0">{{ post }}</pre>
             </b-card>-->
           </div>
-        </b-card>
+        <!-- </b-card> -->
       </div>
     </div>
     <!-- <div class="col-md-2 col-0"></div> -->

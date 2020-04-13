@@ -8,7 +8,7 @@
       <!-- <input type="range" name="location" id="distanceslider"> -->
       <vue-slider v-model="range" :min="1"></vue-slider>
       <div>min posisjon: {{userlat}},{{userlon}}</div>
-      <button type="button" class="btn btn-secondary">Hent lister</button>
+      <button type="button" class="btn btn-secondary" @click="triggerFetchPosts()">Hent lister</button>
       <!-- <div>test avstand i km: {{getDistance(userlat, userlon, 59.9396, 10.6715)}}</div> -->
       <!-- <div>avstand fra meg selv data: {{distance}}</div>
       <div>avstand fra meg selv data: {{distance}}</div> -->
@@ -16,8 +16,8 @@
       <!-- <div>avstand fra meg selv ny formel: {{getDistanceFromUser(59, 9, 59, 9.01)}}</div> -->
 
       <div class="text-center">
-        <button @click="$router.push({name: 'createpost'})" class="btn btn-primary">+ Opprett ny handleliste</button>
-         <!-- v-b-modal="'modal'"  -->
+        <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
+         <!--   -->
       </div>
 
       <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>
@@ -109,6 +109,9 @@ export default {
     },
     printGeolocation(loc) {
       console.log("geoloc", loc)
+    },
+    triggerFetchPosts() {
+      
     }
   }
 };
