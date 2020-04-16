@@ -1,7 +1,10 @@
 <template>
   <div>
     <div v-if="post.status=='picked'" class="text-right">
-      <a href="#" class="btn btn-primary disabled">Jeg får hjelp</a>
+      <a href="#" class="btn btn-secondary disabled">Jeg får hjelp</a>
+    </div>
+    <div v-else-if="post.status=='offer' && userAssignedToPost(post)==true" class="text-right">
+      <a href="#" class="btn btn-secondary disabled">Du har kontaktet</a>
     </div>
     <div v-else class="text-right">
       <a href="#" class="btn btn-outline-primary" v-b-modal="'modal'+post.id">La meg hjelpe!</a>
@@ -78,6 +81,15 @@ export default {
         time: Date.now()
       };
       this.sendMessage(payload);
+    },
+    userAssignedToPost(post) {
+      const uid = this.activeUser.uid;
+      console.log("uid: ", uid)
+      if (Object.hasOwnProperty.call(post.offer, uid) && post.offer[uid]==true) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 };

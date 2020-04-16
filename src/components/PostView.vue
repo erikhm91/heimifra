@@ -27,9 +27,10 @@
       <b-card-group deck>
         <home-store-post
           class="col-12 mt-3 button"
-          v-for="(post, i) in filteredPosts"
-          v-bind:key="i"
+          v-for="(post) in filteredPosts"
+          v-bind:key="post.id"
           :post="post"
+          :view="'postview'"
         >
         
         <div v-if="post.loc" @click="printGeolocation(post.loc)">{{getDistance(userlat, userlon, post.loc.latitude, post.loc.longitude)}} kilometer fra deg</div>

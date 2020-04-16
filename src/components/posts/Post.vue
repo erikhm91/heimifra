@@ -28,7 +28,11 @@
               type="button"
             >{{numberOfRepliesToPost(post.id)}} {{getStatusText}}</button>
           </div>
+       
         </div>
+           <div class="" v-if=" view=='ownpost'">
+            <small>{{post.address}}</small>
+          </div>
       </div>
     </div>
   </div>

@@ -22,7 +22,7 @@ const getters = {
     },
     myPosts: state => state.myPosts,
     myPostsNotDelFin: state => {
-            return state.myPosts.filter(post => post.status != "free" || post.status != "fin")
+        return state.myPosts.filter(post => post.status != "free" || post.status != "fin")
     },
     myActivePosts: state => {
         return state.myPosts.filter(post => post.status == "free")
@@ -56,19 +56,27 @@ const mutations = {
         state.postArray = postArray
     },
     SET_POST_STATUS(state, payload) {
-        let post = state.postArray.find(obj => obj.id === payload.postid);
+        let post
+        let postindex = state.postArray.findIndex(obj => obj.id === payload.postid);
+        post = state.postArray[postindex]
         if (post) {
-            Vue.set(post, status, payload.status)
+            post.status = payload.status
+            Vue.set(state.postArray, postindex, post)
             // post.status = payload.status
         }
-        post = state.myPosts.find(obj => obj.id === payload.postid);
+        postindex = state.myPosts.findIndex(obj => obj.id === payload.postid);
+        post = state.myPosts[postindex]
         if (post) {
-            Vue.set(post, status, payload.status)
+            post.status = payload.status
+            Vue.set(state.myPosts, postindex, post)
             // post.status = payload.status
         }
-        post = state.myTasks.find(obj => obj.id === payload.postid);
+        postindex = state.myTasks.findIndex(obj => obj.id === payload.postid);
+        post = state.myTasks[postindex]
         if (post) {
-            Vue.set(post, status, payload.status)
+            post.status = payload.status
+            Vue.set(state.myTasks, postindex, post)
+            // Vue.set(post, status, payload.status)
             // post.status = payload.status
         }
         console.log("updated post status")
@@ -80,6 +88,17 @@ const mutations = {
     },
     ADD_POST_REPLY(state, reply) {
         state.myPostReplies.push(reply)
+    },
+    ASSIGN_OFFER_TO_POST(state, payload) {
+        let postindex = state.postArray.findIndex(obj => obj.id === payload.postid);
+        let post = state.postArray[postindex]
+        if (post) {
+            const key = payload.assignedUid
+            post.offer[key] = true
+            Vue.set(state.postArray, postindex, post)
+            console.log("assigned offer to post")
+            // post.status = payload.status
+        }
     },
 
 
@@ -201,6 +220,11 @@ const actions = {
         })
             .then(function () {
                 console.log("assigned task ", postid, " to user ", assignedUid);
+                let payload = {
+                    postid,
+                    assignedUid
+                }
+                context.commit('ASSIGN_OFFER_TO_POST', payload)
             })
             .catch(function (error) {
                 console.error("Error writing document: ", error);
@@ -243,7 +267,7 @@ const actions = {
         let posts = []
         //get myPosts
         db.collection("posts").where("status", "in", ["free", "offer", "picked"])
-        //not see 'del' or finished status
+            //not see 'del' or finished status
             .get()
             .then(function (querySnapshot, postArray) {
                 postArray = posts;
@@ -262,17 +286,17 @@ const actions = {
             })
     },
     fetchPostsGeo: (context, payload) => { //not used, listener used instead
-        
+
         const range = payload.range
         const latitude = payload.latitude
         const longitude = payload.longitude
 
         const degreesLatPerKm = 0.009005402        // 1/111.412240 //lat pretty much constant
         let degreesLonPerKm = 0.0112976861       // 1/55.799979  //use average at 60 degrees, which is ca. Norway. TODO: implement more accurate formula.
-        
-        const latitudeInRad = latitude * Math.PI/180
+
+        const latitudeInRad = latitude * Math.PI / 180
         const kmPerDegreeLon = Math.cos(latitudeInRad) * 111.321
-        degreesLonPerKm = 1 / kmPerDegreeLon 
+        degreesLonPerKm = 1 / kmPerDegreeLon
         console.log('degreesLonPerKm: ', degreesLonPerKm)
         console.log('1 degree in km: ', degreesLonPerKm)
         //
@@ -291,8 +315,8 @@ const actions = {
         //get myPosts
         let posts = []
         db.collection("posts").where("status", "in", ["free", "offer", "picked"])
-            .where('geohash','>=',geohashLower)
-            .where('geohash', '<=',geohashUpper)
+            .where('geohash', '>=', geohashLower)
+            .where('geohash', '<=', geohashUpper)
             .get()
             .then(function (querySnapshot, postArray) {
                 postArray = posts;
