@@ -1,4 +1,4 @@
-import db from "@/firebase/init";
+import {firestore} from "@/firebase/init";
 const state = {
     activeChatroom: null,
     activeChatMessages: [],
@@ -113,7 +113,7 @@ const actions = {
     fetchChatMessages(context, payload) { //not used - listener instead
         let chatroom = payload.chatroomid
         let messages = []
-        db.collection('chats').doc(chatroom).collection('messages')
+        firestore.collection('chats').doc(chatroom).collection('messages')
             .get()
             .then(function (querySnapshot, messageArray) {
                 messageArray = messages
@@ -137,7 +137,7 @@ const actions = {
         let chatroom = payload.chatroomid
         context.commit('SET_ACTIVE_CHATROOM', chatroom)
         // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        let ref = db.collection('chats').doc(chatroom).collection('messages').orderBy("time", "desc").limit(30)
+        let ref = firestore.collection('chats').doc(chatroom).collection('messages').orderBy("time", "desc").limit(30)
 
         this.unsubscribe = ref.onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {
@@ -186,7 +186,7 @@ const actions = {
             text: payload.text
         }
         // chatroomMixin.getChatroomid(payload.from, payload.to);
-        db.collection("chats").doc(chatroomid).collection("messages").add(
+        firestore.collection("chats").doc(chatroomid).collection("messages").add(
             newMessage)
             .then(function () {
                 // let messagePayload = {

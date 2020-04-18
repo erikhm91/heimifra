@@ -1,7 +1,8 @@
 import Vue from 'vue';
 // import Vuex from 'vuex';
-import db from "@/firebase/init";
+import {firestore} from "@/firebase/init";
 import geohash from 'ngeohash';
+import geo from '@/firebase/geo';
 const state = {
     postArray: [],
     // activeView: 'message-container',
@@ -161,7 +162,7 @@ const actions = {
     //post
     updatePostStatus(context, payload) {
         //update database with new status
-        db.collection("posts").doc(payload.postid).update({
+        firestore.collection("posts").doc(payload.postid).update({
             status: payload.status
         })
             .then(function () {
@@ -177,7 +178,7 @@ const actions = {
     //     // console.log("deleteflagPost: " + postid)
     //     commit('SET_DELETE_FLAG', postid)
     //     //update database with delete flag
-    //     db.collection("posts").doc(postid).update({
+    //     firestore.collection("posts").doc(postid).update({
     //         status: "del"
     //     })
     //         .then(function () {
@@ -195,7 +196,7 @@ const actions = {
     },
 
     addPostReply(context, payload) {
-        //create reply object to use in store etc (even though need just attributes for db)
+        //create reply object to use in store etc (even though need just attributes for firestore)
         let reply = {
             helper: payload.helper,
             name: payload.name,
@@ -204,7 +205,7 @@ const actions = {
             text: payload.text
         }
 
-        db.collection("replies").add({
+        firestore.collection("replies").add({
             helper: payload.helper,
             name: payload.name,
             owner: payload.owner,
@@ -235,7 +236,7 @@ const actions = {
         let assignedUid = context.getters.activeUser.uid
         // console.log("assigning task to activeuser id ", assignedUid)
         // console.log("assign task payload", payload)
-        db.collection("posts").doc(postid).update({
+        firestore.collection("posts").doc(postid).update({
             ['offer.' + assignedUid]: true
         })
             .then(function () {
@@ -256,7 +257,7 @@ const actions = {
             uid: payload.uid,
             status: 'picked'
         }
-        db.collection("posts").doc(data.postid).update({
+        firestore.collection("posts").doc(data.postid).update({
             status: data.status,
             picked: data.uid
         })
@@ -274,7 +275,7 @@ const actions = {
         let assignedUid = context.getters.activeUser.uid
         // console.log("assigning task to activeuser id ", assignedUid)
         // console.log("assign task payload", payload)
-        db.collection("posts").doc(payload.postid).update({
+        firestore.collection("posts").doc(payload.postid).update({
             ['offer.' + assignedUid]: false
         })
             .then(function () {
@@ -292,7 +293,7 @@ const actions = {
     fetchPosts: context => { //not used, listener used instead
         let posts = []
         //get myPosts
-        db.collection("posts").where("status", "in", ["free", "offer", "picked"])
+        firestore.collection("posts").where("status", "in", ["free", "offer", "picked"])
             //not see 'del' or finished status
             .get()
             .then(function (querySnapshot, postArray) {
@@ -312,13 +313,13 @@ const actions = {
             })
     },
     deleteReply: (context, payload) => {
-        db.collection("replies").where("postid", "==", payload.postid).where("helper", "==", payload.assignedUid)
+        firestore.collection("replies").where("postid", "==", payload.postid).where("helper", "==", payload.assignedUid)
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
                 // doc.data() is never undefined for query doc snapshots
                 // console.log(doc.id, " => ", doc.data());
-                db.collection("replies").doc(doc.id).delete().then(() =>{
+                firestore.collection("replies").doc(doc.id).delete().then(() =>{
                     console.log("reply successfully deleted")
                 }).catch( error => {
                     console.log("Error deleting reply: ", error)
@@ -329,7 +330,11 @@ const actions = {
             console.log("error fetching reply document for deletion: ", error)
         })
     },
-    fetchPostsGeo: (context, payload) => { //not used, listener used instead
+    fetchPostsGeoFireX: (context, payload ) => {
+        console.log("geofirex var: ", geo)
+
+    },
+    fetchPostsGeo: (context, payload) => {
 
         const range = payload.range
         const latitude = payload.latitude
@@ -358,7 +363,7 @@ const actions = {
 
         //get myPosts
         let posts = []
-        db.collection("posts").where("status", "in", ["free", "offer", "picked"])
+        firestore.collection("posts").where("status", "in", ["free", "offer", "picked"])
             .where('geohash', '>=', geohashLower)
             .where('geohash', '<=', geohashUpper)
             .get()
@@ -382,7 +387,7 @@ const actions = {
     initiatePostListener(context) {
         // let queryParam = 'offer.' + context.getters.activeUser.uid;
         // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        let ref = db.collection('posts').where("owner", ">")
+        let ref = firestore.collection('posts').where("owner", ">")
 
         ref.onSnapshot(snapshot => {
 
@@ -408,18 +413,15 @@ const actions = {
     initiateReplyListener(context) {
         // let queryParam = 'offer.' + context.getters.activeUser.uid;
         // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        let ref = db.collection('replies').where("owner", "==", context.getters.activeUser.uid)
-        console.log("triggered lister for owner replies")
+        let ref = firestore.collection('replies').where("owner", "==", context.getters.activeUser.uid)
+        console.log("document listener triggered for Replies!")
 
         ref.onSnapshot(snapshot => {
 
             snapshot.docChanges().forEach(change => {
-
-                console.log("document listener triggered for Replies!")
                 if (change.type == 'added') {
-                    console.log("found and added reply: ", change.doc.data())
+                    // console.log("found and added reply: ", change.doc.data())
                     let reply = change.doc.data()
-
                     context.commit("ADD_POST_REPLY", reply)
                 }
             })
@@ -428,7 +430,7 @@ const actions = {
     fetchMyPosts: context => {
         let myPosts = []
         //get myPosts
-        db.collection("posts")
+        firestore.collection("posts")
             .where("uid", "==", context.getters.activeUser.uid)
             .where("status", "in", ["free", "offer", "picked", "ownerfin", "helpfin"]) //not see 'del', 'fin' status
             .get()
@@ -453,7 +455,7 @@ const actions = {
         let myTasks = []
         let queryParam = 'offer.' + context.getters.activeUser.uid;
         console.log("queryparam mytasks", queryParam)
-        db.collection("posts").where(queryParam, "array-contains", "true")
+        firestore.collection("posts").where(queryParam, "array-contains", "true")
             .where("status", "in", ["free", "offer", "picked", "fin"]) //not see 'del' status
             .get()
             .then(function (querySnapshot, postArray) {
@@ -474,7 +476,7 @@ const actions = {
             })
     },
     fetchOwnRepliesToPosts: context => {
-        db.collection("replies").where("helper", "==", context.getters.activeUser.uid)
+        firestore.collection("replies").where("helper", "==", context.getters.activeUser.uid)
             .where("status", "in", ["offer", "picked"])
             .get()
             .then(function (querySnapshot) {
@@ -495,7 +497,7 @@ const actions = {
     initiateTaskListener(context) {
         let queryParam = 'offer.' + context.getters.activeUser.uid;
         // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        let ref = db.collection('posts').where(queryParam, "==", true)
+        let ref = firestore.collection('posts').where(queryParam, "==", true)
 
         ref.onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {

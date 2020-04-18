@@ -2,13 +2,12 @@
   <div class="row mt-2">
     <div class="col-md-8 offset-md-2 col-12">
       <!-- <div>Min plassering: {{this.userlat}}, {{this.userlon}}</div> -->
-      
 
       <div>Avstand i km: {{range}}</div>
       <!-- <input type="range" name="location" id="distanceslider"> -->
       <vue-slider v-model="range" :min="1"></vue-slider>
       <div>min posisjon: {{userlat}},{{userlon}}</div>
-      <button type="button" class="btn btn-secondary" @click="triggerFetchPostsGeo()">Hent lister</button>
+      <button type="button" class="btn btn-secondary" @click="triggerFetchPostsGeoFireX()">Hent lister</button>
       <!-- <div>test avstand i km: {{getDistance(userlat, userlon, 59.9396, 10.6715)}}</div> -->
       <!-- <div>avstand fra meg selv data: {{distance}}</div>
       <div>avstand fra meg selv data: {{distance}}</div> -->
@@ -45,12 +44,13 @@
 <script>
 // import firebase from 'firebase'
 import Post from "@/components/posts/Post.vue";
-import db from "@/firebase/init";
+import {firestore} from "@/firebase/init";
 import PostCreator from "@/components/posts/PostCreator.vue";
 import PostReply from "@/components/posts/PostReply.vue";
 import { mapGetters, mapActions } from "vuex";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
+import geo from '@/firebase/geo';
 export default {
   data() {
     return {
@@ -97,7 +97,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchPostsGeo']),
+    ...mapActions(['fetchPostsGeo', 'fetchPostsGeoFireX']),
     closeModal(id) {
       this.$bvModal.hide(id);
     },
@@ -123,7 +123,11 @@ export default {
           range: this.range
         }
         this.fetchPostsGeo(payload)
+    },
+    triggerFetchPostsGeoFireX() {
+       console.log("geofirex from postview: ", geo)
     }
+
   }
 };
 </script>

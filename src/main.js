@@ -7,6 +7,7 @@ import { BootstrapVue } from 'bootstrap-vue';
 import router from './routes/routes';
 import { store } from './store/store'
 import firebase from 'firebase'
+import * as geofirex from 'geofirex'
 
 Vue.config.productionTip = false
 
@@ -20,11 +21,11 @@ let app = null;
 
 firebase.auth().onAuthStateChanged((user) => {
   // let user = null;
-  console.log("auth state changed!", firebase.auth())
+  // console.log("auth state changed!", firebase.auth())
 
   let firebaseuser = firebase.auth().currentUser
-  console.log("current user: ", firebaseuser)
-  console.log(user)
+  // console.log("current user: ", firebaseuser)
+  // console.log(user)
 
 
   // if (store.getters.apiReady == false) {
@@ -33,7 +34,7 @@ firebase.auth().onAuthStateChanged((user) => {
   //build page
 
   if (user) {
-    console.log(user)
+    // console.log(user)
     store.commit('SET_LOGGED_IN', true)
     store.commit('SET_ACTIVE_USER', {
       uid: user.uid,
@@ -56,6 +57,11 @@ firebase.auth().onAuthStateChanged((user) => {
 
     // Vue.use(VueRouter);
     Vue.use(BootstrapVue);
+
+    // //initialise geofirex
+    // var geo = geofirex.init(firebase);
+    // console.log("geofirex initialised: ", geo)
+
 
     // const router = new VueRouter({
     //   routes

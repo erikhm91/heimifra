@@ -16,4 +16,12 @@ import firebase from 'firebase';
   const firebaseApp = firebase.initializeApp(firebaseConfig);
 //   const firebaseAppAnalytics = firebase.analytics();
 
-  export default firebaseApp.firestore();
+
+const firestore = firebaseApp.firestore()
+// console.log("init.js for firebase fired!")
+//   // Init GeoFireX
+//   import geofirex from 'geofirex';
+//   const geo = geofirex.init(firebase);
+
+
+export {firestore}

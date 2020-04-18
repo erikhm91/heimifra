@@ -1,15 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import examplePosts from "../data/ownposts.json";
-// import examplePosts2 from "../data/exampleposts.json";
-// import exampletasks from "../data/exampletasks.json";
-// import users from "../data/users.json";
-// import chats from "../data/chats.json";
-import db from "@/firebase/init";
-import firebase from 'firebase';
 import posts from './modules/posts';
 import chats from './modules/chats';
 import users from './modules/users';
+
 
 Vue.use(Vuex);
 

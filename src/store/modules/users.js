@@ -1,4 +1,4 @@
-import db from "@/firebase/init";
+import {firestore} from "@/firebase/init";
 import firebase from 'firebase';
 const state = {
     users: [],
@@ -38,7 +38,7 @@ const mutations = {
 }
 const actions = {
     async fetchOwnUser(context) {
-            return db.collection('users').where('uid', '==', context.getters.activeUser.uid)
+            return firestore.collection('users').where('uid', '==', context.getters.activeUser.uid)
                 .get()
                 .then(function (querySnapshot) {
                     querySnapshot.forEach(function (doc) {
@@ -68,7 +68,7 @@ const actions = {
     },
     fetchUsers: (context, uidArray) => {
         //TODO: implement filter so not querying for users which are already in store! Do not care about changes occurring within session.
-        return db.collection("users")
+        return firestore.collection("users")
             .where("uid", "in", uidArray)
             .get()
             .then(function (querySnapshot) {
@@ -100,7 +100,7 @@ const actions = {
         }
         //increment cntrate:
         const increment = firebase.firestore.FieldValue.increment(1);
-        const ref = db.collection('users').where('uid', '==', data.uid)
+        const ref = firestore.collection('users').where('uid', '==', data.uid)
         // Update read count
         // ref.update({ cntrate: increment }).then(function (resolve) {
 
@@ -159,7 +159,7 @@ const actions = {
         //     //await api call for user, so get total.
         
         let promise = context.dispatch('getUserAction', data.uid)
-        let user = await promise //will return the user, either from getter or from db :-)
+        let user = await promise //will return the user, either from getter or from firestore :-)
 
         console.log('user fetched: ', user)
 
@@ -178,7 +178,7 @@ const actions = {
 
         //increment cntrate:
         const increment = firebase.firestore.FieldValue.increment(1);
-        db.collection("users").doc(data.uid).update({
+        firestore.collection("users").doc(data.uid).update({
             rate: newTotal,
             cntrate: increment
         })
