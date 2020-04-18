@@ -95,12 +95,12 @@
 </template>
 
 <script>
-import db from "@/firebase/init";
+import {firestore} from "@/firebase/init";
 import { mapGetters } from "vuex";
 import axios from "axios";
 import firebase from "firebase";
 import VueDropdown from "vue-simple-search-dropdown";
-import geohash from "ngeohash"
+import geo from '@/firebase/geo';
 export default {
   data() {
     return {
@@ -131,13 +131,12 @@ export default {
   methods: {
     onSubmit() {
       // if (this.post) {
-        let geopoint = new firebase.firestore.GeoPoint(this.latitude, this.longitude)
-        let lochash = geohash.encode(this.latitude, this.longitude)
-        console.log('hashcode: ', lochash)
+        const loc = geo.point(this.latitude, this.longitude)
+        console.log('geofirex location: ', loc)
       // }
 
       if (this.post) {
-        db.collection("posts")
+        firestore.collection("posts")
           .add({
             email: this.activeUser.email,
             name: this.post.name,
@@ -146,9 +145,9 @@ export default {
             uid: this.activeUser.uid,
             timestamp: new firebase.firestore.Timestamp.now(),
             status: "free",
-            loc: geopoint,
-            geohash: lochash,
+            loc,
             address: this.address
+            
           })
           .then(() => {
             console.log("update successful!");

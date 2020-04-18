@@ -126,6 +126,18 @@ export default {
     },
     triggerFetchPostsGeoFireX() {
        console.log("geofirex from postview: ", geo)
+       const center = geo.point(this.userlat, this.userlon)
+       const radius = this.range; //range in km
+       const field = 'loc'
+
+       const firestoreRef = firestore.collection("posts").where("status", "in", ["free", "offer", "picked"])
+       const geoRef = geo.query(firestoreRef)
+
+       const query = geoRef.within(center, radius, field)
+       query.subscribe(hits => console.log("fetched from geoRefquery: ", hits))
+      
+
+
     }
 
   }
