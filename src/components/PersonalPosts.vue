@@ -32,6 +32,7 @@
                 :status="post.status"
                 :numOfHelpers="numberOfRepliesToPost(post.id)"
                 @pickhelper="triggerPostHelperPick(post.id)"
+                :address="post.address"
               >
                 <!-- <div class="mb-2" v-if="post.status == 'offer'">
                   <button @click="triggerPostHelperPick(post.id)" class="btn btn-primary">

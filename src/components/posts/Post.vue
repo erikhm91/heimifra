@@ -20,7 +20,10 @@
           </div>
         </div>
         <div class="row">
-          <div v-if="(status != 'offer' && view=='ownpost') || view == 'task'" class="col">{{getStatusText}}</div>
+          <div
+            v-if="(status != 'offer' && view=='ownpost') || view == 'task'"
+            class="col"
+          >{{getStatusText}}</div>
           <div v-else-if="status == 'offer' && view=='ownpost'">
             <button
               class="btn btn-primary"
@@ -28,11 +31,10 @@
               type="button"
             >{{numberOfRepliesToPost(post.id)}} {{getStatusText}}</button>
           </div>
-       
         </div>
-           <div class="" v-if=" view=='ownpost'">
-            <small>{{post.address}}</small>
-          </div>
+        <div class v-if=" view=='ownpost'">
+          <small>{{post.address}}</small>
+        </div>
       </div>
     </div>
   </div>
@@ -124,8 +126,7 @@ export default {
   components: {
     profileIcon: ProfileIcon
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 

@@ -36,8 +36,8 @@ const getters = {
         return state.myPostReplies.filter(reply => reply.postid == postid);
     },
     numberOfRepliesToPost: state => function (postid) {
-        console.log("entered numberofrepliestopost", postid)
-        console.log("postreplies: ", state.myPostReplies)
+        // console.log("entered numberofrepliestopost", postid)
+        // console.log("postreplies: ", state.myPostReplies)
         return state.myPostReplies.filter(reply => reply.postid == postid).length
     },
 }
@@ -82,9 +82,12 @@ const mutations = {
         console.log("updated post status")
     },
     SET_POST_PICKED(state, payload) {
-        let post = state.postArray.find(obj => obj.id === payload.postid);
-        post.status = payload.status
-        Vue.set(post, 'picked', payload.uid)
+        const postindex = state.myPosts.findIndex(obj => obj.id === payload.postid);
+        let post = state.myPosts[postindex]
+        if (post) {
+            post.picked = payload.uid
+            Vue.set(state.myPosts, postindex, post)
+        }
     },
     ADD_POST_REPLY(state, reply) {
         state.myPostReplies.push(reply)
@@ -93,14 +96,31 @@ const mutations = {
         let postindex = state.postArray.findIndex(obj => obj.id === payload.postid);
         let post = state.postArray[postindex]
         if (post) {
+            if (!post.offer) {
+                post.offer = {}
+            }
             const key = payload.assignedUid
             post.offer[key] = true
             Vue.set(state.postArray, postindex, post)
             console.log("assigned offer to post")
-            // post.status = payload.status
         }
     },
 
+    REMOVE_OFFER_TO_POST(state, payload) {
+        let postindex = state.postArray.findIndex(obj => obj.id === payload.postid);
+        let post = state.postArray[postindex]
+        if (post) {
+            const key = payload.assignedUid
+            post.offer[key] = false
+            Vue.set(state.postArray, postindex, post)
+            console.log("removed offer from postArray")
+        }
+        post = state.myTasks.find(obj => obj.id === payload.postid);
+        if (post) {
+            state.myTasks.splice(state.myTasks.indexOf(post), 1);
+            console.log("removed offer from task in myTasks")
+        }   
+    },
 
     //my posts
     ADD_OWN_POST(state, postObj) {
@@ -242,6 +262,7 @@ const actions = {
         })
             .then(function () {
                 context.commit('SET_POST_PICKED', data)
+                context.commit('SET_POST_STATUS', data)
                 console.log("Status for doc ", data.postid, " successfully updated");
             })
             .catch(function (error) {
@@ -253,11 +274,16 @@ const actions = {
         let assignedUid = context.getters.activeUser.uid
         // console.log("assigning task to activeuser id ", assignedUid)
         // console.log("assign task payload", payload)
-        db.collection("posts").doc(payload.id).update({
+        db.collection("posts").doc(payload.postid).update({
             ['offer.' + assignedUid]: false
         })
             .then(function () {
-                // console.log("removed task ", payload.uid, " for user ", assignedUid);
+                let newPayload = {
+                    postid: payload.postid,
+                    assignedUid: assignedUid
+                }
+                context.commit('REMOVE_OFFER_TO_POST', newPayload)
+                context.dispatch("deleteReply", newPayload)
             })
             .catch(function (error) {
                 console.error("Error writing document: ", error);
@@ -284,6 +310,24 @@ const actions = {
             .catch(function (error) {
                 console.log("Error getting documents: ", error);
             })
+    },
+    deleteReply: (context, payload) => {
+        db.collection("replies").where("postid", "==", payload.postid).where("helper", "==", payload.assignedUid)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                // doc.data() is never undefined for query doc snapshots
+                // console.log(doc.id, " => ", doc.data());
+                db.collection("replies").doc(doc.id).delete().then(() =>{
+                    console.log("reply successfully deleted")
+                }).catch( error => {
+                    console.log("Error deleting reply: ", error)
+                })
+            });
+        })
+        .catch( error => {
+            console.log("error fetching reply document for deletion: ", error)
+        })
     },
     fetchPostsGeo: (context, payload) => { //not used, listener used instead
 

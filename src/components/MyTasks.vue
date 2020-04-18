@@ -21,8 +21,7 @@
               <button class="btn" @click="showChat(post)"><icon-chat height="2rem" width="2rem"></icon-chat></button>
             </div>
             <div class="row justify-content-end">
-              <post-delete :postid="post.id"></post-delete>
-              <!-- <button @click="removeTask(post)" class="btn btn-outline-danger mr-2 btn-sm">Fjern oppdrag</button> -->
+              <post-task-delete :postid="post.id"></post-task-delete>
             </div>
           </home-store-post>
           <!-- <own-task class="mt-3"  :post="post"><button class="btn btn-primary" @click="showChat(post)">Åpne chat</button></own-task> -->
@@ -38,7 +37,7 @@
 import Post from "@/components/posts/Post.vue";
 import ChatWindow from "@/components/message/ChatWindow.vue";
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
-import PostDelete from "@/components/posts/PostDelete.vue";
+import PostTaskDelete from "@/components/posts/PostTaskDelete.vue";
 import IconChat from "@/components/icons/IconChat.vue";
 import { mapActions } from "vuex";
 export default {
@@ -52,7 +51,7 @@ export default {
     // OwnTask,
     ChatWindow,
     homeStorePost: Post,
-    PostDelete,
+    PostTaskDelete,
     IconChat
   },
   computed: {

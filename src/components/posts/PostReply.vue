@@ -57,15 +57,15 @@ export default {
     ...mapActions(["assignTask", "sendMessage", "fetchUsers"]),
 
     addToOwnTasks(post) {
-      console.log(this.activeUser)
+      console.log(this.activeUser);
       //TODO: fikse så activeUser henter min user data, inkl name.
       let reply = {
-                helper: this.activeUser.uid,
-                name : 'test',
-                owner : this.post.uid,
-                postid : this.post.id,
-                text : this.newMessage
-            }
+        helper: this.activeUser.uid,
+        name: "test",
+        owner: this.post.uid,
+        postid: this.post.id,
+        text: this.newMessage
+      };
       this.assignTask(reply);
       this.addMessage();
     },
@@ -84,12 +84,15 @@ export default {
     },
     userAssignedToPost(post) {
       const uid = this.activeUser.uid;
-      console.log("uid: ", uid)
-      if (Object.hasOwnProperty.call(post.offer, uid) && post.offer[uid]==true) {
-        return true
-      } else {
-        return false
+      console.log("uid: ", uid);
+      if (Object.hasOwnProperty.call(post, 'offer')) {
+        if (Object.hasOwnProperty.call(post.offer, uid)) {
+          if (post.offer[uid] == true) {
+            return true;
+          }
+        }
       }
+      return false;
     }
   }
 };
