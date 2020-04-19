@@ -14,17 +14,14 @@
             <p>
               <b>Alle kan trenge en hjelpende hånd!</b>
             </p>
+
+            <p>Vi i HomeStore jobber for at du skal få en enklere hverdag. I tillegg får du muligheten til å hjelpe andre!</p>
+      <p>Vi oppdaterer siden kontinuerlig for at du skal få den beste kundeopplevelsen.</p>
+
+            <p>Heimifra benytter Kartverkets tjenester for addressesøk https://kartverket.no/</p>
           </b-card-text>
         </div>
       </b-card>
-    </div>
-
-    <div class="row mt-3">
-      <div class="col-12"></div>
-      <h5>Om HomeStore</h5>
-      <div class="col-12 mt-3"></div>
-      <p>Vi i HomeStore jobber for at du skal få en enklere hverdag. I tillegg får du muligheten til å hjelpe andre!</p>
-      <p>Vi oppdaterer siden kontinuerlig for at du skal få den beste kundeopplevelsen.</p>
     </div>
 
     <!-- <div class="row">
