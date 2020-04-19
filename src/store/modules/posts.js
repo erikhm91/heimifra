@@ -54,7 +54,8 @@ const mutations = {
         Vue.set(state.postArray, index, postObj)
     },
     SET_POSTS(state, postArray) {
-        state.postArray = postArray
+        // state.postArray = postArray
+        Vue.set(state, 'postArray', [...postArray]);
     },
     SET_POST_STATUS(state, payload) {
         let post
@@ -331,8 +332,20 @@ const actions = {
         })
     },
     fetchPostsGeoFireX: (context, payload ) => {
-        console.log("geofirex var: ", geo)
-
+        console.log("geofirex from store: ", geo)
+        const center = geo.point(payload.lat, payload.lon)
+        const radius = payload.range; //range in km
+        const field = 'loc'
+ 
+        const firestoreRef = firestore.collection("posts").where("status", "in", ["free", "offer", "picked"])
+        const geoRef = geo.query(firestoreRef)
+ 
+        const query = geoRef.within(center, radius, field)
+        query.subscribe( (hits) => {
+            console.log("fetched from geoRefquery: ", hits)
+            //TODO: add to store
+            context.commit('SET_POSTS', hits);
+        })
     },
     fetchPostsGeo: (context, payload) => {
 

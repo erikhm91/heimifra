@@ -42,12 +42,13 @@
                 <vue-dropdown
                   style="font-size: 1.3rem"
                   :options="this.addressDropdown"
-                  v-on:selected="getLocationOfAddress($event)"
+                  v-on:selected="triggerGetLocationOfAddress($event)"
                   v-on:filter="triggerGetDropdownList($event)"
                   :disabled="false"
                   :maxItem="10"
-                  placeholder="Legg inn leveringsadresse her"
-                >></vue-dropdown>
+                  placeholder="Legg inn leveringsadresse"
+                ></vue-dropdown>
+                <small>© Kartverket</small>
               </div>
               <!-- name="adresse" -->
 
@@ -105,16 +106,13 @@ export default {
   data() {
     return {
       post: {
-        // email: "",
-        name: "",
-        // tlf: '',
+        name: null,
         tips: 0,
-        text: ""
+        text: null
       },
       searchParam: "",
       show: true,
       feedback: null,
-      dbDisabled: true,
       addressDropdown: [],
       globalTimeout: null,
       latitude: null,
@@ -162,8 +160,6 @@ export default {
       }
       this.$emit("complete");
       this.$router.push({ name: "home" });
-
-      // this.$store.commit("ADD_OWN_POST", this.post);
     },
     onReset(evt) {
       evt.preventDefault();
@@ -176,15 +172,6 @@ export default {
         this.show = true;
       });
     },
-    // searchAdress() {
-    //   console.log("searching address: ", this.searchParam);
-    //   let queryparam =
-    //     "https://ws.geonorge.no/adresser/v1/sok?sok=" + this.searchParam;
-    //   axios.get(queryparam).then(response => {
-    //     console.log("response from kartverket: ", response);
-    //   });
-    // },
-
     
     triggerGetDropdownList(value) {
       //only trigger api request after waiting for x ms
@@ -192,6 +179,13 @@ export default {
         this.delay(value);
       }
     },
+    triggerGetLocationOfAddress(value) {
+      if (value) {
+        this.getLocationOfAddress(value)
+      }
+    },
+
+    //TODO put in mixin instead
     delay(value) {
       if (this.globalTimeout != null) {
         clearTimeout(this.globalTimeout);
@@ -240,12 +234,6 @@ export default {
         console.log("this.address: ", this.address)
         this.latitude = value.id.representasjonspunkt.lat;
         this.longitude = value.id.representasjonspunkt.lon;
-        // let queryparam =
-        //   "https://ws.geonorge.no/adresser/v1/sok?adressekode=" + value.id;
-        // // axios.get(queryparam).then(response => {
-        // //   //expect only single address to be located when searching with unique adressekode. Set location values for post
-        // //   console.log("location of selected address: ", response);
-        // // });
         console.log("latitude og longitude: ", this.latitude, this.longitude);
       }
     }
