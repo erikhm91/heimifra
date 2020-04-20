@@ -138,7 +138,7 @@ export default {
           .add({
             email: this.activeUser.email,
             name: this.post.name,
-            tips: this.post.tips,
+            tips: parseInt(this.post.tips, 10),
             text: this.post.text,
             uid: this.activeUser.uid,
             timestamp: new firebase.firestore.Timestamp.now(),
@@ -155,7 +155,7 @@ export default {
           })
           .catch(err => {
             console.log(err);
-            this.$state.commit("SET_ERROR", err);
+            this.$store.commit("SET_ERROR", err);
           });
       }
       this.$emit("complete");

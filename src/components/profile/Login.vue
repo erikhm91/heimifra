@@ -76,7 +76,7 @@ export default {
           .then(cred => {
             console.log(cred.user);
             this.$store.commit("SET_LOGGED_IN", true);
-            this.$store.commit("SET_USER", cred.user);
+            this.$store.commit("SET_ACTIVE_USER", cred.user);
             this.$store.commit("SET_API_READY", true);
             // this.$store.commit("SET_ACTIVE_UID", cred.user.uid);
             // this.$store.commit("SET_ACTIVE_EMAIL", cred.user.email);
