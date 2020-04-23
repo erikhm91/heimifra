@@ -126,7 +126,8 @@ const mutations = {
 
     //my posts
     ADD_OWN_POST(state, postObj) {
-        state.myPosts.push(postObj);
+        state.myPosts.push(postObj)
+        
     },
     UPDATE_OWN_POST(state, postObj) {
         let index = state.myPosts.findIndex(obj => obj.id === postObj.id);

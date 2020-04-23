@@ -104,7 +104,7 @@ export default {
     VueSlider,
     VueDropdown
   },
-  mounted() {
+  created() {
     console.log("postArray: ", this.postArray);
 
     //get user geolocation

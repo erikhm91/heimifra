@@ -22,7 +22,7 @@ import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import { mapActions } from 'vuex'
 // import { mapGetters } from 'vuex'
 export default {
-  props : ['activeUser', 'chatroomid'],
+  props : ['activeUser', 'chatroomid', 'chatPartner'],
   data() {
     return {
       newMessage: null
@@ -40,10 +40,10 @@ export default {
       //  console.log("chatid: ",chatroomid)
        //call action
        let payload = {
+         to: this.chatPartner,
          chatroom : this.chatroomid,
          from: this.activeUser.uid,
          text: this.newMessage,
-         time: Date.now()
        }
        this.sendMessage(payload)
        this.newMessage = null;

@@ -6,14 +6,14 @@
       </div>
 
       <div v-for="(message, i) in activeChatMessages" v-bind:key="i">
-        <div class="row" :class="{ 'justify-content-end': isActiveUser(message.uid)}">
-          <div class="card mb-1 col-auto" :class="{ 'blue': !isActiveUser(message.uid) }">
+        <div class="row" :class="{ 'justify-content-end': isActiveUser(message.from)}">
+          <div class="card mb-1 col-auto" :class="{ 'blue': isActiveUser(message.from) }">
             <div class="card-body p-0 pt-1">
               <!-- <h5 class="card-title">Special title treatment</h5> -->
               <p class="card-text mb-1">{{message.text}}</p>
 
               <div class="mb-1 text-right">
-                <small class="text-muted">Sendt kl. {{displayTimestamp(message.time)}}</small>
+                <small class="text-muted">Sendt kl. {{ displayTime(message.time)}}</small>
               </div>
             </div>
           </div>
@@ -23,11 +23,12 @@
       <!-- <p>chat: {{chat}}</p> -->
     </div>
 
-    <new-message :chatroomid="chatroomid" :activeUser="activeUser"></new-message>
+    <new-message :chatroomid="chatroomid" :activeUser="activeUser" :chatPartner="chatPartner"></new-message>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase'
 import NewMessage from "@/components/message/NewMessage.vue";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
@@ -64,6 +65,11 @@ export default {
   },
   methods: {
     ...mapActions(["initiateChatListener", "nullActiveChat", "activateChat"]),
+    displayTime(timestamp) {
+      console.log(timestamp)
+      const date = timestamp.toDate()
+      return date;
+    },
     displayTimestamp(unix_timestamp) {
       // Create a new JavaScript Date object based on the timestamp
       // multiplied by 1000 so that the argument is in milliseconds, not seconds.

@@ -61,7 +61,7 @@ export default {
       //TODO: fikse så activeUser henter min user data, inkl name.
       let reply = {
         helper: this.activeUser.uid,
-        name: "test",
+        name: this.activeUser.name,
         owner: this.post.uid,
         postid: this.post.id,
         text: this.newMessage
@@ -75,10 +75,10 @@ export default {
       //  console.log("chatid: ",chatroomid)
       //call action
       let payload = {
+        to: this.post.uid,
         chatroom: chatroomid,
         from: this.activeUser.uid,
         text: this.newMessage,
-        time: Date.now()
       };
       this.sendMessage(payload);
     },

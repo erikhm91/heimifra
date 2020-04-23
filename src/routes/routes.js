@@ -50,7 +50,6 @@ router.beforeEach((to, from, next) => {
         if (!store.getters.isLoggedIn) {
             next({ name: 'login' })
         } else {
-
             next() // go to wherever I'm going          
         }
     } else {

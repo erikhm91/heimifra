@@ -1,4 +1,5 @@
 import {firestore} from "@/firebase/init";
+import firebase from 'firebase'
 const state = {
     activeChatroom: null,
     activeChatMessages: [],
@@ -144,7 +145,8 @@ const actions = {
                 if (change.type == 'added') {
                     let doc = change.doc.data()
                     let newMessage = {
-                        uid: doc.uid,
+                        to: doc.to,
+                        from: doc.from,
                         text: doc.text,
                         time: doc.time
                     }
@@ -181,8 +183,9 @@ const actions = {
         console.log("payload: ", payload)
         let chatroomid = payload.chatroom
         let newMessage = {
-            uid: payload.from,
-            time: payload.time,
+            to: payload.to,
+            from: payload.from,
+            time: new firebase.firestore.Timestamp.now(),
             text: payload.text
         }
         // chatroomMixin.getChatroomid(payload.from, payload.to);

@@ -141,7 +141,7 @@ export default {
             tips: parseInt(this.post.tips, 10),
             text: this.post.text,
             uid: this.activeUser.uid,
-            timestamp: new firebase.firestore.Timestamp.now(),
+            time: new firebase.firestore.Timestamp.now(),
             status: "free",
             loc,
             address: this.address
@@ -159,7 +159,7 @@ export default {
           });
       }
       this.$emit("complete");
-      this.$router.push({ name: "home" });
+      // this.$router.push({ name: "myposts" });
     },
     onReset(evt) {
       evt.preventDefault();
