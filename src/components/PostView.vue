@@ -8,25 +8,25 @@
       <vue-slider v-model="range" :min="1"></vue-slider>
       <!-- <div>min posisjon: {{userlat}},{{userlon}}</div> -->
       <div class="row mt-2">
-      <div class="col-12 col-sm-4">
-      <button
-        type="button"
-        class="btn btn-secondary"
-        @click="triggerFetchPostsGeoFireX()"
-      >Hent lister</button>
-      </div>
-      <div class="col-12 col-sm-8 mb-2">
-        <vue-dropdown
-          style="font-size: 1.3rem"
-          :options="this.addressDropdown"
-          v-on:selected="getLocationOfAddress($event)"
-          v-on:filter="triggerGetDropdownList($event)"
-          :disabled="false"
-          :maxItem="10"
-          placeholder="Sett min posisjon"
-        ></vue-dropdown>
-        <small>© Kartverket</small>
-      </div>
+        <div class="col-12 col-sm-4">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            @click="triggerFetchPostsGeoFireX()"
+          >Hent lister</button>
+        </div>
+        <div class="col-12 col-sm-8 mb-2">
+          <vue-dropdown
+            style="font-size: 1.3rem"
+            :options="this.addressDropdown"
+            v-on:selected="getLocationOfAddress($event)"
+            v-on:filter="triggerGetDropdownList($event)"
+            :disabled="false"
+            :maxItem="10"
+            placeholder="Sett min posisjon"
+          ></vue-dropdown>
+          <small>© Kartverket</small>
+        </div>
       </div>
       <!-- <div>test avstand i km: {{getDistance(userlat, userlon, 59.9396, 10.6715)}}</div> -->
       <!-- <div>avstand fra meg selv data: {{distance}}</div>
@@ -73,7 +73,7 @@ import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
 import geo from "@/firebase/geo";
 import VueDropdown from "vue-simple-search-dropdown";
-import axios from 'axios'
+import axios from "axios";
 export default {
   data() {
     return {
@@ -85,7 +85,6 @@ export default {
       //kartverket api/vue dropdown:
       globalTimeout: null,
       addressDropdown: []
-
     };
   },
   computed: {
@@ -119,8 +118,11 @@ export default {
           this.userlat,
           this.userlon
         );
-        //trigger fetching posts
-        this.triggerFetchPostsGeoFireX();
+        if (this.postArray == []) {
+          this.triggerFetchPostsGeoFireX();
+        } else {
+          console.log("data already in postArray, not refetching");
+        }
       });
     }
   },
@@ -187,7 +189,7 @@ export default {
     },
     triggerGetLocationOfAddress(value) {
       if (value) {
-        this.getLocationOfAddress(value)
+        this.getLocationOfAddress(value);
       }
     },
 
@@ -226,8 +228,8 @@ export default {
     getLocationOfAddress(value) {
       if (value.id) {
         console.log("selected entry: ", value.id);
-        this.address = value.name
-        console.log("this.address: ", this.address)
+        this.address = value.name;
+        console.log("this.address: ", this.address);
         this.userlat = value.id.representasjonspunkt.lat;
         this.userlon = value.id.representasjonspunkt.lon;
         console.log("latitude og longitude: ", this.latitude, this.longitude);
