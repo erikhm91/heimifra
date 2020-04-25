@@ -55,7 +55,7 @@
 
             <div class="col text-right">
               <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
-              <b-button class variant="primary">Lagre</b-button>
+              <button @click="updateProfile()" class="btn btn-primary" type="button">Lagre</button>
             </div>
             <div class="col">
               <button type="button" @click="logout" class="btn btn-outline-secondary">Logg ut</button>
@@ -68,6 +68,7 @@
         </b-card>-->
       </div>
     </div>
+    <div v-if="feedback">{{feedback}}</div>
     <!-- <div class="col-md-2 col-0"></div> -->
 
     <!-- </div> -->
@@ -82,7 +83,8 @@ export default {
   data() {
     return {
       name: null,
-      bio: null
+      bio: null,
+      feedback: null
     };
   },
   async created() {
@@ -100,24 +102,30 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["activeUser", "apiReady"])
-  },
-  watch: {
-    apiReady(oldVal, newVal) {
-      console.log("apiReady: oldval, newval:", oldVal, newVal);
-      if (newVal == true) {
-        //api has finished loading data, and value has been set
-        console.log("apiReady triggered, calling setprofileattributes:");
-        this.setProfileAttributes();
-      }
-    }
+    ...mapGetters(['activeUser', 'apiReady'])
   },
   methods: {
-    ...mapActions(["fetchOwnUser"]),
+    ...mapActions(['fetchOwnUser', 'updateUserInfo']),
+    
+
+    updateProfile() {
+      if ( this.activeUser.name != null) {
+      const payload = {
+        uid : this.activeUser.uid,
+        name : this.name,
+        bio : this.bio
+      }
+      this.updateUserInfo(payload)
+      this.feedback = 'Din profil er oppdatert.'
+      } else {
+        this.feedback = 'Noe gikk galt, vennligst prøv igjen.'
+      }
+      
+    },
 
     setProfileAttributes() {
       //copy user object from getters and set parameters in profile
-      let userCopy = Object.assign({}, this.activeUser);
+      const userCopy = this.activeUser;
       console.log("userCopy: ", userCopy);
       // if (this.name) {
       this.name = userCopy.name;

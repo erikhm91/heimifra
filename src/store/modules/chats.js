@@ -186,7 +186,8 @@ const actions = {
             to: payload.to,
             from: payload.from,
             time: new firebase.firestore.Timestamp.now(),
-            text: payload.text
+            text: payload.text,
+            read: false
         }
         // chatroomMixin.getChatroomid(payload.from, payload.to);
         firestore.collection("chats").doc(chatroomid).collection("messages").add(

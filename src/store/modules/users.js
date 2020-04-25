@@ -91,25 +91,46 @@ const actions = {
     addUsersToStore: (context, userArray) => {
         context.commit('ADD_USERS', userArray)
     },
-    giveUserRatingOld: (context, payload) => {
-        // return new Promise((resolve, reject) => {
-        console.log("userrating accessed")
-        let data = {
-            rating: payload.rating,
-            uid: payload.uid
-        }
-        //increment cntrate:
-        const increment = firebase.firestore.FieldValue.increment(1);
-        const ref = firestore.collection('users').where('uid', '==', data.uid)
-        // Update read count
-        // ref.update({ cntrate: increment }).then(function (resolve) {
+    // giveUserRatingOld: (context, payload) => { //obsolete
+    //     // return new Promise((resolve, reject) => {
+    //     console.log("userrating accessed")
+    //     const data = {
+    //         rating: payload.rating,
+    //         uid: payload.uid
+    //     }
+    //     //increment cntrate:
+    //     const increment = firebase.firestore.FieldValue.increment(1);
+    //     const ref = firestore.collection('users').where('uid', '==', data.uid)
+    //     // Update read count
+    //     // ref.update({ cntrate: increment }).then(function (resolve) {
 
-        ref.update({ rate: 4 }).then(function () {
+    //     ref.update({ rate: 4 }).then(function () {
+    //         // resolve('success!')
+    //         console.log("successfully updated rate!");
+    //     })
+    //         .catch(function (error) {
+    //             console.log("Error updating user cntrate: ", error);
+    //             // reject(error)
+    //         })
+    //     // })
+    // },
+    updateUserInfo: (context, payload) => {
+        const data = {
+            uid: payload.uid,
+            name: payload.name,
+            bio: payload.bio
+        }
+        firestore.collection("users").doc(data.uid).update({ 
+            uid: data.uid,
+            name: data.name,
+            bio: data.bio
+         }).then(() => {
             // resolve('success!')
-            console.log("successfully updated rate!");
+            console.log("successfully updated user info!");
+            context.commit("UPDATE_ACTIVE_USER", payload)
         })
             .catch(function (error) {
-                console.log("Error updating user cntrate: ", error);
+                console.log("Error updating user info: ", error);
                 // reject(error)
             })
         // })

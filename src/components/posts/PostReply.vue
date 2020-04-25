@@ -54,11 +54,19 @@ export default {
     ...mapGetters(["getUser", "activeUser"])
   },
   methods: {
-    ...mapActions(["assignTask", "sendMessage", "fetchUsers"]),
+    ...mapActions(["assignTask", "sendMessage", "fetchUsers", "fetchOwnUser"]),
 
-    addToOwnTasks(post) {
+    async addToOwnTasks(post) {
       console.log(this.activeUser);
       //TODO: fikse så activeUser henter min user data, inkl name.
+      if (this.activeUser.name) {
+        console.log("complete profile info retrieved, no need to call api");
+      } else {
+        let promise = this.fetchOwnUser();
+        await promise;
+        console.log("fetched user")
+      }
+
       let reply = {
         helper: this.activeUser.uid,
         name: this.activeUser.name,
@@ -78,14 +86,14 @@ export default {
         to: this.post.uid,
         chatroom: chatroomid,
         from: this.activeUser.uid,
-        text: this.newMessage,
+        text: this.newMessage
       };
       this.sendMessage(payload);
     },
     userAssignedToPost(post) {
       const uid = this.activeUser.uid;
       console.log("uid: ", uid);
-      if (Object.hasOwnProperty.call(post, 'offer')) {
+      if (Object.hasOwnProperty.call(post, "offer")) {
         if (Object.hasOwnProperty.call(post.offer, uid)) {
           if (post.offer[uid] == true) {
             return true;
