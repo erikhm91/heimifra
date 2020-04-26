@@ -20,10 +20,18 @@
           </div>
         </div>
         <div class="row">
-          <div
+          <!-- <div
             v-if="(status != 'offer' && view=='ownpost') || view == 'task'"
             class="col"
-          >{{getStatusText}}</div>
+          >{{getStatusText}}</div> -->
+
+
+          <button class="btn btn-outline-primary disabled"
+            v-if="(  
+                  view=='ownpost' && (status == 'ownerfin' || status == 'picked' ) ||
+                  view=='task' && (status == 'helpfin' || status == 'picked') )"
+          >{{getStatusText}}</button>
+
           <div v-else-if="status == 'offer' && view=='ownpost'">
             <button
               class="btn btn-primary"
@@ -31,6 +39,9 @@
               type="button"
             >{{numberOfRepliesToPost(post.id)}} {{getStatusText}}</button>
           </div>
+          <button @click="triggerPostAction()" class="btn btn-primary"
+            v-else
+          >{{getStatusText}}</button>
         </div>
         <div class v-if=" view=='ownpost'">
           <small>{{post.address}}</small>
@@ -117,16 +128,17 @@ export default {
           break;
       }
       return statustext;
-
-      // if (this.status == 'free') {
-      //     statustext = 'Venter på at noen skal kontakte'
-      // }
     }
   },
   components: {
     profileIcon: ProfileIcon
   },
-  methods: {}
+  methods: {
+    
+    triggerPostAction() {
+      console.log("action triggered!")
+    }
+  }
 };
 </script>
 

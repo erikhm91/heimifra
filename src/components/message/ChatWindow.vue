@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <new-message :chatroomid="chatroomid" :activeUser="activeUser" :chatPartner="chatPartner"></new-message>
+    <new-message :chatroomid="chatroomid" :activeUser="activeUser" :chatPartner="chatPartner" :postid="postid"></new-message>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ import { mapGetters } from "vuex";
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 export default {
   mixins: [chatroomMixin],
-  props: ["chatPartner"],
+  props: ["chatPartner", 'postid'],
   data() {
     return {
       chatroomid: null,

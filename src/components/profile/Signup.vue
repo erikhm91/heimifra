@@ -97,7 +97,10 @@ export default {
               email: this.email,
               uid: cred.user.uid,
               cntrate: 0,
-              rate: null
+              rate: null,
+              bio: null,
+              jobs: 0,
+              payments: 0
             });
             //registration successful, redirect user.
           })

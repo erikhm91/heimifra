@@ -4,7 +4,7 @@
         <div class="text-center">
         <h1>Her vises dine egne lister</h1>
     </div>-->
-    <div class="row justify-content-center ">
+    <div class="row justify-content-center">
       <b-card style="max-width: 35rem;">
         <!-- her skal logo stå -->
         <div class="text-center">
@@ -15,10 +15,12 @@
               <b>Alle kan trenge en hjelpende hånd!</b>
             </p>
 
-            <p>Vi i HomeStore jobber for at du skal få en enklere hverdag. I tillegg får du muligheten til å hjelpe andre!</p>
-      <p>Vi oppdaterer siden kontinuerlig for at du skal få den beste kundeopplevelsen.</p>
+            <div class="text-left">
+              <p>Vi i HomeStore jobber for at du skal få en enklere hverdag. I tillegg får du muligheten til å hjelpe andre!</p>
+              <p>Vi oppdaterer siden kontinuerlig for at du skal få den beste kundeopplevelsen.</p>
 
-            <p>Heimifra benytter Kartverkets tjenester for addressesøk https://kartverket.no/</p>
+              <p>Heimifra benytter Kartverkets tjenester for addressesøk. For mer informasjon, se https://kartverket.no/</p>
+            </div>
           </b-card-text>
         </div>
       </b-card>
@@ -48,7 +50,6 @@
 <script>
 import HLogo from "@/components/icons/Logo.vue";
 export default {
-      
   components: {
     HLogo
   }

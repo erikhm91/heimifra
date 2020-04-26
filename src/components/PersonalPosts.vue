@@ -2,7 +2,7 @@
   <div>
     <!-- <div class="row mt-2"> -->
     <div v-if="chatPartner" class="col-md-8 offset-md-2">
-      <chat-window @closeChat="closeChat" :chatPartner="chatPartner"></chat-window>
+      <chat-window @closeChat="closeChat" :chatPartner="chatPartner" :postid="chatPostId"></chat-window>
     </div>
 
     <div v-else>
@@ -105,7 +105,8 @@ export default {
     return {
       postHelperArray: [],
       helperPostId: null,
-      chatPartner: null
+      chatPartner: null,
+      chatPostId: null
     };
   },
   computed: {
@@ -154,6 +155,7 @@ export default {
       this.$store.commit("SET_ACTIVE_CHATROOM", chatroom);
       console.log("showchat triggered for ", post.picked);
       this.chatPartner = post.picked;
+      this.chatPostId = post.id
     },
     closeChat() {
       this.chatPartner = null;

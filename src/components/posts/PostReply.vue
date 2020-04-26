@@ -72,7 +72,8 @@ export default {
         name: this.activeUser.name,
         owner: this.post.uid,
         postid: this.post.id,
-        text: this.newMessage
+        text: this.newMessage,
+        jobs: this.activeUser.jobs
       };
       this.assignTask(reply);
       this.addMessage();
@@ -86,7 +87,8 @@ export default {
         to: this.post.uid,
         chatroom: chatroomid,
         from: this.activeUser.uid,
-        text: this.newMessage
+        text: this.newMessage,
+        postid: this.post.id
       };
       this.sendMessage(payload);
     },

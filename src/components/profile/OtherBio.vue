@@ -43,7 +43,7 @@
 
       <small
         class="mt-1 text-muted"
-      >{{user.name.split(' ')[0]}} har fullført 12 handler i HomeStore.</small>
+      >{{getTagline}}</small>
     </div>
     <!-- </div> -->
     <!-- </div>
@@ -74,6 +74,16 @@ export default {
       // }
       console.log("rating triggered");
       return 3;
+    },
+    getTagline() {
+      let handel;
+      if (this.user.jobs == 1) {
+        handel = ' handel'
+      } else {
+        handel = ' handler'
+      }
+      const text = this.user.name.split(' ')[0] + ' har fullført ' + this.user.jobs + handel + ' i Heimifra.';
+      return text;
     }
   },
   components: {
