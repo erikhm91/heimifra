@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <button v-b-modal="postid+'del'" class="btn mr-2 btn-sm"><icon-delete width="1.2rem" height="1.2rem"></icon-delete></button>
-
+  <div v-b-modal="postid+'del'">
+    Fjern
+    <!-- <button v-b-modal="postid+'del'" class="btn mr-2 btn-sm"><icon-delete width="1.2rem" height="1.2rem"></icon-delete></button> -->
+    <!-- <span v-b-modal="postid+'del'">Slett</span> -->
               <b-modal
                 :id="postid+'del'"
                 :title="'Bekreft sletting'"
@@ -22,7 +23,7 @@ import { mapActions } from "vuex";
 export default {
   props: ['postid'],
   components: {
-    IconDelete
+    // IconDelete
   },
   methods: {
     ...mapActions(["removeTask"]),

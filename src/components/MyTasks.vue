@@ -20,9 +20,12 @@
             <div class="row justify-content-end">
               <button class="btn" @click="showChat(post)"><icon-chat height="2rem" width="2rem"></icon-chat></button>
             </div>
-            <div class="row justify-content-end">
+            <div class="row justify-content-end"><post-task-more :postid="post.id"></post-task-more></div>
+
+       
+            <!-- <div class="row justify-content-end">
               <post-task-delete :postid="post.id"></post-task-delete>
-            </div>
+            </div> -->
           </home-store-post>
           <!-- <own-task class="mt-3"  :post="post"><button class="btn btn-primary" @click="showChat(post)">Åpne chat</button></own-task> -->
           <!-- </div> -->
@@ -39,6 +42,7 @@ import ChatWindow from "@/components/message/ChatWindow.vue";
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import PostTaskDelete from "@/components/posts/PostTaskDelete.vue";
 import IconChat from "@/components/icons/IconChat.vue";
+import PostTaskMore from "@/components/posts/PostTaskMore.vue";
 import { mapActions } from "vuex";
 export default {
   mixins: [chatroomMixin],
@@ -51,8 +55,9 @@ export default {
     // OwnTask,
     ChatWindow,
     homeStorePost: Post,
-    PostTaskDelete,
-    IconChat
+    // PostTaskDelete,
+    IconChat,
+    PostTaskMore
   },
   computed: {
     postArray() {

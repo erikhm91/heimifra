@@ -64,16 +64,18 @@
                     </button>
                   </div>-->
                 </div>
-                <div class="row justify-content-end">
-                  <post-delete :postid="post.id"></post-delete>
-
-                  <div v-if="post.status != ''">
+                <div v-if="post.status != ''" class="row justify-content-end" >
                     <post-complete
                       :owner="true"
                       :postpayload="{ 'postid': post.id, 'status': post.status, 'helper': post.picked, 'owner': post.uid}"
                     ></post-complete>
-                  </div>
                 </div>
+                <div class="row justify-content-end">
+                  <!-- <post-delete :postid="post.id"></post-delete> -->
+                  <post-own-more :postid="post.id"></post-own-more>
+                </div>
+
+                  
               </home-store-post>
             </b-card-group>
           </div>
@@ -95,6 +97,7 @@ import PostComplete from "@/components/posts/PostComplete.vue";
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import ChatWindow from "@/components/message/ChatWindow.vue";
 import IconChat from "@/components/icons/IconChat.vue";
+import PostOwnMore from "@/components/posts/PostOwnMore.vue";
 import { mapGetters, mapActions } from "vuex";
 export default {
   mixins: [chatroomMixin],
@@ -131,10 +134,11 @@ export default {
     PostCreator,
     // OtherBio,
     HomeStorePost: Post,
-    PostDelete,
+    // PostDelete,
     PostComplete,
     ChatWindow,
-    IconChat
+    IconChat,
+    PostOwnMore
   },
   methods: {
     triggerPostHelperPick(postid) {

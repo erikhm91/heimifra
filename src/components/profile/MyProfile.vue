@@ -107,7 +107,6 @@ export default {
   methods: {
     ...mapActions(['fetchOwnUser', 'updateUserInfo']),
     
-
     updateProfile() {
       if ( this.activeUser.name != null) {
       const payload = {

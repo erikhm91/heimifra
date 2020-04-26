@@ -118,10 +118,10 @@ export default {
           this.userlat,
           this.userlon
         );
-        if (this.postArray == []) {
+        if (this.postArray.length == 0) {
           this.triggerFetchPostsGeoFireX();
         } else {
-          console.log("data already in postArray, not refetching");
+          console.log("data already in postArray, not refetching: ", this.postArray);
         }
       });
     }

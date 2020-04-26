@@ -164,6 +164,7 @@ const actions = {
     //post
     updatePostStatus(context, payload) {
         //update database with new status
+        console.log("updatePostStatus fired")
         firestore.collection("posts").doc(payload.postid).update({
             status: payload.status
         })
