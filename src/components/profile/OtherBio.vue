@@ -29,6 +29,9 @@
             <span v-else>
               <small class="mt-1 text-muted">{{user.name.split(' ')[0]}} har ikke fått noen vurderinger enda.</small>
             </span>
+            <!-- <div>
+              <small class="mt-1 text-muted">{{user.name.split(' ')[0]}} har gjennomført {{user.jobs}} oppdrag i Heimifra, og bedt om hjelp {{user.payments}} ganger.</small>
+            </div> -->
           </div>
         </div>
       </div>
@@ -40,11 +43,14 @@
       <div v-if="user.adress">{{user.adress}}</div>
       <div v-if="user.email" class>{{user.email}}</div>
       <div v-if="user.tlf" class>Tlf: {{user.tlf}}</div>
-
+      <div v-if="user.bio"><small>"{{user.bio}}"</small></div>
       <small
         class="mt-1 text-muted"
       >{{getTagline}}</small>
+      
     </div>
+
+
     <!-- </div> -->
     <!-- </div>
     </div>-->
@@ -78,11 +84,11 @@ export default {
     getTagline() {
       let handel;
       if (this.user.jobs == 1) {
-        handel = ' handel'
+        handel = ' oppdrag'
       } else {
-        handel = ' handler'
+        handel = ' oppdrag'
       }
-      const text = this.user.name.split(' ')[0] + ' har fullført ' + this.user.jobs + handel + ' i Heimifra.';
+      const text = this.user.name.split(' ')[0] + ' har utført ' + this.user.jobs + handel + ' i Heimifra, og bedt om hjelp '+ this.user.payments + ' ganger.';
       return text;
     }
   },

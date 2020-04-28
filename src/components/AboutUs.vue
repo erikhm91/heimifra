@@ -16,7 +16,7 @@
             </p>
 
             <div class="text-left">
-              <p>Vi i HomeStore jobber for at du skal få en enklere hverdag. I tillegg får du muligheten til å hjelpe andre!</p>
+              <p>Vi i Heimifra jobber for at du skal få en enklere hverdag. I tillegg får du muligheten til å hjelpe andre!</p>
               <p>Vi oppdaterer siden kontinuerlig for at du skal få den beste kundeopplevelsen.</p>
 
               <p>Heimifra benytter Kartverkets tjenester for addressesøk. For mer informasjon, se https://kartverket.no/</p>

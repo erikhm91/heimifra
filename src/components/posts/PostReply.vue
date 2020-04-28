@@ -7,7 +7,12 @@
       <a href="#" class="btn btn-secondary disabled">Du har kontaktet</a>
     </div>
     <div v-else class="text-right">
-      <a href="#" class="btn btn-outline-primary" v-b-modal="'modal'+post.id">La meg hjelpe!</a>
+      <a
+        href="#"
+        @click="getUserProfile(post.uid)"
+        class="btn btn-outline-primary"
+        v-b-modal="'modal'+post.id"
+      >La meg hjelpe!</a>
     </div>
     <b-modal
       @ok="addToOwnTasks(post)"
@@ -26,7 +31,8 @@
       ></b-form-textarea>
       <p></p>
       <p>{{post.name}} tilbyr {{post.tips}} kr som en ekstra takk for hjelpen. Dette beløpet skal legges til beløpet fra kvitteringene, og betales samlet ut til deg som hjelper. Tips kan ikke forhandles på. Ved å trykke send godtar du disse betingelsene og er klar til å hjelpe {{post.name.split(' ')[0]}}!</p>
-      <other-bio :user="post"></other-bio>
+
+      <other-bio v-if="postOwnerUser" :user="postOwnerUser"></other-bio>
     </b-modal>
   </div>
 </template>
@@ -36,13 +42,14 @@ import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import OtherBio from "@/components/profile/OtherBio.vue";
 import { mapActions } from "vuex";
 import { mapGetters } from "vuex";
+import firebase from "firebase";
 export default {
   props: ["post"],
   mixins: [chatroomMixin],
   data() {
     return {
       newMessage: null,
-      user: null,
+      postOwnerUser: null,
       loadComplete: false
     };
   },
@@ -55,6 +62,17 @@ export default {
   },
   methods: {
     ...mapActions(["assignTask", "sendMessage", "fetchUsers", "fetchOwnUser"]),
+    async getUserProfile(uid) {
+      const user = this.getUser(uid);
+      if (user != null) {
+        this.postOwnerUser = user;
+      } else {
+        const users = [uid];
+        let promise = this.fetchUsers(users);
+        await promise;
+        this.postOwnerUser = this.getUser(uid);
+      }
+    },
 
     async addToOwnTasks(post) {
       console.log(this.activeUser);
@@ -64,7 +82,7 @@ export default {
       } else {
         let promise = this.fetchOwnUser();
         await promise;
-        console.log("fetched user")
+        console.log("fetched user");
       }
 
       let reply = {
@@ -73,7 +91,8 @@ export default {
         owner: this.post.uid,
         postid: this.post.id,
         text: this.newMessage,
-        jobs: this.activeUser.jobs
+        jobs: this.activeUser.jobs,
+        time: new firebase.firestore.Timestamp.now()
       };
       this.assignTask(reply);
       this.addMessage();

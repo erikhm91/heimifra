@@ -17,7 +17,7 @@
                 <p class="card-text mb-1">{{reply.text}}</p>
 
                 <div class="mb-1 text-right">
-                  <small class="text-muted">Sendt kl. 8</small>
+                  <small class="text-muted">Sendt {{ displayTime(reply.time)}}</small>
                 </div>
               </div>
             </div>
@@ -72,9 +72,34 @@ export default {
         postid: reply.postid,
         uid: reply.helper
       };
-      this.setPostPicked(payload)
+      this.setPostPicked(payload),
       this.$emit('closePick')
-    }
+    },
+    displayTime(timestamp) {
+      let dateObj = timestamp.toDate();
+      const time = this.formatTime(dateObj);
+      const date = this.formatDate(dateObj);
+      const datetext = date + " kl. " + time;
+      return datetext;
+    },
+    formatDate(date) {
+      let day = date.getDate();
+      let month = date.getMonth() + 1; //starts at 0.
+      const year = date.getFullYear();
+      // let formattedDate = day.substr(-2) + "." + month.substr(-2) + "." + year;
+      let formattedDate = day + "." + month + "." + year;
+      return formattedDate;
+    },
+    formatTime(date) {
+      let hours = "0" + date.getHours();
+      let minutes = "0" + date.getMinutes();
+      let seconds = "0" + date.getSeconds();
+
+      // Will display time in 10:30:23 format
+      let formattedTime =
+        hours.substr(-2) + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+      return formattedTime;
+    },
   },
   computed: {
     ...mapGetters(["repliesForPost", "getUser"])

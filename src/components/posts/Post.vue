@@ -23,27 +23,29 @@
           <!-- <div
             v-if="(status != 'offer' && view=='ownpost') || view == 'task'"
             class="col"
-          >{{getStatusText}}</div> -->
-
-
-          <button class="btn btn-outline-primary disabled"
-            v-if="(  
-                  view=='ownpost' && (status == 'ownerfin' || status == 'picked' ) ||
+          >{{getStatusText}}</div>-->
+          <div
+            v-if="  
+                  view=='postview'">
+          </div>
+          <div
+            v-else-if="(  
+                  view=='ownpost' && ( status == 'free' || status == 'picked' || status == 'ownerfin' ) ||
                   view=='task' && (status == 'helpfin' || status == 'picked') )"
-          >{{getStatusText}}</button>
+          >
+            <button class="btn btn-outline-primary disabled">{{getStatusText}}</button>
+          </div>
 
-          <div v-else-if="status == 'offer' && view=='ownpost'">
+          <div v-else-if="view=='ownpost' && status == 'offer'">
             <button
               class="btn btn-primary"
               @click="$emit('pickhelper')"
               type="button"
             >{{numberOfRepliesToPost(post.id)}} {{getStatusText}}</button>
           </div>
-          <button @click="triggerPostAction()" class="btn btn-primary"
-            v-else
-          >{{getStatusText}}</button>
+          <button @click="triggerPostAction()" class="btn btn-primary" v-else>{{getStatusText}}</button>
         </div>
-        <div class v-if=" view=='ownpost'">
+        <div class v-if="view == 'ownpost'">
           <small>{{post.address}}</small>
         </div>
       </div>
@@ -134,9 +136,8 @@ export default {
     profileIcon: ProfileIcon
   },
   methods: {
-    
     triggerPostAction() {
-      console.log("action triggered!")
+      console.log("action triggered!");
     }
   }
 };

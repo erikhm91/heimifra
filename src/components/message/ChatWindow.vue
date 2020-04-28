@@ -78,7 +78,7 @@ export default {
       const date = this.formatDate(dateObj);
       let datetext;
       if (date == this.mostRecentPrintedDate) {
-        datetext = "kl. " + time;
+        datetext = time;
       } else {
         datetext = date + " kl. " + time;
         this.mostRecentPrintedDate = date;
@@ -88,8 +88,9 @@ export default {
       return datetext;
     },
     formatDate(date) {
-      let day = "0" + date.getDay();
-      let month = "0" + date.getMonth();
+      let day = "0" + date.getDate();
+      let month = date.getMonth() + 1;
+      month = "0" + month;
       const year = date.getFullYear();
       let formattedDate = day.substr(-2) + "." + month.substr(-2) + "." + year;
       return formattedDate;

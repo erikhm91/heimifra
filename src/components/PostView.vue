@@ -52,7 +52,7 @@
           :view="'postview'"
         >
           <div
-            v-if="post.loc"
+            v-if="post.loc && userlat && userlon"
           >{{getDistanceGeoFireX(userlat, userlon, post.loc.geopoint.F, post.loc.geopoint.V)}} kilometer fra deg</div>
           <!-- Modal handled inside post-reply -->
           <post-reply :post="post"></post-reply>
