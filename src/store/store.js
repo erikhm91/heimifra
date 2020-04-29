@@ -41,6 +41,10 @@ export const store = new Vuex.Store({
             // context.dispatch('fetchMyTasks')
             context.dispatch('initiateTaskListener')
             context.dispatch('initiateReplyListener')
+            const payload = {
+                uid: context.getters.activeUser.uid
+            }
+            context.dispatch('initiateChatListenerGlobal', payload)
             // context.dispatch('fetchOwnRepliesToPosts') --> necessary???
         },
 

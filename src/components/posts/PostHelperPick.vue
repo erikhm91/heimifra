@@ -17,7 +17,7 @@
                 <p class="card-text mb-1">{{reply.text}}</p>
 
                 <div class="mb-1 text-right">
-                  <small class="text-muted">Sendt {{ displayTime(reply.time)}}</small>
+                  <small class="text-muted">Sendt {{displayTime(reply.time)}}</small>
                 </div>
               </div>
             </div>

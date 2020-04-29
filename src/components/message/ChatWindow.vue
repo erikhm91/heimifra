@@ -3,7 +3,7 @@
     <div class="mb-3">
       <button @click="closeChat()" class="btn btn-primary">Tilbake</button>
     </div>
-    <div id="chatwindow" class="container overflow-auto" style="max-height:500px">
+    <div v-if="activeChatMessages" id="chatwindow" class="container overflow-auto" style="max-height:500px">
       <div v-for="(message, i) in activeChatMessages" v-bind:key="i">
         <div class="row" :class="{ 'justify-content-end': isActiveUser(message.from)}">
           <div class="card mb-1 col-auto" :class="{ 'blue': isActiveUser(message.from) }">
@@ -41,26 +41,26 @@ export default {
   },
   created() {
     console.log("activeUser: ", this.activeUser);
-    this.chatroomid = this.getChatroomId(this.activeUser.uid, this.chatPartner);
+    this.chatroomid = this.getChatroomId(this.activeUser.uid, this.chatPartner, this.postid);
     let payload = {
       chatroomid: this.chatroomid,
       chatPartner: this.chatPartner
     };
-    this.activateChat(payload);
-    this.initiateChatListener(payload);
+    this.activateChatNew(payload);
+    // this.initiateChatListener(payload);
   },
 
   beforeDestroy() {
     // document.removeEventListener("backbutton", this.closeChat());
     this.nullActiveChat();
   },
-  watched: {
-    activeChatMessages() {
-      console.log("activeChatMessages changed")
-      var objDiv = document.getElementById("chatwindow");
-      objDiv.scrollTop = objDiv.scrollHeight;
-    }
-  },
+  // watched: {
+  //   activeChatMessages() {
+  //     console.log("activeChatMessages changed")
+  //     var objDiv = document.getElementById("chatwindow");
+  //     // objDiv.scrollTop = objDiv.scrollHeight;
+  //   }
+  // },
 
   computed: {
     ...mapGetters(["activeChat", "activeChatMessages", "activeUser"])
@@ -69,7 +69,7 @@ export default {
     NewMessage
   },
   methods: {
-    ...mapActions(["initiateChatListener", "nullActiveChat", "activateChat"]),
+    ...mapActions(["initiateChatListener", "nullActiveChat", "activateChatNew"]),
 
     //TODO: outsource to store, set in message object once, when message is retrieved.
     displayTime(timestamp) {
@@ -84,7 +84,9 @@ export default {
         this.mostRecentPrintedDate = date;
       }
       var objDiv = document.getElementById("chatwindow");
-      objDiv.scrollTop = objDiv.scrollHeight;
+      if (objDiv != null) {
+        objDiv.scrollTop = objDiv.scrollHeight;
+      }
       return datetext;
     },
     formatDate(date) {

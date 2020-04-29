@@ -20,7 +20,7 @@
         <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'mytasks'}" href="#">Mine oppdrag</b-nav-item>
         <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'myprofile'}" href="#">Min profil</b-nav-item>
         <b-nav-item v-if="!$store.getters.isLoggedIn" :to="{name: 'login'}" href="#">Logg inn</b-nav-item>
-        <b-nav-item>Uleste meldinger: 0</b-nav-item>
+        <b-nav-item>Uleste meldinger: {{numberOfUnreadMessages}}</b-nav-item>
         <!-- <b-nav-item @click="logout">Logg ut</b-nav-item> -->
       </b-navbar-nav>
 
@@ -55,6 +55,7 @@
 <script>
 import HiLogo from '@/components/icons/Logo.vue'
 // import firebase from 'firebase'
+import { mapGetters } from "vuex";
 export default {
   methods: {
     // logout() {
@@ -64,6 +65,9 @@ export default {
     //     })
     //   })
     // }
+  },
+  computed: {
+    ...mapGetters(['numberOfUnreadMessages'])
   },
   components: {
     HiLogo

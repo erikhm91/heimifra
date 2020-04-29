@@ -3,6 +3,9 @@
     <div v-if="post.status=='picked'" class="text-right">
       <a href="#" class="btn btn-secondary disabled">Jeg får hjelp</a>
     </div>
+    <div v-else-if="post.uid == activeUser.uid" class="text-right">
+      <a href="#" class="btn btn-secondary disabled">Dette er din liste</a>
+    </div>
     <div v-else-if="post.status=='offer' && userAssignedToPost(post)==true" class="text-right">
       <a href="#" class="btn btn-secondary disabled">Du har kontaktet</a>
     </div>
@@ -40,8 +43,7 @@
 <script>
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import OtherBio from "@/components/profile/OtherBio.vue";
-import { mapActions } from "vuex";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import firebase from "firebase";
 export default {
   props: ["post"],
@@ -99,7 +101,7 @@ export default {
     },
     addMessage() {
       //Get chatroomid from mixin
-      let chatroomid = this.getChatroomId(this.activeUser.uid, this.post.uid);
+      let chatroomid = this.getChatroomId(this.activeUser.uid, this.post.uid, this.post.id);
       //  console.log("chatid: ",chatroomid)
       //call action
       let payload = {

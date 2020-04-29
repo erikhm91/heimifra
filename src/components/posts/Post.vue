@@ -30,8 +30,8 @@
           </div>
           <div
             v-else-if="(  
-                  view=='ownpost' && ( status == 'free' || status == 'picked' || status == 'ownerfin' ) ||
-                  view=='task' && (status == 'helpfin' || status == 'picked') )"
+                  view=='ownpost' && ( status == 'free' || status == 'picked' || status == 'ownerfin' || status == 'del' ) ||
+                  view=='task' && (status == 'helpfin' || status == 'picked' ) )"
           >
             <button class="btn btn-outline-primary disabled">{{getStatusText}}</button>
           </div>

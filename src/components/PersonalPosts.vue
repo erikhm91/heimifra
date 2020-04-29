@@ -150,7 +150,7 @@ export default {
     showChat(post) {
       //set active chatroom
       // let chatroom = "" + post.uid + "_" + this.$store.getters.activeUser.uid;
-      let chatroom = this.getChatroomId(post.picked, this.activeUser.uid);
+      let chatroom = this.getChatroomId(post.picked, this.activeUser.uid, post.id);
       // console.log("chatroom: " + chatroom);
       this.$store.commit("SET_ACTIVE_CHATROOM", chatroom);
       console.log("showchat triggered for ", post.picked);
