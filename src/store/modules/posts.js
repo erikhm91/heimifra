@@ -205,7 +205,8 @@ const actions = {
             name: payload.name,
             owner: payload.owner,
             postid: payload.postid,
-            text: payload.text
+            text: payload.text,
+            time: payload.time
         }
 
         firestore.collection("replies").add({
@@ -213,7 +214,8 @@ const actions = {
             name: payload.name,
             owner: payload.owner,
             postid: payload.postid,
-            text: payload.text
+            text: payload.text,
+            time: payload.time
         })
             .then(function () {
                 console.log("added Reply doc for user: ", reply.helper);

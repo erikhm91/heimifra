@@ -339,19 +339,7 @@ const actions = {
         // Add a new message
         console.log("payload: ", payload)
         let chatroomid = payload.chatroom
-        const isFirstMessage = payload.isfirst
-        if (isFirstMessage == true) {
-            const user1 = payload.from
-            const user2 = payload.to
-            firestore.collection('chats').doc(chatroomid).add({
-                ['sub.' + user1] : true,
-                ['sub.' + user2] : true
-            }).then( () => {
-                console.log("updated chatroom in db with subscriptions for the users")
-            }).catch(function (error) {
-                console.error("Error writing document, adding sub: ", error);
-            });
-        }
+
         let newMessage = {
             to: payload.to,
             from: payload.from,
@@ -360,16 +348,34 @@ const actions = {
             read: false,
             postid: payload.postid
         }
+        var newpayload = payload
         // chatroomMixin.getChatroomid(payload.from, payload.to);
         firestore.collection("chats").doc(chatroomid).collection("messages").add(
             newMessage)
             .then(function () {
+                const isFirstMessage = newpayload.isFirst
+                if (isFirstMessage == true) {
+                    const user1 = newpayload.from
+                    const user2 = newpayload.to
+                    firestore.collection('chats').doc(chatroomid).set({
+                        sub: {
+                            [user1]: true,
+                            [user2]: true
+                        }
+                    }).then(() => {
+                        console.log("updated chatroom in db with subscriptions for the users")
+                    }).catch(function (error) {
+                        console.error("Error writing document, adding sub: ", error);
+                    });
+                }
                 let messagePayload = {
                     chatroomid: chatroomid,
                     message: newMessage
                 }
+                
                 commit('ADD_CHATMESSAGE', messagePayload)
                 console.log("Chatroom message successfully written to firestore and added to store!");
+                
             })
             .catch(function (error) {
                 console.error("Error writing document: ", error);

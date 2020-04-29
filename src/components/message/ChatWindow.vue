@@ -12,7 +12,7 @@
               <p class="card-text mb-1">{{message.text}}</p>
 
               <div class="mb-1 text-right">
-                <small class="text-muted">{{ displayTime(message.time)}}</small>
+                <small class="text-muted">{{ displayTime(message)}}</small>
               </div>
             </div>
           </div>
@@ -72,7 +72,9 @@ export default {
     ...mapActions(["initiateChatListener", "nullActiveChat", "activateChatNew"]),
 
     //TODO: outsource to store, set in message object once, when message is retrieved.
-    displayTime(timestamp) {
+    displayTime(message) {
+      console.log("requested displaytime of message: ",message)
+      let timestamp = message.time
       let dateObj = timestamp.toDate();
       const time = this.formatTime(dateObj);
       const date = this.formatDate(dateObj);
