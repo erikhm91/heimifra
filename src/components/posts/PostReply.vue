@@ -109,7 +109,8 @@ export default {
         chatroom: chatroomid,
         from: this.activeUser.uid,
         text: this.newMessage,
-        postid: this.post.id
+        postid: this.post.id,
+        isFirst: true
       };
       this.sendMessage(payload);
     },

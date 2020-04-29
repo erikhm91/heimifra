@@ -35,7 +35,7 @@ export default {
   color: $basetext;
 }
 body {
-  background-image: url("~@/assets/background.jpg");
+  background-image: url("~@/assets/Heime.jpg");
   background-color: #cccccc;
   background-attachment: fixed;
   background-repeat: no-repeat;

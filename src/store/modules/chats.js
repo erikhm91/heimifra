@@ -20,9 +20,11 @@ const getters = {
     numberOfUnreadMessages: state => {
         let numOfUnread = 0
         state.chats.forEach(room => {
-            const arrayOfUnreadMessages = room.messages.filter(msg => msg.read === false && msg.to === this.state.users.activeUser)
+            console.log("activeUser in numberOfUnreadMessages", this.state.users.activeUser)
+            const arrayOfUnreadMessages = room.messages.filter(msg => msg.read === false && msg.to === state.users.activeUser.uid)
             numOfUnread += arrayOfUnreadMessages.length;
         })
+        console.log('numberOfUnreadMessages triggered! ', numOfUnread)
         return numOfUnread;
     }
 }
@@ -179,10 +181,28 @@ const actions = {
             //fetch from db
             context.dispatch('fetchChatMessages', payload)
         }
+        context.dispatch('setChatMessagesRead', payload.chatroomid)
         context.commit('SET_CHAT_MESSAGES_READ', payload.chatroomid)
         // context.dispatch('fetchChatMessages', payload) //only need to have chatlistener for changes, so disable for now.
     },
 
+    setChatMessagesRead(context, chatroomid) {
+        // console.log("assigning task to activeuser id ", assignedUid)
+        // console.log("assign task payload", payload)
+        const activeChatMessages = context.getters.activeChatMessages;
+        let ref = firestore.collection("chats").doc(chatroomid).collection('messages')
+        activeChatMessages.forEach(message => {
+            ref.doc(message.id).update({
+                read: true
+            }).then(function () {
+            })
+                .catch(function (error) {
+                    console.error("Error writing document: ", error);
+                });
+
+        })
+        context.commit('SET_CHAT_MESSAGES_READ', chatroomid)
+    },
     fetchChatMessages(context, payload) {
         let chatroom = payload.chatroomid
         firestore.collection('chats').doc(chatroom).collection('messages')
@@ -319,6 +339,19 @@ const actions = {
         // Add a new message
         console.log("payload: ", payload)
         let chatroomid = payload.chatroom
+        const isFirstMessage = payload.isfirst
+        if (isFirstMessage == true) {
+            const user1 = payload.from
+            const user2 = payload.to
+            firestore.collection('chats').doc(chatroomid).add({
+                ['sub.' + user1] : true,
+                ['sub.' + user2] : true
+            }).then( () => {
+                console.log("updated chatroom in db with subscriptions for the users")
+            }).catch(function (error) {
+                console.error("Error writing document, adding sub: ", error);
+            });
+        }
         let newMessage = {
             to: payload.to,
             from: payload.from,
@@ -331,9 +364,6 @@ const actions = {
         firestore.collection("chats").doc(chatroomid).collection("messages").add(
             newMessage)
             .then(function () {
-
-
-
                 let messagePayload = {
                     chatroomid: chatroomid,
                     message: newMessage
