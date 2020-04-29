@@ -2,7 +2,7 @@
   <div>
 
     <div>
-  <b-navbar class="fixed-top outline basetext" toggleable="sm" type="light" variant="info">
+  <b-navbar class="fixed-top outline basetext" toggleable="sm" type="light" variant="warning">
     <b-navbar-brand :to="{name: 'home'}" href="#" class="p-n2"><hi-logo width="30px"></hi-logo></b-navbar-brand>
 
   
@@ -82,6 +82,6 @@ export default {
   border: solid 0.1rem $primary;
 }
 .basetext {
-color: $basetext;
+color: $info;
 }
 </style>
