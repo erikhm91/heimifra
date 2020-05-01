@@ -163,7 +163,7 @@ export default {
             console.log("update successful!");
             //successful update of database, add to own posts
 
-            this.$store.commit("ADD_OWN_POST", newPost);
+            // this.$store.commit("ADD_OWN_POST", newPost); //not necessary, listener gets it
             console.log("emitting complete");
           })
           .catch(err => {

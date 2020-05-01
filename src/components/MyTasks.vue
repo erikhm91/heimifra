@@ -5,11 +5,17 @@
         <chat-window @closeChat="closeChat" :chatPartner="chatPartner" :postid="chatPostId"></chat-window>
       </div>
 
+      <div v-else>
+      
+       <div
+            v-if="myTasks.length == 0"
+          >Du har ingen aktive oppdrag. Gå til forsiden og se om det er noen du kan hjelpe!</div>
       <div v-else class="col-md-8 offset-md-2">
+       
         <b-card-group deck>
           <!-- <div > -->
           <home-store-post
-            v-for="(post, i) in postArray"
+            v-for="(post, i) in myTasks"
             v-bind:key="i"
             class="mt-3 col-12"
             :post="post"
@@ -31,6 +37,7 @@
           <!-- </div> -->
         </b-card-group>
       </div>
+      </div>
     </div>
   </div>
 </template>
@@ -43,7 +50,7 @@ import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import PostTaskDelete from "@/components/posts/PostTaskDelete.vue";
 import IconChat from "@/components/icons/IconChat.vue";
 import PostTaskMore from "@/components/posts/PostTaskMore.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   mixins: [chatroomMixin],
   data() {
@@ -61,16 +68,17 @@ export default {
     PostTaskMore
   },
   computed: {
-    postArray() {
-      return this.$store.getters.myTasks;
-    },
-    activeChatroom() {
-      // console.log(this.$store.getters.activeChatroom)
-      return this.$store.getters.activeChatroom;
-    },
-    activeUser() {
-      return this.$store.getters.activeUser;
-    }
+    ...mapGetters(['myTasks','activeChatroom','activeUser'])
+    // postArray() {
+    //   return this.$store.getters.myTasks;
+    // },
+    // activeChatroom() {
+    //   // console.log(this.$store.getters.activeChatroom)
+    //   return this.$store.getters.activeChatroom;
+    // },
+    // activeUser() {
+    //   return this.$store.getters.activeUser;
+    // }
   },
   methods: {
     ...mapActions(["removeTask"]),

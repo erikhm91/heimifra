@@ -1,5 +1,6 @@
 import { firestore } from "@/firebase/init";
 import firebase from 'firebase'
+import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import Vue from 'vue'
 const state = {
     activeChatroom: null,
@@ -17,11 +18,12 @@ const getters = {
     activeChatroom: state => state.activeChatroom,
     activeChatMessages: state => state.activeChatMessages.slice().reverse(),
     activeChatMessagesUnreversed: state => state.activeChatMessages,
-    numberOfUnreadMessages: state => {
+    numberOfUnreadMessages: (state, getters) => { //need to pass getters as argument to access other getters!
         let numOfUnread = 0
         state.chats.forEach(room => {
-            console.log("activeUser in numberOfUnreadMessages", this.state.users.activeUser)
-            const arrayOfUnreadMessages = room.messages.filter(msg => msg.read === false && msg.to === state.users.activeUser.uid)
+            console.log("activeUser in numberOfUnreadMessages", getters.activeUser.uid)
+            const arrayOfUnreadMessages = room.messages.filter(msg => msg.read == false && msg.to == getters.activeUser.uid)
+            console.log('arrayOfUnreadMessages: ', arrayOfUnreadMessages)
             numOfUnread += arrayOfUnreadMessages.length;
         })
         console.log('numberOfUnreadMessages triggered! ', numOfUnread)
@@ -46,7 +48,7 @@ const mutations = {
             }
         }
     },
-    SET_CHATMESSAGES_IN_STORE(state, payload) {
+    SET_CHATMESSAGES_IN_STORE(state, payload) { //OBSOLETE?
         const chatroomid = payload.chatroomid;
         const messages = payload.messages;
         let chatroom = state.chats.find(obj => obj.chatroomid === chatroomid);
@@ -102,44 +104,62 @@ const mutations = {
     ADD_CHATMESSAGE(state, payload) {
         console.log(chatroom)
         let chatroom = state.chats.find(obj => obj.chatroomid === payload.chatroomid)
-        chatroom.messages.push(payload.message);
+        if (chatroom) {
+            if (chatroom.messages.length == 0) {
+                //add to end
+                chatroom.messages.push(payload.message);
+            } else if (payload.message.time >= chatroom.messages[0].time) {
+                //add into index 0
+                chatroom.messages.unshift(payload.message)
+            } else {
+                chatroom.messages.push(payload.message);
+            }
+            console.log("updated chats state", state.chats)
+        } else {
+            console.log('chatroom was not updated, no chatroom found: ', chatroom)
+        }
         // if (state.activeChatroom == payload.chatroomid) {
         //     state.activeChatMessages.push(payload.message)
         //     console.log("updated active chatmessages", state.activeChatMessages)
         // }
-        console.log("updated chats state", state.chats)
+        // if (context.getters.activeChatMessages.length == 0) {
+        //     context.commit('ADD_CHATMESSAGE_END', payload.message)
+        // } else {
+        //     if (payload.message.time >= context.getters.activeChatMessagesUnreversed[0].time) {
+        //         context.commit('ADD_CHATMESSAGE_FIRST', payload)
+        //     } else {
+        //         context.commit('ADD_CHATMESSAGE_END', payload)
+        //     }
+        // }
+
     },
 
-    ADD_CHATMESSAGE_FIRST(state, payload) { //TO be obsolete, when moving away from "activechatroom"
+    ADD_CHATMESSAGE_FIRST(state, payload) {
         if (state.activeChatroom != payload.chatroomid) {
             state.activeChatroom = payload.chatroomid;
         }
-        state.activeChatMessages.unshift(payload.msg)
+        state.activeChatMessages.unshift(payload.message)
     },
-
     ADD_CHATMESSAGE_FIRST_CHATS(state, payload) {
         if (state.activeChatroom != payload.chatroomid) {
             state.activeChatroom = payload.chatroomid;
         }
-        state.activeChatMessages.unshift(payload.msg)
+        state.activeChatMessages.unshift(payload.message)
     },
-
-    ADD_CHATMESSAGE_END_CHATS(state, payload) { //TO be obsolete, when moving away from "activechatroom"
+    ADD_CHATMESSAGE_END_CHATS(state, payload) {
         if (state.activeChatroom != payload.chatroomid) {
             state.activeChatroom = payload.chatroomid;
         }
-        state.activeChatMessages.push(payload.msg)
+        state.activeChatMessages.push(payload.message)
     },
-
     ADD_CHATMESSAGE_END(state, payload) {
         if (state.activeChatroom != payload.chatroomid) {
             state.activeChatroom = payload.chatroomid;
         }
-        state.activeChatMessages.push(payload.msg)
+        state.activeChatMessages.push(payload.message)
     },
 
     // SET_ACTIVE_CHAT(state, chatroomid) {
-
     //     let chat = state.chatrooms.find(obj => obj.room === chatroomid);
     //     if (chat == null) {
     //         //create new chat
@@ -151,16 +171,16 @@ const mutations = {
     //     }
     //     state.activeChatid = chatroomid;
     //     state.activeChatroom = chat;
-    // },
+    // }
 }
 const actions = {
     //chat
-    activateChat(context, payload) { //OBSOLETE
-        console.log("activateChat payload: ", payload)
-        context.commit('SET_ACTIVE_CHATROOM', payload.chatroomid)
-        // context.dispatch('fetchChatMessages', payload) //only need to have chatlistener for changes, so disable for now.
-        // context.dispatch('initiateChatListener', payload) //have chatlistener on component for now, so it is destroyed when exiting chat.
-    },
+    // activateChat(context, payload) { //OBSOLETE
+    //     console.log("activateChat payload: ", payload)
+    //     context.commit('SET_ACTIVE_CHATROOM', payload.chatroomid)
+    //     // context.dispatch('fetchChatMessages', payload) //only need to have chatlistener for changes, so disable for now.
+    //     // context.dispatch('initiateChatListener', payload) //have chatlistener on component for now, so it is destroyed when exiting chat.
+    // },
     activateChatNew(context, payload) {
         console.log("activateChat payload: ", payload)
         // let payload = {
@@ -182,8 +202,6 @@ const actions = {
             context.dispatch('fetchChatMessages', payload)
         }
         context.dispatch('setChatMessagesRead', payload.chatroomid)
-        context.commit('SET_CHAT_MESSAGES_READ', payload.chatroomid)
-        // context.dispatch('fetchChatMessages', payload) //only need to have chatlistener for changes, so disable for now.
     },
 
     setChatMessagesRead(context, chatroomid) {
@@ -205,16 +223,24 @@ const actions = {
     },
     fetchChatMessages(context, payload) {
         let chatroom = payload.chatroomid
-        firestore.collection('chats').doc(chatroom).collection('messages')
+        firestore.collection('chats').doc(chatroom).collection('messages').orderBy("time", "desc")
             .get()
             .then(function (querySnapshot) {
                 let messages = [];
                 querySnapshot.forEach(function (doc) {
                     // console.log(doc.id, " => ", doc.data());
-                    let msg = doc.data()
-                    messages.push(msg)
+                    const message = doc.data()
+                    messages.push(message)
+                    // const storePayload = {
+                    //     chatroomid: payload.chatroomid,
+                    //     message
+                    // }
+                    // context.commit('SET')
+                    // context.commit('ADD_CHATMESSAGE', storePayload)
+                    // context.dispatch('addMessageToStore', storePayload)
                 });
                 // console.log("myPosts:", myPosts);
+
                 context.commit('SET_ACTIVE_CHAT_MESSAGES', messages);
                 const storePayload = {
                     chatroomid: payload.chatroomid,
@@ -228,12 +254,13 @@ const actions = {
             })
     },
     initiateChatListenerGlobal(context, payload) {
-        // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
+        //get all chatrooms where user is subscribed
         let queryParam = 'sub.' + context.getters.activeUser.uid;
-        // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        firestore.collection('chats').where(queryParam, "==", true).get()
+        firestore.collection('chats').where(queryParam, "==", true)
+            .get()
             .then(function (querySnapshot) {
                 querySnapshot.forEach(function (doc) {
+                    console.log("found chatroom: ", doc.id)
                     // doc.data() is never undefined for query doc snapshots
                     // console.log(doc.id, " => ", doc.data());
                     // postArray.push(doc.data())
@@ -247,8 +274,7 @@ const actions = {
         //set listener for chatroom
         let ref = firestore.collection('chats').doc(chatroomid).collection('messages')
             .where('to', '==', context.getters.activeUser.uid)
-        // .where('read','==',false)
-        // .orderBy("time", "desc").limit(3)
+            .where('read', '==', false)
         ref.onSnapshot(snapshot => {
             console.log("found messages with global query!")
             snapshot.docChanges().forEach(change => {
@@ -262,96 +288,139 @@ const actions = {
                         read: doc.read,
                         postid: doc.postid
                     }
-                    // let messagePayload = {
-                    //     room: chatroom,
-                    //     msg: newMessage
-                    // }
                     console.log("message found: ", newMessage)
-                    //TODO: add to store
+
+                    //format timestamp to readable format:
+                    const datetext = chatroomMixin.methods.displayTime(newMessage.time)
+                    newMessage.datetext = datetext;
+
+                    //add to store
                     const payload = {
                         chatroomid: chatroomid,
                         message: newMessage
                     }
-                    context.dispatch('addMessageToStoreNew', payload)
+                    context.dispatch('addMessageToStore', payload)
                     // console.log("messagepayload: ", messagePayload)
                     // context.dispatch('addMessageToStore', messagePayload)
                 }
             })
         });
     },
-    initiateChatListener(context, payload) { //OBSOLETE
-        //payload: { chatpartner : "uid"}
-        // console.log("chatroommixin: ", chatroomMixin);
-        let chatroom = payload.chatroomid
-        context.commit('SET_ACTIVE_CHATROOM', chatroom)
-        // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        let ref = firestore.collection('chats').doc(chatroom).collection('messages').orderBy("time", "desc").limit(30)
+    // initiateChatListener(context, payload) { //OBSOLETE
+    //     //payload: { chatpartner : "uid"}
+    //     // console.log("chatroommixin: ", chatroomMixin);
+    //     let chatroom = payload.chatroomid
+    //     context.commit('SET_ACTIVE_CHATROOM', chatroom)
+    //     // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
+    //     let ref = firestore.collection('chats').doc(chatroom).collection('messages').orderBy("time", "desc").limit(30)
 
-        this.unsubscribe = ref.onSnapshot(snapshot => {
-            snapshot.docChanges().forEach(change => {
-                if (change.type == 'added') {
-                    let doc = change.doc.data()
-                    let newMessage = {
-                        to: doc.to,
-                        from: doc.from,
-                        text: doc.text,
-                        time: doc.time,
-                        read: doc.read,
-                        postid: doc.postid
-                    }
-                    let messagePayload = {
-                        room: chatroom,
-                        msg: newMessage
-                    }
-                    // console.log("messagepayload: ", messagePayload)
-                    context.dispatch('addMessageToStore', messagePayload)
-                }
-            })
-        })
-    },
-    addMessageToStoreNew(context, payload) {
-        // console.log("activechatmessages: ", context.getters.activeChatMessages)
-        //TODO: check if unread - increase unread messages? No, read from getters dynamically.
+    //     this.unsubscribe = ref.onSnapshot(snapshot => {
+    //         snapshot.docChanges().forEach(change => {
+    //             if (change.type == 'added') {
+    //                 let doc = change.doc.data()
+    //                 let newMessage = {
+    //                     to: doc.to,
+    //                     from: doc.from,
+    //                     text: doc.text,
+    //                     time: doc.time,
+    //                     read: doc.read,
+    //                     postid: doc.postid
+    //                 }
+    //                 let messagePayload = {
+    //                     room: chatroom,
+    //                     msg: newMessage
+    //                 }
+    //                 // console.log("messagepayload: ", messagePayload)
+    //                 context.dispatch('addMessageToStore', messagePayload)
+    //             }
+    //         })
+    //     })
+    // },
+    // initiateChatListenerUnreadMessages(context, payload) { //OBSOLETE not working...
+    //     let ref = firestore.collection('chats').doc(chatroom).collection('messages')
+    //     .where('read','==',false)
+    //     .where('to','==',context.getters.activeUser.uid)
+    //     ref.onSnapshot(snapshot => {
+    //         snapshot.docChanges().forEach(change => {
+    //             if (change.type == 'added') {
+    //                 let doc = change.doc.data()
+    //                 let newMessage = {
+    //                     to: doc.to,
+    //                     from: doc.from,
+    //                     text: doc.text,
+    //                     time: doc.time,
+    //                     read: doc.read,
+    //                     postid: doc.postid
+    //                 }
+    //                 let messagePayload = {
+    //                     room: chatroom,
+    //                     msg: newMessage
+    //                 }
+    //                 // console.log("messagepayload: ", messagePayload)
+    //                 context.dispatch('addMessageToStore', messagePayload)
 
-        //add to chats store (to be implemented fully)
+    //                 //TODO get chatroom key from mixin.
+    //                 const chatroomid = chatroomMixin.getChatroomId(newMessage.to, newMessage.from, newMessage.postid);
+    //                 if (context.getters.activeChatroom == chatroomid) {
+    //                     //add to activechat
+
+    //                 }
+    //             }
+    //         })
+    //     })
+    // },
+    addMessageToStore(context, payload) {
+        console.log('entered addMessageToStore payload:', payload)
+        //update activechatmessages, if activechat = payload.chatroomid
+        if (payload.chatroomid == context.getters.activeChatroom) {
+            console.log("addMessageToStore, currently in active chat. Messages:", context.getters.activeChatMessages)
+            // context.dispatch('addMessageToActiveChat', payload)
+            //No need to add specifically to active chat - it is reactive to the original post!
+        }
+
+        //add to own messages in store.
+
+        // context.commit('ADD_CHATMESSAGE', payload)
+        context.commit('ADD_CHATROOM_IF_NOT_EXISTS', payload.chatroomid)
         context.commit('ADD_CHATMESSAGE', payload)
         // console.log("commited message to store: ", payload.msg)
     },
 
-    addMessageToStore(context, payload) { //OBSOLETE
+    addMessageToActiveChat(context, payload) {
+        //this method sets active chatmessages
+
         console.log("activechatmessages: ", context.getters.activeChatMessages)
         if (context.getters.activeChatMessages.length == 0) {
-            context.commit('ADD_CHATMESSAGE_END', payload)
+            context.commit('ADD_CHATMESSAGE_END', payload.message)
         } else {
-            if (payload.msg.time >= context.getters.activeChatMessagesUnreversed[0].time) {
+            if (payload.message.time >= context.getters.activeChatMessagesUnreversed[0].time) {
                 context.commit('ADD_CHATMESSAGE_FIRST', payload)
             } else {
                 context.commit('ADD_CHATMESSAGE_END', payload)
             }
         }
-
-        //add to chats store (to be implemented fully)
-        context.commit('ADD_CHATMESSAGE', payload)
-        // console.log("commited message to store: ", payload.msg)
+        // //add to chats store (to be implemented fully)
+        // context.commit('ADD_CHATMESSAGE', payload)
+        // // console.log("commited message to store: ", payload.msg)
     },
 
-    sendMessage({ commit }, payload) {
+    sendMessage({ dispatch, commit }, payload) {
         // Add a new message
         console.log("payload: ", payload)
         let chatroomid = payload.chatroom
 
-        let newMessage = {
+        let message = {
             to: payload.to,
             from: payload.from,
-            time: new firebase.firestore.Timestamp.now(),
+            time: payload.time,
             text: payload.text,
-            read: false,
+            read: payload.read,
             postid: payload.postid
         }
         var newpayload = payload
         // chatroomMixin.getChatroomid(payload.from, payload.to);
         firestore.collection("chats").doc(chatroomid).collection("messages").add(
-            newMessage)
+            message)
             .then(function () {
                 const isFirstMessage = newpayload.isFirst
                 if (isFirstMessage == true) {
@@ -368,14 +437,16 @@ const actions = {
                         console.error("Error writing document, adding sub: ", error);
                     });
                 }
+                //Add formatted timestamp to payload and map to object
+                const datetext = chatroomMixin.methods.displayTime(message.time)
+                message.datetext = datetext;
                 let messagePayload = {
                     chatroomid: chatroomid,
-                    message: newMessage
+                    message
                 }
-                
-                commit('ADD_CHATMESSAGE', messagePayload)
+                // commit('ADD_CHATMESSAGE', messagePayload)
+                dispatch('addMessageToStore', messagePayload)
                 console.log("Chatroom message successfully written to firestore and added to store!");
-                
             })
             .catch(function (error) {
                 console.error("Error writing document: ", error);

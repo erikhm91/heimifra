@@ -138,13 +138,6 @@ const mutations = {
         state.myPosts = postArray
         console.log("state.myPosts: ", state.myPosts)
     },
-    // SET_DELETE_FLAG(state, postId) { OBSOLETE
-    //     // console.log("myPosts", state.myPosts, postId)
-    //     let index = state.myPosts.findIndex(obj => obj.id === postId);
-    //     state.myPosts[index].status = 'del'
-    //     // console.log("myPosts after update: ", state.myPosts)
-    // },
-    //task
     ADD_TASK(state, postObj) {
         state.myTasks.push(postObj);
     },
@@ -295,7 +288,7 @@ const actions = {
                 console.error("Error writing document: ", error);
             });
     },
-    fetchPosts: context => { //not used, listener used instead
+    fetchPosts: context => { //OBSOLETE not used, listener used instead
         let posts = []
         //get myPosts
         firestore.collection("posts").where("status", "in", ["free", "offer", "picked"])
@@ -401,10 +394,10 @@ const actions = {
                 console.log("Error getting documents: ", error);
             })
     },
-    initiatePostListener(context) {
+    initiatePostListener(context) { //OBSOLETE
         // let queryParam = 'offer.' + context.getters.activeUser.uid;
         // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
-        let ref = firestore.collection('posts').where("owner", ">")
+        let ref = firestore.collection('posts').where("owner", "==", context.getters.activeUser.uid)
 
         ref.onSnapshot(snapshot => {
 
@@ -423,6 +416,32 @@ const actions = {
                     post.id = change.doc.id
                     // console.log("messagepayload: ", messagePayload)
                     context.commit("UPDATE_POST", post)
+                }
+            })
+        })
+    },
+    initiateOwnPostListener(context) {
+        // let queryParam = 'offer.' + context.getters.activeUser.uid;
+        // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
+        let ref = firestore.collection('posts').where("uid", "==", context.getters.activeUser.uid)
+        .where("status", "in", ["free", "offer", "picked", "ownerfin", "helpfin"])
+
+        this.subscribeOwnPost = ref.onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(change => {
+
+                console.log("document listener triggered for myposts")
+                if (change.type == 'added') {
+                    // console.log("found an added Post", change.doc.data())
+                    let post = change.doc.data()
+                    post.id = change.doc.id
+                    context.commit("ADD_OWN_POST", post)
+                }
+                else if (change.type == 'modified') {
+                    console.log("found a modified own Post", change.doc.data())
+                    let post = change.doc.data()
+                    post.id = change.doc.id
+                    // console.log("messagepayload: ", messagePayload)
+                    context.commit("UPDATE_OWN_POST", post)
                 }
             })
         })
@@ -515,6 +534,7 @@ const actions = {
         let queryParam = 'offer.' + context.getters.activeUser.uid;
         // chatroomMixin.getChatroomId(context.getters.activeUser.uid, payload.chatPartner)
         let ref = firestore.collection('posts').where(queryParam, "==", true)
+        .where("status", "in", ["free","offer", "picked", "ownerfin", "helpfin"])
 
         ref.onSnapshot(snapshot => {
             snapshot.docChanges().forEach(change => {

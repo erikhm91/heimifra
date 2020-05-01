@@ -4,7 +4,6 @@
     <div>
   <b-navbar class="fixed-top outline basetext" toggleable="sm" type="light" variant="warning">
     <b-navbar-brand :to="{name: 'home'}" href="#" class="p-n2"><hi-logo width="30px"></hi-logo></b-navbar-brand>
-
   
   <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
   
@@ -20,7 +19,7 @@
         <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'mytasks'}" href="#">Mine oppdrag</b-nav-item>
         <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'myprofile'}" href="#">Min profil</b-nav-item>
         <b-nav-item v-if="!$store.getters.isLoggedIn" :to="{name: 'login'}" href="#">Logg inn</b-nav-item>
-        <b-nav-item>Uleste meldinger: {{numberOfUnreadMessages}}</b-nav-item>
+        <b-nav-item v-if="numberOfUnreadMessages">Uleste meldinger: <b>{{numberOfUnreadMessages}}</b></b-nav-item>
         <!-- <b-nav-item @click="logout">Logg ut</b-nav-item> -->
       </b-navbar-nav>
 

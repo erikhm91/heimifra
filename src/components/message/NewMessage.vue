@@ -20,6 +20,7 @@
 <script>
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 import { mapActions } from 'vuex'
+import firebase from 'firebase'
 // import { mapGetters } from 'vuex'
 export default {
   props : ['activeUser', 'chatroomid', 'chatPartner', 'postid'],
@@ -44,7 +45,9 @@ export default {
          chatroom : this.chatroomid,
          from: this.activeUser.uid,
          text: this.newMessage,
-         postid: this.postid
+         postid: this.postid,
+         time: new firebase.firestore.Timestamp.now(),
+         read: false
        }
        this.sendMessage(payload)
        this.newMessage = null;

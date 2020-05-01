@@ -12,7 +12,7 @@
               <p class="card-text mb-1">{{message.text}}</p>
 
               <div class="mb-1 text-right">
-                <small class="text-muted">{{ displayTime(message)}}</small>
+                <small class="text-muted">{{ message.datetext}}</small>
               </div>
             </div>
           </div>
@@ -63,7 +63,18 @@ export default {
   // },
 
   computed: {
-    ...mapGetters(["activeChat", "activeChatMessages", "activeUser"])
+    ...mapGetters(["activeChat", "activeUser"]),
+    activeChatMessages() {
+      return this.$store.getters.activeChatMessages;
+    }
+  },
+  watched: {
+    activeChatMessages() {
+      let objDiv = document.getElementById("chatwindow");
+      if (objDiv != null) {
+        objDiv.scrollTop = objDiv.scrollHeight;
+      }
+    }
   },
   components: {
     NewMessage
@@ -72,43 +83,43 @@ export default {
     ...mapActions(["initiateChatListener", "nullActiveChat", "activateChatNew"]),
 
     //TODO: outsource to store, set in message object once, when message is retrieved.
-    displayTime(message) {
-      console.log("requested displaytime of message: ",message)
-      let timestamp = message.time
-      let dateObj = timestamp.toDate();
-      const time = this.formatTime(dateObj);
-      const date = this.formatDate(dateObj);
-      let datetext;
-      if (date == this.mostRecentPrintedDate) {
-        datetext = time;
-      } else {
-        datetext = date + " kl. " + time;
-        this.mostRecentPrintedDate = date;
-      }
-      var objDiv = document.getElementById("chatwindow");
-      if (objDiv != null) {
-        objDiv.scrollTop = objDiv.scrollHeight;
-      }
-      return datetext;
-    },
-    formatDate(date) {
-      let day = "0" + date.getDate();
-      let month = date.getMonth() + 1;
-      month = "0" + month;
-      const year = date.getFullYear();
-      let formattedDate = day.substr(-2) + "." + month.substr(-2) + "." + year;
-      return formattedDate;
-    },
-    formatTime(date) {
-      let hours = "0" + date.getHours();
-      let minutes = "0" + date.getMinutes();
-      let seconds = "0" + date.getSeconds();
+    // displayTime(message) {
+    //   console.log("requested displaytime of message: ",message)
+    //   let timestamp = message.time
+    //   let dateObj = timestamp.toDate();
+    //   const time = this.formatTime(dateObj);
+    //   const date = this.formatDate(dateObj);
+    //   let datetext;
+    //   if (date == this.mostRecentPrintedDate) {
+    //     datetext = time;
+    //   } else {
+    //     datetext = date + " kl. " + time;
+    //     this.mostRecentPrintedDate = date;
+    //   }
+    //   var objDiv = document.getElementById("chatwindow");
+    //   if (objDiv != null) {
+    //     objDiv.scrollTop = objDiv.scrollHeight;
+    //   }
+    //   return datetext;
+    // },
+    // formatDate(date) {
+    //   let day = "0" + date.getDate();
+    //   let month = date.getMonth() + 1;
+    //   month = "0" + month;
+    //   const year = date.getFullYear();
+    //   let formattedDate = day.substr(-2) + "." + month.substr(-2) + "." + year;
+    //   return formattedDate;
+    // },
+    // formatTime(date) {
+    //   let hours = "0" + date.getHours();
+    //   let minutes = "0" + date.getMinutes();
+    //   let seconds = "0" + date.getSeconds();
 
-      // Will display time in 10:30:23 format
-      let formattedTime =
-        hours.substr(-2) + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
-      return formattedTime;
-    },
+    //   // Will display time in 10:30:23 format
+    //   let formattedTime =
+    //     hours.substr(-2) + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+    //   return formattedTime;
+    // },
     isActiveUser(uid) {
       return uid == this.activeUser.uid;
     },
