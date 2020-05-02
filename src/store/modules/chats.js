@@ -201,25 +201,24 @@ const actions = {
             //fetch from db
             context.dispatch('fetchChatMessages', payload)
         }
-        context.dispatch('setChatMessagesRead', payload.chatroomid)
     },
 
-    setChatMessagesRead(context, chatroomid) {
-        // console.log("assigning task to activeuser id ", assignedUid)
-        // console.log("assign task payload", payload)
-        const activeChatMessages = context.getters.activeChatMessages;
-        let ref = firestore.collection("chats").doc(chatroomid).collection('messages')
-        activeChatMessages.forEach(message => {
-            ref.doc(message.id).update({
-                read: true
-            }).then(function () {
-            })
-                .catch(function (error) {
-                    console.error("Error writing document: ", error);
+    setChatMessagesRead(context, payload) {
+        let ref = firestore.collection("chats").doc(payload.chatroomid).collection('messages')
+        payload.messages.forEach(message => {
+            //only write if not already updated, and if it is a message to yourself.
+            if (message.to === context.getters.activeUser.uid && message.read === false) {
+                console.log("updating message as read!")
+                ref.doc(message.id).update({
+                    read: true
+                }).then(function () {
+                    console.log('message updated correctly as read')
+                }).catch(function (error) {
+                    console.error("Error writing document while update message as read: ", error);
                 });
-
+            }
         })
-        context.commit('SET_CHAT_MESSAGES_READ', chatroomid)
+        context.commit('SET_CHAT_MESSAGES_READ', payload.chatroomid)
     },
     fetchChatMessages(context, payload) {
         let chatroom = payload.chatroomid
@@ -230,6 +229,7 @@ const actions = {
                 querySnapshot.forEach(function (doc) {
                     // console.log(doc.id, " => ", doc.data());
                     const message = doc.data()
+                    message.id = doc.id;
                     messages.push(message)
                     // const storePayload = {
                     //     chatroomid: payload.chatroomid,
@@ -281,6 +281,7 @@ const actions = {
                 if (change.type == 'added') {
                     let doc = change.doc.data()
                     let newMessage = {
+                        id: change.doc.id,
                         to: doc.to,
                         from: doc.from,
                         text: doc.text,

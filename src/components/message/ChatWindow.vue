@@ -3,7 +3,12 @@
     <div class="mb-3">
       <button @click="closeChat()" class="btn btn-primary">Tilbake</button>
     </div>
-    <div v-if="activeChatMessages" id="chatwindow" class="container overflow-auto" style="max-height:500px">
+    <div
+      v-if="activeChatMessages"
+      id="chatwindow"
+      class="container overflow-auto"
+      style="max-height:500px"
+    >
       <div v-for="(message, i) in activeChatMessages" v-bind:key="i">
         <div class="row" :class="{ 'justify-content-end': isActiveUser(message.from)}">
           <div class="card mb-1 col-auto" :class="{ 'blue': isActiveUser(message.from) }">
@@ -20,7 +25,12 @@
       </div>
     </div>
 
-    <new-message :chatroomid="chatroomid" :activeUser="activeUser" :chatPartner="chatPartner" :postid="postid"></new-message>
+    <new-message
+      :chatroomid="chatroomid"
+      :activeUser="activeUser"
+      :chatPartner="chatPartner"
+      :postid="postid"
+    ></new-message>
   </div>
 </template>
 
@@ -32,7 +42,7 @@ import { mapGetters } from "vuex";
 import chatroomMixin from "@/components/mixins/chatroomMixin.js";
 export default {
   mixins: [chatroomMixin],
-  props: ["chatPartner", 'postid'],
+  props: ["chatPartner", "postid"],
   data() {
     return {
       chatroomid: null,
@@ -41,7 +51,11 @@ export default {
   },
   created() {
     console.log("activeUser: ", this.activeUser);
-    this.chatroomid = this.getChatroomId(this.activeUser.uid, this.chatPartner, this.postid);
+    this.chatroomid = this.getChatroomId(
+      this.activeUser.uid,
+      this.chatPartner,
+      this.postid
+    );
     let payload = {
       chatroomid: this.chatroomid,
       chatPartner: this.chatPartner
@@ -49,7 +63,13 @@ export default {
     this.activateChatNew(payload);
     // this.initiateChatListener(payload);
   },
+  mounted() {
 
+    setTimeout(function(){ 
+      console.log("activeChatmessages: ",this.activeChatMessages)
+     }, 5000);
+
+  },
   beforeDestroy() {
     // document.removeEventListener("backbutton", this.closeChat());
     this.nullActiveChat();
@@ -68,19 +88,30 @@ export default {
       return this.$store.getters.activeChatMessages;
     }
   },
-  watched: {
+  watch: {
     activeChatMessages() {
       let objDiv = document.getElementById("chatwindow");
       if (objDiv != null) {
         objDiv.scrollTop = objDiv.scrollHeight;
       }
+      // update new messages as read.
+        const payload = {
+          chatroomid: this.chatroomid,
+          messages: this.activeChatMessages
+        }
+      this.setChatMessagesRead(payload);
     }
   },
   components: {
     NewMessage
   },
   methods: {
-    ...mapActions(["initiateChatListener", "nullActiveChat", "activateChatNew"]),
+    ...mapActions([
+      "initiateChatListener",
+      "nullActiveChat",
+      "activateChatNew",
+      "setChatMessagesRead"
+    ]),
 
     //TODO: outsource to store, set in message object once, when message is retrieved.
     // displayTime(message) {
