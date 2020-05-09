@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="card w-100 bg-warning">
-      <div class="card-header pt-2 pb-0 outline">
+    <div class="card bg-warning" style="max-width: 32rem">
+      <div class="card-header pt-2 pb-0">
         <div class="row">
           <span class="col-1">
             <profile-icon></profile-icon>
@@ -24,10 +24,8 @@
             v-if="(status != 'offer' && view=='ownpost') || view == 'task'"
             class="col"
           >{{getStatusText}}</div>-->
-          <div
-            v-if="  
-                  view=='postview'">
-          </div>
+          <div v-if="  
+                  view=='postview'"></div>
           <div
             v-else-if="(  
                   view=='ownpost' && ( status == 'free' || status == 'picked' || status == 'ownerfin' || status == 'del' ) ||
@@ -37,13 +35,18 @@
           </div>
 
           <div v-else-if="view=='ownpost' && status == 'offer'">
-            <button
-              class="btn btn-primary"
-              @click="$emit('pickhelper')"
-              type="button"
-            >{{numberOfRepliesToPost(post.id)}} {{getStatusText}}</button>
+            <button class="btn btn-primary" @click="$emit('pickhelper')" type="button" style="min-width: 4rem">
+              <div class="row justify-content-center">
+                <div>{{numberOfRepliesToPost(post.id)}}</div>
+                <div id="btn_container">
+                  <icon-helper height="24" width="24"></icon-helper>
+                </div>
+              </div>
+            </button>
           </div>
+
           <button @click="triggerPostAction()" class="btn btn-primary" v-else>{{getStatusText}}</button>
+
         </div>
         <div class v-if="view == 'ownpost'">
           <small>{{post.address}}</small>
@@ -55,6 +58,7 @@
 
 <script>
 import ProfileIcon from "@/components/icons/ProfileIcon.vue";
+import IconHelper from "@/components/icons/IconHelper.vue";
 import { mapGetters } from "vuex";
 export default {
   props: {
@@ -85,6 +89,10 @@ export default {
     //   type: Boolean,
     //   default: false
     // }
+  },
+  components: {
+    ProfileIcon,
+    IconHelper
   },
   computed: {
     ...mapGetters(["numberOfRepliesToPost"]),
@@ -132,9 +140,6 @@ export default {
       return statustext;
     }
   },
-  components: {
-    profileIcon: ProfileIcon
-  },
   methods: {
     triggerPostAction() {
       console.log("action triggered!");
@@ -152,7 +157,6 @@ export default {
 .textcolor {
   color: $secondary;
 }
-
 // .tips {
 //   position: absolute;
 //   left: 68%;

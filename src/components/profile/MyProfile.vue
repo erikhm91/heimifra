@@ -52,14 +52,16 @@
             >
               <b-form-input id="input-5" v-model="post.tips" type="number" placeholder="Tips?"></b-form-input>
             </b-form-group>-->
-
-            <div class="col text-right">
-              <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
-              <button @click="updateProfile()" class="btn btn-primary" type="button">Lagre</button>
+            <div class="row mt-4">
+              <div class="col">
+                <button type="button" @click="logout" class="btn btn-outline-primary">Logg ut</button>
+              </div>
+              <div class="col text-right">
+                <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
+                <button @click="updateProfile()" class="btn btn-secondary" type="button">Lagre</button>
+              </div>
             </div>
-            <div class="col">
-              <button type="button" @click="logout" class="btn btn-outline-secondary">Logg ut</button>
-            </div>
+            <div class="text-center">{{feedback}}</div>
           </b-form>
         </b-card>
 
@@ -68,7 +70,7 @@
         </b-card>-->
       </div>
     </div>
-    <div v-if="feedback">{{feedback}}</div>
+
     <!-- <div class="col-md-2 col-0"></div> -->
 
     <!-- </div> -->
@@ -102,24 +104,23 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['activeUser', 'apiReady'])
+    ...mapGetters(["activeUser", "apiReady"])
   },
   methods: {
-    ...mapActions(['fetchOwnUser', 'updateUserInfo']),
-    
+    ...mapActions(["fetchOwnUser", "updateUserInfo"]),
+
     updateProfile() {
-      if ( this.activeUser.name != null) {
-      const payload = {
-        uid : this.activeUser.uid,
-        name : this.name,
-        bio : this.bio
-      }
-      this.updateUserInfo(payload)
-      this.feedback = 'Din profil er oppdatert.'
+      if (this.activeUser.name != null) {
+        const payload = {
+          uid: this.activeUser.uid,
+          name: this.name,
+          bio: this.bio
+        };
+        this.updateUserInfo(payload);
+        this.feedback = "Din profil er oppdatert.";
       } else {
-        this.feedback = 'Noe gikk galt, vennligst prøv igjen.'
+        this.feedback = "Noe gikk galt, vennligst prøv igjen.";
       }
-      
     },
 
     setProfileAttributes() {
@@ -140,9 +141,11 @@ export default {
         .signOut()
         .then(() => {
           this.$store.commit("SET_LOGGED_IN", false);
+          //refresh page
           this.$router.push({
             name: "login"
           });
+          window.location.reload();
         });
     }
   }

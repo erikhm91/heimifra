@@ -1,17 +1,14 @@
 <template>
   <div>
-    <div class="row mt-2">
-      <div v-if="chatPartner" class="col-md-8 offset-md-2">
-        <chat-window @closeChat="closeChat" :chatPartner="chatPartner" :postid="chatPostId"></chat-window>
-      </div>
+    <div v-if="chatPartner" class="col-md-8 offset-md-2">
+      <chat-window @closeChat="closeChat" :chatPartner="chatPartner" :postid="chatPostId"></chat-window>
+    </div>
 
+    <div v-else class="mt-2 col-md-8 offset-md-2">
+      <div
+        v-if="myTasks.length == 0"
+      >Du har ingen aktive oppdrag. Gå til forsiden og se om det er noen du kan hjelpe!</div>
       <div v-else>
-      
-       <div
-            v-if="myTasks.length == 0"
-          >Du har ingen aktive oppdrag. Gå til forsiden og se om det er noen du kan hjelpe!</div>
-      <div v-else class="col-md-8 offset-md-2">
-       
         <b-card-group deck>
           <!-- <div > -->
           <home-store-post
@@ -24,19 +21,21 @@
           >
             <!-- <div v-if="post.hjelp ==true" class="text-right"></div> -->
             <div class="row justify-content-end">
-              <button class="btn" @click="showChat(post)"><icon-chat height="2rem" width="2rem"></icon-chat></button>
+              <button class="btn" @click="showChat(post)">
+                <icon-chat height="2rem" width="2rem"></icon-chat>
+              </button>
             </div>
-            <div class="row justify-content-end"><post-task-more :postid="post.id"></post-task-more></div>
+            <div class="row justify-content-end">
+              <post-task-more :postid="post.id"></post-task-more>
+            </div>
 
-       
             <!-- <div class="row justify-content-end">
               <post-task-delete :postid="post.id"></post-task-delete>
-            </div> -->
+            </div>-->
           </home-store-post>
           <!-- <own-task class="mt-3"  :post="post"><button class="btn btn-primary" @click="showChat(post)">Åpne chat</button></own-task> -->
           <!-- </div> -->
         </b-card-group>
-      </div>
       </div>
     </div>
   </div>
@@ -68,7 +67,7 @@ export default {
     PostTaskMore
   },
   computed: {
-    ...mapGetters(['myTasks','activeChatroom','activeUser'])
+    ...mapGetters(["myTasks", "activeChatroom", "activeUser"])
     // postArray() {
     //   return this.$store.getters.myTasks;
     // },
@@ -90,7 +89,7 @@ export default {
       this.$store.commit("SET_ACTIVE_CHATROOM", chatroom);
       console.log("showchat triggered for ", post.uid);
       this.chatPartner = post.uid;
-      this.chatPostId = post.id
+      this.chatPostId = post.id;
     },
     closeChat() {
       this.chatPartner = null;

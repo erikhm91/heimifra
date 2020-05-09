@@ -79,7 +79,7 @@
             </b-form-group>
             <div class="text-right">
               <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
-              <b-button class="ml-2" type="submit" variant="primary">Publiser!</b-button>
+              <b-button class="ml-2" type="submit" variant="secondary">Publiser!</b-button>
             </div>
           </b-form>
           <!-- <b-card class="mt-3" header="Form Data Result">

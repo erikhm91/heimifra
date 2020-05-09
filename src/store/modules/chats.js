@@ -75,11 +75,16 @@ const mutations = {
     SET_ACTIVE_CHAT_MESSAGES_FROM_STORE(state, chatroomid) {
         let chatroom = state.chats.find(obj => obj.chatroomid === chatroomid);
         if (chatroom) {
-            chatroom.messages.forEach(msg => {
-                state.activeChatMessages.push(msg)
-            })
+            // chatroom.messages.forEach(msg => {
+            //     state.activeChatMessages.push(msg)
+            // })
+            console.log('chatroom found in store: ', chatroom)
+            // state.activeChatMessages.push(...chatroom.messages)
+            // state.activeCahtmessages
+            state.activeChatMessages = chatroom.messages
+            console.log("set activechat messages from store: ", state.activeChatMessages)
         }
-        console.log("set activechat messages from store: ", state.activeChatMessages)
+        
     },
     NULL_ACTIVE_CHAT(state) {
         state.activeChatMessages = [];
@@ -98,11 +103,13 @@ const mutations = {
                 'messages': []
             }
             state.chats.push(chatroom);
+            console.log("Updated chats with new chatroom: ", state.chats, chatroomid)
         }
-        console.log("Updated chats with new chatroom: ", state.chats, chatroomid)
+        
     },
     ADD_CHATMESSAGE(state, payload) {
         console.log(chatroom)
+        console.log("add chatmessage: ", payload)
         let chatroom = state.chats.find(obj => obj.chatroomid === payload.chatroomid)
         if (chatroom) {
             if (chatroom.messages.length == 0) {
@@ -373,11 +380,10 @@ const actions = {
     addMessageToStore(context, payload) {
         console.log('entered addMessageToStore payload:', payload)
         //update activechatmessages, if activechat = payload.chatroomid
-        if (payload.chatroomid == context.getters.activeChatroom) {
-            console.log("addMessageToStore, currently in active chat. Messages:", context.getters.activeChatMessages)
-            // context.dispatch('addMessageToActiveChat', payload)
-            //No need to add specifically to active chat - it is reactive to the original post!
-        }
+        // if (payload.chatroomid == context.getters.activeChatroom) {
+        //     console.log("addMessageToStore, currently in active chat. Messages:", context.getters.activeChatMessages)
+        //     context.dispatch('addMessageToActiveChat', payload)
+        // }
 
         //add to own messages in store.
 
@@ -456,7 +462,7 @@ const actions = {
     nullActiveChat({ commit }) {
         // this.unsubscribe();
         commit('NULL_ACTIVE_CHAT')
-        console.log("nulled chat and unsubscribed to chatlistener")
+        // console.log("nulled active chat")
     }
 }
 
