@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <hs-header></hs-header>
+    <div class="body">
+      <hs-header class="header"></hs-header>
 
-    <div class="container">
-      <!-- <component :is="$store.getters.activeView"></component> -->
-      <router-view :to="{ name: 'home'}"></router-view>
+      <div class="container mb-3">
+        <!-- <component :is="$store.getters.activeView"></component> -->
+        <router-view :to="{ name: 'home'}"></router-view>
+      </div>
+      <!-- <message-container></message-container> -->
     </div>
-    <!-- <message-container></message-container> -->
   </div>
 </template>
 
@@ -34,14 +36,33 @@ export default {
   /* text-align: center; */
   color: $basetext;
 }
+.header {
+   padding-top: 70px;
+}
+//added body and body class to handle scrollbar shifting the background picture
 body {
   background-image: url("~@/assets/Heime.jpg");
   background-color: #cccccc;
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
+  // background-position: center;
 
-  /* adjust for fixed navbar */
-  padding-top: 70px;
+  overflow: hidden;
 }
+
+.body {
+   /* adjust for fixed navbar */
+  height: 100vh;
+  overflow: auto;
+  box-sizing: border-box;
+  // padding: 5px;
+  margin-left: calc(100vw - 100%);
+  margin-right: 0;
+}
+
+// div {
+//     // background: url("~@/assets/Heime.jpg") no-repeat scroll center top transparent;
+//     height: 100px
+// }
 </style>

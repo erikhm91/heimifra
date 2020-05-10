@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card bg-warning" style="max-width: 32rem">
+    <div class="card bg-warning mx-auto" style="max-width: 32rem">
       <div class="card-header pt-2 pb-0">
         <div class="row">
           <span class="col-1">
@@ -24,8 +24,7 @@
             v-if="(status != 'offer' && view=='ownpost') || view == 'task'"
             class="col"
           >{{getStatusText}}</div>-->
-          <div v-if="  
-                  view=='postview'"></div>
+          <div v-if="view=='postview'"></div>
           <div
             v-else-if="(  
                   view=='ownpost' && ( status == 'free' || status == 'picked' || status == 'ownerfin' || status == 'del' ) ||
@@ -35,7 +34,7 @@
           </div>
 
           <div v-else-if="view=='ownpost' && status == 'offer'">
-            <button class="btn btn-primary" @click="$emit('pickhelper')" type="button" style="min-width: 4rem">
+            <button class="btn btn-secondary" @click="$emit('pickhelper')" type="button" style="min-width: 4rem">
               <div class="row justify-content-center">
                 <div>{{numberOfRepliesToPost(post.id)}}</div>
                 <div id="btn_container">
@@ -155,7 +154,7 @@ export default {
 }
 
 .textcolor {
-  color: $secondary;
+  color: $primary;
 }
 // .tips {
 //   position: absolute;

@@ -1,13 +1,13 @@
 <template>
   <div>
     <div v-if="post.status=='picked'" class="text-right">
-      <a href="#" class="btn btn-secondary disabled">Jeg får hjelp</a>
+      <a href="#" class="btn btn-outline-primary disabled">Jeg får hjelp</a>
     </div>
     <div v-else-if="post.uid == activeUser.uid" class="text-right">
-      <a href="#" class="btn btn-secondary disabled">Dette er din liste</a>
+      <a href="#" class="btn btn-primary disabled">Dette er din liste</a>
     </div>
     <div v-else-if="post.status=='offer' && userAssignedToPost(post)==true" class="text-right">
-      <a href="#" class="btn btn-secondary disabled">Du har kontaktet</a>
+      <a href="#" class="btn btn-primary disabled">Du har kontaktet</a>
     </div>
     <div v-else class="text-right">
       <a

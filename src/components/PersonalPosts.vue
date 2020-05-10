@@ -11,7 +11,8 @@
       </div>
 
       <div v-else>
-        <div class="mt-2 col-md-8 offset-md-2">
+        <div class="mt-2 col-md-8 mx-auto">
+          <!-- offset-md-2" -->
           <div class="text-center">
             <button v-b-modal="'modal'" class="btn btn-primary">+ Opprett ny handleliste</button>
             <b-modal :id="'modal'" :title="'Opprett ny liste'" :hide-footer="true" centered>

@@ -24,6 +24,6 @@ export default {
 }
 
 svg {
-    fill: $secondary;
+    fill: $primary;
 }
 </style>

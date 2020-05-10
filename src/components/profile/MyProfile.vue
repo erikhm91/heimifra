@@ -16,7 +16,7 @@
         <!-- <div class="card-body"> -->
 
         <!-- @submit="save" -->
-        <b-card style="max-width: 35rem;">
+        <b-card class="mx-auto" style="max-width: 35rem;">
           <b-form>
             <b-form-group id="input-group-2" label="Epostadresse:" label-for="input-2">
               <b-form-input readonly id="input-2" :placeholder="activeUser.email" type="email"></b-form-input>
@@ -54,11 +54,11 @@
             </b-form-group>-->
             <div class="row mt-4">
               <div class="col">
-                <button type="button" @click="logout" class="btn btn-outline-primary">Logg ut</button>
+                <button type="button" @click="logout" class="btn btn-outline-secondary">Logg ut</button>
               </div>
               <div class="col text-right">
                 <!-- <b-button type="reset" variant="secondary">Tøm skjema</b-button> -->
-                <button @click="updateProfile()" class="btn btn-secondary" type="button">Lagre</button>
+                <button @click="updateProfile()" class="btn btn-primary" type="button">Lagre</button>
               </div>
             </div>
             <div class="text-center">{{feedback}}</div>
