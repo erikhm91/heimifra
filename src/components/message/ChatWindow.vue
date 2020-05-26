@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-3">
-      <button @click="closeChat()" class="btn btn-primary">Tilbake</button>
+      <button @click="closeChat()" class="btn btn-secondary">Tilbake</button>
     </div>
     <div
       v-if="activeChatMessages"

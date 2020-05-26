@@ -82,6 +82,7 @@ export default {
       if (this.email && this.password && this.name) {
         //should implement check on if username is available in cloud functions!
         console.log("contacting firebase for signup");
+        var ref = db.collection("users")
 
         firebase
           .auth()
@@ -91,8 +92,7 @@ export default {
             console.log(cred.user);
 
             //should verify the allowed name params on the user
-            let ref = db.collection("users").doc(cred.user.uid);
-            ref.set({
+            ref.doc(cred.user.uid).set({
               name: this.name,
               email: this.email,
               uid: cred.user.uid,

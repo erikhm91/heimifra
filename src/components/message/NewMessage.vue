@@ -11,7 +11,7 @@
         v-model="newMessage"
       />
       <div class="input-group-append">
-        <button @click="addMessage" class="btn btn-secondary" type="button" id="button-addon2">Send</button>
+        <button @click="addMessage" class="btn btn-primary" type="button" id="button-addon2">Send</button>
       </div>
     </div>
   </div>
