@@ -33,11 +33,12 @@ function  formatDate(date) {
 function formatTime(date) {
     let hours = "0" + date.getHours();
     let minutes = "0" + date.getMinutes();
-    let seconds = "0" + date.getSeconds();
+    // let seconds = "0" + date.getSeconds();
 
     // Will display time in 10:30:23 format
     let formattedTime =
-      hours.substr(-2) + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+      hours.substr(-2) + ":" + minutes.substr(-2) 
+      // + ":" + seconds.substr(-2);
     return formattedTime;
   }
 

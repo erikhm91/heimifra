@@ -65,7 +65,7 @@
                     </button>
                   </div>-->
                 </div>
-                <div v-if="post.status != ''" class="row justify-content-end" >
+                <div v-if="post.status == 'picked' || post.status == 'helpfin'" class="row justify-content-end" >
                     <post-complete
                       :owner="true"
                       :postpayload="{ 'postid': post.id, 'status': post.status, 'helper': post.picked, 'owner': post.uid}"
@@ -74,9 +74,7 @@
                 <div class="row justify-content-end">
                   <!-- <post-delete :postid="post.id"></post-delete> -->
                   <post-own-more :postid="post.id"></post-own-more>
-                </div>
-
-                  
+                </div>  
               </home-store-post>
             </b-card-group>
           </div>
@@ -119,7 +117,7 @@ export default {
     ])
   },
   mounted() {
-    console.log("personalposts");
+    console.log("personalposts: ", this.myPostsNotDelFin);
   },
   created() {
     // this.$store.subscribe((mutation, state) => {

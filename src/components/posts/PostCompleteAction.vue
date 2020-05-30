@@ -2,8 +2,8 @@
   <div>
     <button
       v-b-modal="postpayload.postid+'complete'"
-      class="btn btn-outline-primary mr-2 btn-sm"
-    >Fullført!</button>
+      class="btn btn-primary"
+    ><slot></slot></button>
 
     <b-modal
       :id="postpayload.postid+'complete'"
@@ -14,7 +14,7 @@
       @ok="completePost()"
     >
       <p>Ved å trykke "Fullfør" bekrefter du at handelen er gjennomført - tjenesten er levert og evt. tips er overført som avtalt.</p>
-      <p>Før du fullfører kan du gi din vurdering av hjelperen:</p>
+      <p>Før du fullfører kan du gi din vurdering av oppdragsgiveren:</p>
       <star-rating
         :item-size="23"
         :border-width="0"
@@ -83,7 +83,7 @@ export default {
       this.giveUserRating({
         uid: ratedUid,
         rating: this.rating,
-        owner: false
+        owner: true
       })
       // .then(
       //   response => {

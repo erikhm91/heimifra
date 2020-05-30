@@ -237,6 +237,11 @@ const actions = {
                     // console.log(doc.id, " => ", doc.data());
                     const message = doc.data()
                     message.id = doc.id;
+                    
+                    //format timestamp to readable format:
+                    const datetext = chatroomMixin.methods.displayTime(message.time)
+                    message.datetext = datetext;
+
                     messages.push(message)
                     // const storePayload = {
                     //     chatroomid: payload.chatroomid,

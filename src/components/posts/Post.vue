@@ -34,7 +34,12 @@
           </div>
 
           <div v-else-if="view=='ownpost' && status == 'offer'">
-            <button class="btn btn-secondary" @click="$emit('pickhelper')" type="button" style="min-width: 4rem">
+            <button
+              class="btn btn-secondary"
+              @click="$emit('pickhelper')"
+              type="button"
+              style="min-width: 4rem"
+            >
               <div class="row justify-content-center">
                 <div>{{numberOfRepliesToPost(post.id)}}</div>
                 <div id="btn_container">
@@ -44,8 +49,17 @@
             </button>
           </div>
 
-          <button @click="triggerPostAction()" class="btn btn-primary" v-else>{{getStatusText}}</button>
+          <div v-else-if="view=='task' && status == 'ownerfin'">
+            <post-complete-action 
+              :owner="false"
+              :postpayload="{ 'postid': post.id, 'status': post.status, 'helper': post.picked, 'owner': post.uid}"
+            >
+              <!-- <button class="btn btn-primary" type="button">{{getStatusText}}</button> -->
+              {{getStatusText}}
+            </post-complete-action>
+          </div>
 
+          <button v-else @click="triggerPostAction()" class="btn btn-outline-primary disabled">{{getStatusText}}</button>
         </div>
         <div class v-if="view == 'ownpost'">
           <small>{{post.address}}</small>
@@ -56,6 +70,7 @@
 </template>
 
 <script>
+import PostCompleteAction from "@/components/posts/PostCompleteAction.vue";
 import ProfileIcon from "@/components/icons/ProfileIcon.vue";
 import IconHelper from "@/components/icons/IconHelper.vue";
 import { mapGetters } from "vuex";
@@ -91,7 +106,8 @@ export default {
   },
   components: {
     ProfileIcon,
-    IconHelper
+    IconHelper,
+    PostCompleteAction
   },
   computed: {
     ...mapGetters(["numberOfRepliesToPost"]),

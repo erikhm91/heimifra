@@ -197,11 +197,20 @@ const actions = {
         
         console.log('rounded total: ', newTotal)
 
+        //handle number of jobs and payment (should NOT lie in front end... should use cloud functions. Validates serverside that jobs and/or payments is only +1)
+        if ( payload.owner === true ) {
+            user.payments += 1
+        } else {
+            user.jobs += 1
+        }
+
         //increment cntrate:
         const increment = firebase.firestore.FieldValue.increment(1);
         firestore.collection("users").doc(data.uid).update({
             rate: newTotal,
-            cntrate: increment
+            cntrate: increment,
+            payments: user.payments,
+            jobs: user.jobs
         })
             .then(function () {
                 // context.commit('SET_POST_STATUS', payload)
