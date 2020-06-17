@@ -46,7 +46,8 @@ export default {
   data() {
     return {
       chatroomid: null,
-      mostRecentPrintedDate: null
+      mostRecentPrintedDate: null,
+      newMessageTrigger: false,
     };
   },
   created() {
@@ -83,10 +84,10 @@ export default {
   // },
 
   computed: {
-    ...mapGetters(["activeChat", "activeUser"]),
-    activeChatMessages() {
-      return this.$store.getters.activeChatMessages;
-    }
+    ...mapGetters(["activeChat", "activeUser", "activeChatMessages"])
+    // activeChatMessages() {
+    //   return this.$store.getters.activeChatMessages;
+    // }
   },
   watch: {
     activeChatMessages() {

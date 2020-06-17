@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import db from "@/firebase/init";
+import {firestore} from "@/firebase/init";
 import firebase from "firebase";
 import HLogo from "@/components/icons/Logo.vue";
 export default {
@@ -82,7 +82,7 @@ export default {
       if (this.email && this.password && this.name) {
         //should implement check on if username is available in cloud functions!
         console.log("contacting firebase for signup");
-        var ref = db.collection("users")
+        var ref = firestore.collection("users")
 
         firebase
           .auth()
@@ -102,12 +102,9 @@ export default {
               jobs: 0,
               payments: 0
             });
-            //registration successful, redirect user.
-          })
-          .then(() => {
-            //set activeUser in store (will see if this is bad practice)
-            this.$store.commit("SET_ACTIVE_USER", this.alias);
-            this.$router.push({ name: "home" });
+            //registration successful, login user directly.
+            this.login()
+
           })
           .catch(err => {
             console.log(err);
@@ -116,6 +113,28 @@ export default {
       } else {
         console.log("failed signup check");
       }
+    },
+    login() {
+      console.log("logging in!");
+        this.$store.commit("SET_API_READY", false);
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(this.email, this.password)
+          .then(cred => {
+            console.log(cred.user);
+            this.$store.commit("SET_LOGGED_IN", true);
+            this.$store.commit("SET_ACTIVE_USER", cred.user);
+            this.$store.commit("SET_API_READY", true);
+            // this.$store.commit("SET_ACTIVE_UID", cred.user.uid);
+            // this.$store.commit("SET_ACTIVE_EMAIL", cred.user.email);
+
+            this.$router.push({ name: "home" });
+          })
+          .catch(err => {
+            console.log("error occurred during login!", err.message);
+            this.feedback = err.message;
+            this.$store.commit("SET_API_READY", true);
+          });
     }
   }
 };

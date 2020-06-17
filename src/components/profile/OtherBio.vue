@@ -88,7 +88,7 @@ export default {
       } else {
         handel = ' oppdrag'
       }
-      const text = this.user.name.split(' ')[0] + ' har utført ' + this.user.jobs + handel + ' i Heimifra, og bedt om hjelp '+ this.user.payments + ' ganger.';
+      const text = this.user.name.split(' ')[0] + ' har utført ' + this.user.jobs + handel + ' for andre, og fått hjelp '+ this.user.payments + ' ganger.';
       return text;
     }
   },

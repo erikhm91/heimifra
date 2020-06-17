@@ -1,77 +1,58 @@
 <template>
   <div>
-
     <div>
-  <b-navbar class="fixed-top outline basetext" toggleable="sm" type="light" variant="warning">
-    <b-navbar-brand :to="{name: 'home'}" href="#" class="p-n2"><hi-logo width="30px"></hi-logo></b-navbar-brand>
-  
-  <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-  
-  <b-collapse id="nav-collapse" is-nav>
-      <b-navbar-nav>
-        <!-- <b-nav-item @click="navigateToComponent('post-creator')" :class="{ active: $store.getters.activeView == 'post-creator'}" href="#">Opprett handleliste!</b-nav-item> -->
-       
-       <!-- @click="navigateToComponent('my-page')" :class="{ active: $store.getters.activeView == 'my-page'}"  -->
+      <b-navbar class="fixed-top outline basetext" toggleable="sm" type="light" variant="warning">
+        <b-navbar-brand :to="{name: 'home'}" href="#" class="p-n2">
+          <hi-logo width="30px"></hi-logo>
+        </b-navbar-brand>
 
-       
-        <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'home'}" href="#">Hjem</b-nav-item>
-        <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'myposts'}" href="#">Mine lister</b-nav-item>
-        <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'mytasks'}" href="#">Mine oppdrag</b-nav-item>
-        <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'myprofile'}" href="#">Min profil</b-nav-item>
-        <b-nav-item v-if="!$store.getters.isLoggedIn" :to="{name: 'login'}" href="#">Logg inn</b-nav-item>
-        <b-nav-item v-if="numberOfUnreadMessages">Uleste meldinger: <b>{{numberOfUnreadMessages}}</b></b-nav-item>
-        <!-- <b-nav-item @click="logout">Logg ut</b-nav-item> -->
-      </b-navbar-nav>
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-collapse id="nav-collapse" is-nav>
+          <b-navbar-nav>
+            <b-nav-item v-if="$store.getters.isLoggedIn" :to="{name: 'home'}" href="#">Hjem</b-nav-item>
+            <b-nav-item
+              v-if="$store.getters.isLoggedIn"
+              :to="{name: 'myposts'}"
+              href="#"
+            >Mine lister</b-nav-item>
+            <b-nav-item
+              v-if="$store.getters.isLoggedIn"
+              :to="{name: 'mytasks'}"
+              href="#"
+            >Mine oppdrag</b-nav-item>
+            <b-nav-item
+              v-if="$store.getters.isLoggedIn"
+              :to="{name: 'myprofile'}"
+              href="#"
+            >Min profil</b-nav-item>
+            <b-nav-item v-if="!$store.getters.isLoggedIn" :to="{name: 'login'}" href="#">Logg inn</b-nav-item>
+            <b-nav-item v-if="numberOfUnreadMessages">
+              Uleste meldinger:
+              <b>{{numberOfUnreadMessages}}</b>
+            </b-nav-item>
+          </b-navbar-nav>
 
-
-      <!-- Right aligned nav items -->
-      <b-navbar-nav class="ml-auto">
-        <b-nav-item :to="{name: 'aboutus'}" href="#">Om oss</b-nav-item>
-        <!-- <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Søk"></b-form-input>
-          <b-button size="sm" class="my-2 my-sm-0" type="submit">Søk</b-button>
-          
-        </b-nav-form> -->
-
-   
-        <!-- <b-nav-item-dropdown right>
-           Using 'button-content' slot -->
-          <!-- <template v-slot:button-content>
-            <em>Min profil</em>
-          </template>
-          <b-dropdown-item href="#">Innstillinger</b-dropdown-item>
-          <b-dropdown-item href="#">Logg ut</b-dropdown-item>
-        </b-nav-item-dropdown> -->
-      </b-navbar-nav>
-       </b-collapse>
-
-
-  </b-navbar>
+          <!-- Right aligned nav items -->
+          <b-navbar-nav class="ml-auto">
+            <b-nav-item :to="{name: 'aboutus'}" href="#">Om oss</b-nav-item>
+          </b-navbar-nav>
+        </b-collapse>
+      </b-navbar>
     </div>
-
   </div>
 </template>
 <script>
-import HiLogo from '@/components/icons/Logo.vue'
-// import firebase from 'firebase'
+import HiLogo from "@/components/icons/Logo.vue";
 import { mapGetters } from "vuex";
 export default {
   methods: {
-    // logout() {
-    //   firebase.auth().signOut().then(() => {
-    //     this.$router.push({
-    //       name: 'login'
-    //     })
-    //   })
-    // }
   },
   computed: {
-    ...mapGetters(['numberOfUnreadMessages'])
+    ...mapGetters(["numberOfUnreadMessages"])
   },
   components: {
     HiLogo
   }
-
 };
 </script>
 
@@ -81,6 +62,6 @@ export default {
   border: solid 0.1rem $primary;
 }
 .basetext {
-color: $info;
+  color: $info;
 }
 </style>
