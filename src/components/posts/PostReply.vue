@@ -41,12 +41,12 @@
 </template>
 
 <script>
-import chatroomMixin from "@/components/mixins/chatroomMixin.js";
-import OtherBio from "@/components/profile/OtherBio.vue";
-import { mapActions, mapGetters } from "vuex";
-import firebase from "firebase";
+import chatroomMixin from '@/components/mixins/chatroomMixin.js';
+import OtherBio from '@/components/profile/OtherBio.vue';
+import { mapActions, mapGetters } from 'vuex';
+import firebase from 'firebase';
 export default {
-  props: ["post"],
+  props: ['post'],
   mixins: [chatroomMixin],
   data() {
     return {
@@ -110,6 +110,8 @@ export default {
         from: this.activeUser.uid,
         text: this.newMessage,
         postid: this.post.id,
+        time: new firebase.firestore.Timestamp.now(),
+         read: false,
         isFirst: true
       };
       this.sendMessage(payload);
