@@ -1,4 +1,4 @@
-# heimifra
+# Heimifra
 
 Link to working demo: http://heimifra.netlify.com
 
