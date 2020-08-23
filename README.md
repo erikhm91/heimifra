@@ -1,6 +1,6 @@
 # Heimifra
 
-Link: http://heimifra.netlify.com.
+Link to demo: http://heimifra.netlify.com.
 
 Heimifra is a marketplace for connecting people requesting minor services and people who want to deliver.
 "Tipping" the helper is used as an incentive.
